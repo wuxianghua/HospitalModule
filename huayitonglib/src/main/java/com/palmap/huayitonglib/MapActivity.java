@@ -287,7 +287,7 @@ public class MapActivity extends AppCompatActivity {
                     (Property.NONE));
         }
         //切换楼层 把除backgroundlayer之外的layer全部清除
-        MapUtils.removeAllWithOutBackgroundlayer(mMapboxMap);
+//        MapUtils.removeAllWithOutBackgroundlayer(mMapboxMap);
         //-----起点终点在切换容易被覆盖--------要先清除---
 //        removeEndMarker();
 //        removeStartMarker();
