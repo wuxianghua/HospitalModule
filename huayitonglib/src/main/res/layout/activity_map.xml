@@ -1,16 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
     tools:context="com.palmap.huayitonglib.MapActivity">
+    //标题栏
+
     <RelativeLayout
+        android:id="@+id/title_rr"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/colorAppSkin">
+
+        <RelativeLayout
+            android:id="@+id/back_rr"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:onClick="onClick">
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="院内导航"
+            android:textColor="@color/colorWhite"
+            android:textSize="18dp" />
+    </RelativeLayout>
+    //顶部搜索框
+
+    <RelativeLayout
+        android:id="@+id/search_rr"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_below="@+id/title_rr"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@mipmap/search"
+        android:onClick="findCar">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="55dp"
+            android:text="请输入目的地"
+            android:textColor="#CCCCCC" />
+    </RelativeLayout>
+    //图标过滤
+
+    <RelativeLayout
+        android:layout_width="36dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/search_rr"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        >
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+
+            />
 
     </RelativeLayout>
 </RelativeLayout>
