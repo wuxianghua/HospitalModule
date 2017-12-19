@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:expandableView="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_exLin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.palmap.huayitonglib.view.NonScrollGridView
+        android:id="@+id/gridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="4"
+        android:scrollbars="none">
+
+    </com.palmap.huayitonglib.view.NonScrollGridView>
+
+    <com.palmap.huayitonglib.view.ExpandableView
+        android:id="@+id/expandableView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        expandableView:viewTitle="出入口"
+        expandableView:viewTitleSize="16sp"
+        expandableView:viewTitleColor="@color/text_333"
+        expandableView:viewTitleImage="@mipmap/ic_launcher"
+        expandableView:viewTitleLineColor="@color/white">
+
+        <com.palmap.huayitonglib.view.StreamLableLayout
+            android:id="@+id/exitStlView"
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"/>
+
+    </com.palmap.huayitonglib.view.ExpandableView>
+
+    <com.palmap.huayitonglib.view.ExpandableView
+        android:id="@+id/expandableView_F1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        expandableView:viewTitle="门诊部（F1）"
+        expandableView:viewTitleSize="16sp"
+        expandableView:viewTitleColor="@color/text_333"
+        expandableView:viewTitleImage="@mipmap/ic_launcher"
+        expandableView:viewTitleLineColor="@color/white">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"/>
+
+
+    </com.palmap.huayitonglib.view.ExpandableView>
+
+    <com.palmap.huayitonglib.view.ExpandableView
+        android:id="@+id/expandableView_F2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        expandableView:viewTitle="门诊部（F2）"
+        expandableView:viewTitleSize="16sp"
+        expandableView:viewTitleColor="@color/text_333"
+        expandableView:viewTitleImage="@mipmap/ic_launcher"
+        expandableView:viewTitleLineColor="@color/white">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"/>
+
+    </com.palmap.huayitonglib.view.ExpandableView>
+
+    <com.palmap.huayitonglib.view.ExpandableView
+        android:id="@+id/expandableView_F3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        expandableView:viewTitle="门诊部（F3）"
+        expandableView:viewTitleSize="16sp"
+        expandableView:viewTitleColor="@color/text_333"
+        expandableView:viewTitleImage="@mipmap/ic_launcher"
+        expandableView:viewTitleLineColor="@color/white">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"/>
+    </com.palmap.huayitonglib.view.ExpandableView>
+
+    <com.palmap.huayitonglib.view.ExpandableView
+        android:id="@+id/expandableView_F4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        expandableView:viewTitle="门诊部（F4）"
+        expandableView:viewTitleSize="16sp"
+        expandableView:viewTitleColor="@color/text_333"
+        expandableView:viewTitleImage="@mipmap/ic_launcher"
+        expandableView:viewTitleLineColor="@color/white">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"/>
+    </com.palmap.huayitonglib.view.ExpandableView>
+
+</LinearLayout>
