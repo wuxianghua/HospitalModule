@@ -44,8 +44,8 @@ public class SearchShowFragment extends Fragment {
 
     private String[] searchNames = {"急诊","缴费","取药","取报告","自助挂号","抽血","输液","洗手间"};
     private int[] searchImg = {R.mipmap.ic_search_jizhen,R.mipmap.ic_search_jiaofei,R.mipmap.ic_search_quyao,
-            R.mipmap.ic_search_jizhen,R.mipmap.ic_search_jizhen,R.mipmap.ic_search_jizhen,
-            R.mipmap.ic_search_jizhen,R.mipmap.ic_search_xishoujian};
+            R.mipmap.ic_search_qubaogao,R.mipmap.ic_search_jizhen,R.mipmap.ic_search_chouxue,
+            R.mipmap.ic_search_shuye,R.mipmap.ic_search_xishoujian};
     private String[] F2_A1_Content = {"耳鼻咽喉","头颈外科"};
     private String[] F2_A2_Content = {"皮肤性病科门诊","皮肤科相关的检查"};
     private String[] F2_A3_Content = {"耳鼻喉科相关检查","财务收费窗口"};
