@@ -41,7 +41,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:background="@mipmap/search"
-        android:onClick="findCar">
+        android:onClick="onClick">
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,31 +63,40 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/xishoujian_image"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:onClick="onClick"
             android:background="@mipmap/ic_map_xishoujian" />
 
         <ImageView
+            android:id="@+id/yinhang_image"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:onClick="onClick"
             android:background="@mipmap/ic_map_yinhang" />
 
         <ImageView
+            android:id="@+id/dianti_image"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:onClick="onClick"
             android:background="@mipmap/ic_map_dianti" />
 
         <ImageView
+            android:id="@+id/futi_image"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:onClick="onClick"
             android:background="@mipmap/ic_map_futi" />
     </LinearLayout>
     //底部切换楼层
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_height="260dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -98,11 +107,11 @@
             <ScrollView
                 android:id="@+id/map_scrollview"
                 android:layout_width="36dp"
-                android:layout_height="170dp"
+                android:layout_height="175dp"
                 android:layout_marginLeft="10dp"
                 android:background="@color/white"
-                android:scrollbars="none">
-
+                android:scrollbars="none"
+                android:visibility="gone">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -289,7 +298,6 @@
                         android:textSize="12sp" />
                 </LinearLayout>
             </ScrollView>
-
             <TextView
                 android:id="@+id/changefloor_text"
                 android:layout_width="36dp"
@@ -300,6 +308,7 @@
                 android:background="@color/white"
                 android:gravity="center"
                 android:text="F1"
+                android:onClick="onClick"
                 android:textColor="#666666"
                 android:textSize="14sp" />
         </RelativeLayout>
@@ -313,20 +322,25 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/jia_text"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:gravity="center"
                 android:text="加"
                 android:textColor="#666666"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:onClick="onClick"/>
 
             <TextView
+                android:id="@+id/jian_text"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:gravity="center"
                 android:text="减"
                 android:textColor="#666666"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:onClick="onClick"
+                />
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>
