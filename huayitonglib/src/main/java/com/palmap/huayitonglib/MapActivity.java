@@ -16,6 +16,8 @@ import com.palmap.huayitonglib.activity.SearchActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.FileUtils;
+import com.palmap.huayitonglib.utils.MapInitUtils2;
+import com.palmap.huayitonglib.utils.MapUtils2;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -148,9 +150,9 @@ public class MapActivity extends AppCompatActivity {
                 dianti = true;
             }
 
-        } else if (i == R.id.jia_rr) {
+        }else if (i == R.id.jia_text){
             //地图放大
-        } else if (i == R.id.jian_rr) {
+        }else if (i == R.id.jian_text){
             //地图缩小
         }
     }
@@ -199,13 +201,6 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
-    public void onNavClick(View view) {
-        int i = view.getId();
-        if (i == R.id.routeLin) {
-            
-        }
-    }
-
     //显示和影藏切换楼层滑动框
     private void changeFloorScroll() {
         //点击切换楼层的按钮
@@ -247,14 +242,19 @@ public class MapActivity extends AppCompatActivity {
         @Override
         public void onMapReady(MapboxMap mapboxMap) {
             mMapboxMap = mapboxMap;
-
+            MapInitUtils2.initMapSetting(self,mMapboxMap);
+            //删除图层后加载自己的地图
+            MapUtils2.removeAllOriginalLayers(mMapboxMap);
             // 加载地图
             loadSelfMap();
         }
     }
 
     private void loadSelfMap() {
-
+        MapInitUtils2.addBackgroudLayer(getApplicationContext(), mMapboxMap);
+        MapInitUtils2.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
+        MapInitUtils2.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
+//        addFacilityLayer(TYPE_NOICON);
     }
 
     @Override
