@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">huayitonglib</string>
+    <string name="package_name">com.palmap.huayitonglib</string>
 </resources>

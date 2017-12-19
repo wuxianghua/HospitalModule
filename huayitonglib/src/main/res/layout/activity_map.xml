@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:background="#F7F7F7"
     tools:context="com.palmap.huayitonglib.MapActivity">
+
+    // 地图容器
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp">
+    </com.mapbox.mapboxsdk.maps.MapView>
+
     //标题栏
 
     <RelativeLayout

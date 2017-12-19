@@ -1,0 +1,111 @@
+{"floors":
+  [
+  {
+    "floorId": 2696743,
+    "floorName": "地下二层",
+    "alias": "B2",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2696763,
+    "floorName": "地下一层",
+    "alias": "B1",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2571204,
+    "floorName": "平面层",
+    "alias": "F0",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2452754,
+    "floorName": "一层",
+    "alias": "F1",
+    "defaultFloor": true
+  },
+  {
+    "floorId": 2453325,
+    "floorName": "二层",
+    "alias": "F2",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2454077,
+    "floorName": "三层",
+    "alias": "F3",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2454930,
+    "floorName": "四层",
+    "alias": "F4",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2700757,
+    "floorName": "五层",
+    "alias": "F5",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2701555,
+    "floorName": "六层",
+    "alias": "F6",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2702302,
+    "floorName": "七层",
+    "alias": "F7",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2703007,
+    "floorName": "八层",
+    "alias": "F8",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2703596,
+    "floorName": "九层",
+    "alias": "F9",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2704202,
+    "floorName": "十层",
+    "alias": "F10",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2704624,
+    "floorName": "十一层",
+    "alias": "F11",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2704905,
+    "floorName": "十二层",
+    "alias": "F12",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2705297,
+    "floorName": "十三层",
+    "alias": "F13",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2705689,
+    "floorName": "十四层",
+    "alias": "F14",
+    "defaultFloor": false
+  },
+  {
+    "floorId": 2706052,
+    "floorName": "十五层",
+    "alias": "F15",
+    "defaultFloor": false
+  }
+]}
