@@ -2,18 +2,25 @@ package com.palmap.huayitonglib;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.style.layers.Property;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.palmap.huayitonglib.activity.SearchActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
+import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.FileUtils;
 import com.palmap.huayitonglib.utils.MapInitUtils;
@@ -162,6 +169,7 @@ public class MapActivity extends AppCompatActivity {
         map_scrollview.setVisibility(View.GONE);
         int i = view.getId();
         if (i == R.id.b2) {
+//            shiftFloors();
             changefloor_text.setText("B2");
         } else if (i == R.id.b1) {
             changefloor_text.setText("B1");
@@ -264,6 +272,86 @@ public class MapActivity extends AppCompatActivity {
 //        addFacilityLayer(TYPE_NOICON);
     }
 
+
+    //楼层的标识符
+    private String mAlias= "F1";
+    double mLatitude, mLngtitude;//墨卡托坐标
+    //切换楼层的方法
+    private void shiftFloors(String alias, boolean isJump) {
+
+        if (!TextUtils.isEmpty(alias)) {
+            mAlias = alias;
+            changefloor_text.setText("F7");
+        }
+        mFloorBean = FileUtils.getSourceName(mAlias);
+////        MapInitUtils.setOtherUpCamera(mMapboxMap, mLatitude, mLngtitude, poid);
+//        MapInitUtils.setUpCamera(mMapboxMap, mAlias, mLatitude, mLngtitude);
+//        Log.i(TAG, "shiftFloors: 同一楼层，不再切换");
+//        mCurrentFloorId = FileUtils.getFloorId(getBaseContext(), alias);
+//        Log.i("lyb ", "shiftFloors: mCurrentFloorId " + mCurrentFloorId);
+        if (mMapboxMap.getLayer(Config.LAYERID_FACILITY) != null) {
+            mMapboxMap.getLayer(Config.LAYERID_FACILITY).setProperties(PropertyFactory.visibility
+                    (Property.NONE));
+        }
+        //切换楼层 把除backgroundlayer之外的layer全部清除
+        MapUtils.removeAllWithOutBackgroundlayer(mMapboxMap);
+        //-----起点终点在切换容易被覆盖--------要先清除---
+//        removeEndMarker();
+//        removeStartMarker();
+//        removeFindMark();
+//        removeAllFlowMarkRecord();
+//        removeDianTiMarker();
+        //加载地图
+        loadSelfMap();
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                loading_rel.setVisibility(View.GONE);
+//            }
+//        }, 500);
+//        if (canDisplayEndInfo()) {
+//            Log.i("canDisplayStartInfo", "shiftFloors:-----------canDisplayEndInfo ");
+//            addEndMarker(new LatLng(mPlanRouteBean.getEndLatitude(), mPlanRouteBean.getEndLongtitude()));
+//        }
+//
+//        if (canDisplayStartInfo()) {
+//            Log.i("canDisplayStartInfo", "shiftFloors:-----------canDisplayStartInfo ");
+//            addStartMarker(new LatLng(mPlanRouteBean.getStartLatitude(), mPlanRouteBean.getStartLongtitude()));
+//        }
+//
+//        if (canDisplayFindInfo()) {
+//            Log.i(TAG, "canDisplayFindInfo true");
+//            addFindMark(new LatLng(mPlanRouteBean.getFindLatitude(), mPlanRouteBean.getFindLongtitude()));
+//        }
+
+//        switch (canDisplayRouteInfo()) {
+//            case 0:
+//                break;
+//            case 1:
+//                if (mPlanRouteBean.getFromRoute() != null) {
+//                    //如果有起点楼层的导航路线，就显示起点楼层的导航路线
+//                    mNavimaager.showRoute(mPlanRouteBean.getFromRoute());
+//                    if (routeFloorStart != null) {
+//                        //起点楼层的导航路线对应的是，起点楼层的连通设施经纬度。如果连通设施的经纬度存在，那就显示出来
+//                        addDianTiMark(routeFloorStart);
+//                    }
+//                }
+//                break;
+//            case 2:
+//                if (mPlanRouteBean.getOtherRoute() != null) {
+//                    //如果有终点楼层的导航路线，就显示终点楼层的导航路线
+//                    mNavimaager.showRoute(mPlanRouteBean.getOtherRoute());
+//                    if (routeFloorEnd != null) {
+//                        //终点楼层的导航路线对应的是，终点楼层的连通设施的经纬度。如果连通设施的经纬度存在，那就显示出来
+//                        addDianTiMark(routeFloorEnd);
+//                    }
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+    }
+//------------------------------------------
     @Override
     public void onStart() {
         super.onStart();

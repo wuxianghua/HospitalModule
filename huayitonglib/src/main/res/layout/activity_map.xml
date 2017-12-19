@@ -8,12 +8,12 @@
     tools:context="com.palmap.huayitonglib.MapActivity">
 
     // 地图容器
+
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp">
-    </com.mapbox.mapboxsdk.maps.MapView>
+        android:layout_marginTop="48dp"></com.mapbox.mapboxsdk.maps.MapView>
 
     //标题栏
 
@@ -194,7 +194,7 @@
                 android:layout_width="36dp"
                 android:layout_height="175dp"
                 android:layout_marginLeft="10dp"
-                android:background="@color/white"
+                android:background="@mipmap/bg_gonggongsheshi"
                 android:scrollbars="none"
                 android:visibility="gone">
 
@@ -392,7 +392,7 @@
                 android:layout_below="@+id/map_scrollview"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/white"
+                android:background="@mipmap/bg_gonggongsheshi"
                 android:gravity="center"
                 android:onClick="onClick"
                 android:text="F1"
@@ -406,9 +406,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
-            android:background="@color/white"
+            android:background="@mipmap/bg_gonggongsheshi"
             android:orientation="vertical">
-
             <RelativeLayout
                 android:id="@+id/jia_rr"
                 android:layout_width="36dp"
