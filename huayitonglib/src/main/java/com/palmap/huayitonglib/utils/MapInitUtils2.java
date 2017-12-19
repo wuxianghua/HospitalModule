@@ -31,10 +31,10 @@ import com.palmap.huayitonglib.bean.FloorBean;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillExtrusionHeight;
 
 /**
- * Created by yunyun.zhou on 2017/11/17 17:58.
+ * Created by GHW
  */
 
-public class MapInitUtils {
+public class MapInitUtils2 {
 
     public static void initMapSetting(Context context, MapboxMap mMapboxMap) {
         mMapboxMap.getUiSettings().setLogoEnabled(false);
@@ -50,11 +50,11 @@ public class MapInitUtils {
 
     public static void addBackgroudLayer(Context context, MapboxMap mMapboxMap) {
         Log.i("addBackgroudLayer", "addBackgroudLayer: ");
-        if (mMapboxMap.getLayer(MapConfig.LAYERID_BACKGROUND) != null) {
-            mMapboxMap.removeLayer(MapConfig.LAYERID_BACKGROUND);
+        if (mMapboxMap.getLayer(MapConfig2.LAYERID_BACKGROUND) != null) {
+            mMapboxMap.removeLayer(MapConfig2.LAYERID_BACKGROUND);
         }
-        BackgroundLayer backgroundLayer = new BackgroundLayer(MapConfig.LAYERID_BACKGROUND);
-        backgroundLayer.setProperties(PropertyFactory.backgroundColor(MapConfig.COLOR_BACKGROUND));
+        BackgroundLayer backgroundLayer = new BackgroundLayer(MapConfig2.LAYERID_BACKGROUND);
+        backgroundLayer.setProperties(PropertyFactory.backgroundColor(MapConfig2.COLOR_BACKGROUND));
         mMapboxMap.addLayer(backgroundLayer);
     }
 
@@ -64,12 +64,12 @@ public class MapInitUtils {
         String fileName = mFloorBean.getFrameFilename();
         addFrameMapSource(context, mMapboxMap, sourceId, fileName, floorParameter);
         //frame的面部去除
-        if (mMapboxMap.getLayer(MapConfig.LAYERID_FRAME) != null) {
-            mMapboxMap.removeLayer(MapConfig.LAYERID_FRAME);
+        if (mMapboxMap.getLayer(MapConfig2.LAYERID_FRAME) != null) {
+            mMapboxMap.removeLayer(MapConfig2.LAYERID_FRAME);
         }
         Log.i("MapInitUtils", "removeLayer:------------- ");
-        FillLayer mFrameLayer = new FillLayer(MapConfig.LAYERID_FRAME, sourceId);
-        mFrameLayer.setProperties(PropertyFactory.fillColor(MapConfig.COLOR_FRAME));
+        FillLayer mFrameLayer = new FillLayer(MapConfig2.LAYERID_FRAME, sourceId);
+        mFrameLayer.setProperties(PropertyFactory.fillColor(MapConfig2.COLOR_FRAME));
         mMapboxMap.addLayer(mFrameLayer);
         Log.i("MapInitUtils", "addLayer :------------- ");
         //frame的线去除
@@ -87,13 +87,13 @@ public class MapInitUtils {
     public static void addFrameMapSource(Context context, MapboxMap mMapboxMap, String mSouceId, String fileName, int
             floorParameter) {
 
-        String geojson = MapUtils.getGeoJson(context, fileName);
+        String geojson = MapUtils2.getGeoJson(context, fileName);
         FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);//2
 //        // 计算中心点
         if (mSouceId.contains("frame")) {
             Log.i("addFrameMapSource", "addFrameMapSource: ------------1");
             //平均值获取中心点------
-            LatLng latlng = MapUtils.getCenterPoint(featureCollection);
+            LatLng latlng = MapUtils2.getCenterPoint(featureCollection);
             if (latlng != null) {
                 setUpCamera(mMapboxMap, latlng.getLatitude(), latlng.getLongitude());
             }
@@ -124,17 +124,17 @@ public class MapInitUtils {
         String sourceId = mFloorBean.getAreaFilename();
         String fileName = mFloorBean.getAreaFilename();
         addMapSource(context, mapboxMap,sourceId, fileName);
-        if (mapboxMap.getLayer(MapConfig.LAYERID_AREA) != null) {
-            mapboxMap.removeLayer(MapConfig.LAYERID_AREA);
+        if (mapboxMap.getLayer(MapConfig2.LAYERID_AREA) != null) {
+            mapboxMap.removeLayer(MapConfig2.LAYERID_AREA);
         }
 
         //Area 区域覆盖颜色
-        FillExtrusionLayer arealayer = new FillExtrusionLayer(MapConfig.LAYERID_AREA, sourceId);
+        FillExtrusionLayer arealayer = new FillExtrusionLayer(MapConfig2.LAYERID_AREA, sourceId);
         arealayer.setProperties(
-                PropertyFactory.fillExtrusionColor(Function.property(MapConfig.NAME_AREA_COLOR, new IdentityStops<String>())),
+                PropertyFactory.fillExtrusionColor(Function.property(MapConfig2.NAME_AREA_COLOR, new IdentityStops<String>())),
 //                PropertyFactory.fillOpacity(Function.property("opacity", new IdentityStops<Float>())), // 透明度
                 PropertyFactory.fillExtrusionOpacity(0.5f), // 透明度
-                fillExtrusionHeight(Function.property(MapConfig.NAME_AREA_HEIGHT, new IdentityStops<Float>())),
+                fillExtrusionHeight(Function.property(MapConfig2.NAME_AREA_HEIGHT, new IdentityStops<Float>())),
 //                        fillExtrusionHeight() // 高度拉伸
 //                        fillExtrusionBase() // 阴影
 //                        fillExtrusionColor() // 颜色
@@ -146,36 +146,36 @@ public class MapInitUtils {
         );
         mapboxMap.addLayer(arealayer);
 
-        if (mapboxMap.getLayer(MapConfig.LAYERID_AREA_LINE) != null) {
-            mapboxMap.removeLayer(MapConfig.LAYERID_AREA_LINE);
+        if (mapboxMap.getLayer(MapConfig2.LAYERID_AREA_LINE) != null) {
+            mapboxMap.removeLayer(MapConfig2.LAYERID_AREA_LINE);
         }
 
-        LineLayer areaLineLayer = new LineLayer(MapConfig.LAYERID_AREA_LINE, sourceId);
+        LineLayer areaLineLayer = new LineLayer(MapConfig2.LAYERID_AREA_LINE, sourceId);
         areaLineLayer.setProperties(
                 PropertyFactory.lineWidth(0.5f),
-                PropertyFactory.lineColor(Function.property(MapConfig.NAME_AREA_BORDER_COLOR, new
+                PropertyFactory.lineColor(Function.property(MapConfig2.NAME_AREA_BORDER_COLOR, new
                         IdentityStops<String>())),
 //                PropertyFactory.lineColor(Function.property("outLineColor", new IdentityStops<String>()))
                 PropertyFactory.fillExtrusionHeight(0.2f)
         );
         //-----3D-----(3D的时候线要放在面上面才能显示出来)
         // TODO 现在不要线了
-        mapboxMap.addLayerAbove(areaLineLayer, MapConfig.LAYERID_AREA);
+        mapboxMap.addLayerAbove(areaLineLayer, MapConfig2.LAYERID_AREA);
 
 
 //       mMapboxMap.addLayer(areaLineLayer);
-        if (mapboxMap.getLayer(MapConfig.LAYERID_AREA_TEXT) != null) {
-            mapboxMap.removeLayer(MapConfig.LAYERID_AREA_TEXT);
+        if (mapboxMap.getLayer(MapConfig2.LAYERID_AREA_TEXT) != null) {
+            mapboxMap.removeLayer(MapConfig2.LAYERID_AREA_TEXT);
         }
 
         //Area_Text
-        SymbolLayer areaTextLayer = new SymbolLayer(MapConfig.LAYERID_AREA_TEXT, sourceId);
+        SymbolLayer areaTextLayer = new SymbolLayer(MapConfig2.LAYERID_AREA_TEXT, sourceId);
         areaTextLayer.setProperties(
                 PropertyFactory.textField("{display}"),
 //                PropertyFactory.textColor("#475266"),
 //                PropertyFactory.textSize(10.f),
-                PropertyFactory.textColor(Function.property(MapConfig.NAME_TEXT_COLOR, new IdentityStops<String>())),
-                PropertyFactory.textSize(Function.property(MapConfig.NAME_TEXT_SIZE, new IdentityStops<Float>())),
+                PropertyFactory.textColor(Function.property(MapConfig2.NAME_TEXT_COLOR, new IdentityStops<String>())),
+                PropertyFactory.textSize(Function.property(MapConfig2.NAME_TEXT_SIZE, new IdentityStops<Float>())),
                 PropertyFactory.iconSize(.5f),
                 PropertyFactory.textAnchor(Property.TEXT_JUSTIFY_LEFT),
                 PropertyFactory.iconOffset(new Float[]{-10.f, 0.f}),
@@ -188,7 +188,7 @@ public class MapInitUtils {
 
     public static void addFacilityData(Context context, MapboxMap mMapboxMap, FloorBean mFloorBean){
         initFacilityData(context, mMapboxMap, mFloorBean);
-        String geojson = MapUtils.getGeoJson(context, mFloorBean.getFacilityFilename());
+        String geojson = MapUtils2.getGeoJson(context, mFloorBean.getFacilityFilename());
         FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);
         for (Feature feature : featureCollection.getFeatures()) {
             String logo = feature.getStringProperty("logo");
@@ -221,16 +221,16 @@ public class MapInitUtils {
         String sourceId = mFloorBean.getFacilityFilename();
         String fileName = mFloorBean.getFacilityFilename();
         addMapFacilitySource(context, mMapboxMap, sourceId, fileName);
-        if (mMapboxMap.getLayer(MapConfig.LAYERID_FACILITY) != null) {
-            mMapboxMap.removeLayer(MapConfig.LAYERID_FACILITY);
+        if (mMapboxMap.getLayer(MapConfig2.LAYERID_FACILITY) != null) {
+            mMapboxMap.removeLayer(MapConfig2.LAYERID_FACILITY);
         }
-        SymbolLayer facilityLayer = new SymbolLayer(MapConfig.LAYERID_FACILITY, sourceId);
+        SymbolLayer facilityLayer = new SymbolLayer(MapConfig2.LAYERID_FACILITY, sourceId);
         facilityLayer.setProperties(PropertyFactory.fillExtrusionHeight(1f));
         mMapboxMap.addLayer(facilityLayer);
     }
 
     public static void addMapSource(Context context, MapboxMap mMapboxMap, String mSouceId, String fileName) {
-        String geojson = MapUtils.getGeoJson(context, fileName);
+        String geojson = MapUtils2.getGeoJson(context, fileName);
 //        FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);//2
 //        // 计算中心点
 //        if (mSouceId.contains("area")) {
@@ -250,7 +250,7 @@ public class MapInitUtils {
     }
 
     public static void addMapFacilitySource(Context context, MapboxMap mMapboxMap, String mSouceId, String fileName) {
-        String geojson = MapUtils.getGeoJson(context, fileName);
+        String geojson = MapUtils2.getGeoJson(context, fileName);
         FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);//2
         GeoJsonSource geoJsonSource = new GeoJsonSource(mSouceId, featureCollection);
         if (mMapboxMap.getSource(mSouceId) == null) {
@@ -286,12 +286,12 @@ public class MapInitUtils {
                 .tilt(0) // 倾斜角度
                 .build();
         // 设置area层对应2D高度，此高度对应style中的2DHeight
-        Layer layer = mapboxMap.getLayer(MapConfig.LAYERID_AREA);
+        Layer layer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA);
         layer.setProperties(
                 fillExtrusionHeight(Function.property("3DHeight", new IdentityStops<Float>()))
         );
         // 添加线 areaLine
-        Layer lineLayer = mapboxMap.getLayer(MapConfig.LAYERID_AREA_LINE);
+        Layer lineLayer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA_LINE);
         if (lineLayer != null) {
             lineLayer.setProperties(PropertyFactory.visibility
                     (Property.NONE));
@@ -310,12 +310,12 @@ public class MapInitUtils {
                 .tilt(50) // 倾斜角度
                 .build();
         // 设置area层对应3D高度，此高度对应style中的3DHeight
-        Layer layer = mapboxMap.getLayer(MapConfig.LAYERID_AREA);
+        Layer layer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA);
         layer.setProperties(
                 fillExtrusionHeight(Function.property("3DHeight", new IdentityStops<Float>()))
         );
         // 去掉线条，3D添加线条后太难看了,此处对线条进行了隐藏
-        Layer lineLayer = mapboxMap.getLayer(MapConfig.LAYERID_AREA_LINE);
+        Layer lineLayer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA_LINE);
         if (lineLayer != null) {
             lineLayer.setProperties(PropertyFactory.visibility
                     (Property.NONE));

@@ -16,8 +16,8 @@ import com.palmap.huayitonglib.activity.SearchActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.FileUtils;
-import com.palmap.huayitonglib.utils.MapInitUtils;
-import com.palmap.huayitonglib.utils.MapUtils;
+import com.palmap.huayitonglib.utils.MapInitUtils2;
+import com.palmap.huayitonglib.utils.MapUtils2;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -249,18 +249,18 @@ public class MapActivity extends AppCompatActivity {
         @Override
         public void onMapReady(MapboxMap mapboxMap) {
             mMapboxMap = mapboxMap;
-            MapInitUtils.initMapSetting(self,mMapboxMap);
+            MapInitUtils2.initMapSetting(self,mMapboxMap);
             //删除图层后加载自己的地图
-            MapUtils.removeAllOriginalLayers(mMapboxMap);
+            MapUtils2.removeAllOriginalLayers(mMapboxMap);
             // 加载地图
             loadSelfMap();
         }
     }
 
     private void loadSelfMap() {
-        MapInitUtils.addBackgroudLayer(getApplicationContext(), mMapboxMap);
-        MapInitUtils.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
-        MapInitUtils.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
+        MapInitUtils2.addBackgroudLayer(getApplicationContext(), mMapboxMap);
+        MapInitUtils2.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
+        MapInitUtils2.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
 //        addFacilityLayer(TYPE_NOICON);
     }
 

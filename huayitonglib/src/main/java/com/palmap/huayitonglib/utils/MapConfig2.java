@@ -4,7 +4,7 @@ package com.palmap.huayitonglib.utils;
  * Created by hengwei.guo on 2017/12/11 11:34.
  */
 
-public class MapConfig {
+public class MapConfig2 {
 
     public static final String LAYERID_BACKGROUND = "backgroundlayer";
     public static final String LAYERID_FRAME = "LAYERID_FRAME";

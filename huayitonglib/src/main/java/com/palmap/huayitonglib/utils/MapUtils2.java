@@ -24,15 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.mapbox.services.commons.models.Position.fromCoordinates;
-import static com.palmap.huayitonglib.utils.MapConfig.LAYERID_BACKGROUND;
+import static com.palmap.huayitonglib.utils.MapConfig2.LAYERID_BACKGROUND;
 
 /**
- * Created by yunyun.zhou on 2017/11/17 16:46.
+ * Created by GWH
  */
 
-public class MapUtils {
+public class MapUtils2 {
     //-------------------------------地图数值-----------------------------
-    public static final String TAG = MapUtils.class.getSimpleName();
+    public static final String TAG = MapUtils2.class.getSimpleName();
 
     // 根据frame层数据计算地图中心点（目前算的是平均数）
     public static LatLng getCenterPoint(FeatureCollection featureCollection) {
@@ -89,7 +89,7 @@ public class MapUtils {
     public static String getPoin2PoiIdMax(MapboxMap mapboxMap, LatLng point) {
         try {
             PointF pointF = mapboxMap.getProjection().toScreenLocation(point);
-            List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, MapConfig.LAYERID_AREA);
+            List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, MapConfig2.LAYERID_AREA);
             return queryMaxFeature(features).getId();
         } catch (Exception e) {
             Log.e("MapUtils", "getCategory:---------- " + e);
@@ -101,7 +101,7 @@ public class MapUtils {
     public static String getPoin2PoiIdMin(MapboxMap mapboxMap, LatLng point) {
         try {
             PointF pointF = mapboxMap.getProjection().toScreenLocation(point);
-            List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, MapConfig.LAYERID_AREA);
+            List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, MapConfig2.LAYERID_AREA);
             return queryMinFeature(features).getId();
         } catch (Exception e) {
             Log.e("MapUtils", "getCategory:---------- " + e);
@@ -114,7 +114,7 @@ public class MapUtils {
     public static int getPoin2CategoryMax(LatLng point, MapboxMap mapboxMap) {
         try {
             PointF pointF = mapboxMap.getProjection().toScreenLocation(point);
-            List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, MapConfig.LAYERID_AREA);
+            List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, MapConfig2.LAYERID_AREA);
             Feature feature = queryMaxFeature(features);
             if (feature != null && feature.hasProperty("category")) {
                 int category = feature.getNumberProperty("category").intValue();
@@ -132,7 +132,7 @@ public class MapUtils {
     public static int getPoin2CategoryMin(LatLng point, MapboxMap mapboxMap) {
         try {
             PointF pointF = mapboxMap.getProjection().toScreenLocation(point);
-            List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, MapConfig.LAYERID_AREA);
+            List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, MapConfig2.LAYERID_AREA);
             List<Integer> category_arr = new ArrayList<>();
             Feature feature = queryMinFeature(features);
             if (feature != null && feature.hasProperty("category")) {
@@ -321,9 +321,9 @@ public class MapUtils {
         Log.i(TAG, "3: ");
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), imgPath);
         mapboxMap.addImage(logoUrl, bitmap);
-        if (mapboxMap.getLayer(MapConfig.LAYERID_FACILITY) != null) {
+        if (mapboxMap.getLayer(MapConfig2.LAYERID_FACILITY) != null) {
             Log.i(TAG, "i: ");
-            Layer layer = mapboxMap.getLayer(MapConfig.LAYERID_FACILITY);
+            Layer layer = mapboxMap.getLayer(MapConfig2.LAYERID_FACILITY);
             layer.setProperties(
                     PropertyFactory.iconImage(Function.property("logo", Stops.<String>identity())),
                     PropertyFactory.iconAnchor(Property.ICON_ANCHOR_BOTTOM)
@@ -361,7 +361,7 @@ public class MapUtils {
     public static String getName(MapboxMap mapboxMap, LatLng latLng) {
 
         PointF pointF = mapboxMap.getProjection().toScreenLocation(latLng);
-        List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, MapConfig.LAYERID_AREA);
+        List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, MapConfig2.LAYERID_AREA);
 
         if (features != null && !features.isEmpty()) {
             return getName(queryMaxFeature(features));
