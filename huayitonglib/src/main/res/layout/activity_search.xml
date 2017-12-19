@@ -15,14 +15,14 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:orientation="horizontal"
-        android:background="@color/white"
+        android:background="@drawable/bg"
         android:gravity="center_vertical">
 
         <ImageView
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginLeft="12dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@mipmap/ic_search"/>
         <EditText
             android:id="@+id/search_Ed"
             android:layout_width="match_parent"
