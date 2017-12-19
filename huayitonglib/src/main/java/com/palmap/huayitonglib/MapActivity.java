@@ -131,9 +131,9 @@ public class MapActivity extends AppCompatActivity {
                 dianti = true;
             }
 
-        }else if (i == R.id.jia_text){
+        } else if (i == R.id.jia_rr) {
             //地图放大
-        }else if (i == R.id.jian_text){
+        } else if (i == R.id.jian_rr) {
             //地图缩小
         }
     }
@@ -179,6 +179,13 @@ public class MapActivity extends AppCompatActivity {
             changefloor_text.setText("F14");
         } else if (i == R.id.f15) {
             changefloor_text.setText("F15");
+        }
+    }
+
+    public void onNavClick(View view) {
+        int i = view.getId();
+        if (i == R.id.routeLin) {
+            
         }
     }
 
