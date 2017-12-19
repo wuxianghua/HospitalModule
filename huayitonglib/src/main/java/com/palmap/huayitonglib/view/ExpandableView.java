@@ -226,7 +226,7 @@ public class ExpandableView extends LinearLayout implements View.OnClickListener
      * 初始化标题题目
      */
     private void initTitleText() {
-        int padLeft = DisplayUtil.dip2px(mContext, 5);
+        int padLeft = DisplayUtil.dip2px(mContext, 10);
         int h = 0;
         if (mTitleImage != null) {
             h = mTitleImage.getMinimumHeight();
@@ -280,7 +280,7 @@ public class ExpandableView extends LinearLayout implements View.OnClickListener
      * 初始化标题图片
      */
     private void initTitleImage() {
-        int padLeft = DisplayUtil.dip2px(mContext, 15);
+        int padLeft = DisplayUtil.dip2px(mContext, 0);
         int h = mTitleImage.getMinimumHeight();
         // TODO 可自定义高度
         h = DisplayUtil.dip2px(mContext, 22);

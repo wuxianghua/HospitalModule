@@ -45,6 +45,11 @@ public class DisplayUtil {
 		return (int) (dipValue * scale + 0.5f);
 	}
 
+	public static int dip2px(float dipValue) {
+		final float scale = Resources.getSystem().getDisplayMetrics().density;
+		return (int) (dipValue * scale + 0.5f);
+	}
+
 	/**
 	 * 将px值转换为sp值，保证文字大小不变
 	 *
@@ -55,6 +60,11 @@ public class DisplayUtil {
 	 */
 	public static int px2sp(Context context, float pxValue) {
 		final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+		return (int) (pxValue / fontScale + 0.5f);
+	}
+
+	public static int px2sp( float pxValue) {
+		final float fontScale = Resources.getSystem().getDisplayMetrics().scaledDensity;
 		return (int) (pxValue / fontScale + 0.5f);
 	}
 
