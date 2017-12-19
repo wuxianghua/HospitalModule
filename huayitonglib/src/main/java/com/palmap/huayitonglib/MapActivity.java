@@ -16,8 +16,6 @@ import com.palmap.huayitonglib.activity.SearchActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.FileUtils;
-import com.palmap.huayitonglib.utils.MapInitUtils2;
-import com.palmap.huayitonglib.utils.MapUtils2;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -249,19 +247,14 @@ public class MapActivity extends AppCompatActivity {
         @Override
         public void onMapReady(MapboxMap mapboxMap) {
             mMapboxMap = mapboxMap;
-            MapInitUtils2.initMapSetting(self,mMapboxMap);
-            //删除图层后加载自己的地图
-            MapUtils2.removeAllOriginalLayers(mMapboxMap);
+
             // 加载地图
             loadSelfMap();
         }
     }
 
     private void loadSelfMap() {
-        MapInitUtils2.addBackgroudLayer(getApplicationContext(), mMapboxMap);
-        MapInitUtils2.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
-        MapInitUtils2.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
-//        addFacilityLayer(TYPE_NOICON);
+
     }
 
     @Override
