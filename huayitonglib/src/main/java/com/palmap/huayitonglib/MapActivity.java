@@ -1,22 +1,41 @@
 package com.palmap.huayitonglib;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.palmap.huayitonglib.activity.SearchActivity;
+import com.palmap.huayitonglib.bean.FloorBean;
+import com.palmap.huayitonglib.utils.Constant;
+import com.palmap.huayitonglib.utils.FileUtils;
+import com.palmap.huayitonglib.utils.MapInitUtils;
+import com.palmap.huayitonglib.utils.MapUtils;
 
 public class MapActivity extends AppCompatActivity {
+
+    private MapView mMapView;
+    private MapboxMap mMapboxMap;
+    private MapActivity self;
+    private FloorBean mFloorBean;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Mapbox.getInstance(getApplicationContext(), Constant.APP_KEY);
         setContentView(R.layout.activity_map);
         initView();
+        self = this;
+        initMapData();
+        initMapView(savedInstanceState);
     }
 
     ScrollView map_scrollview;
@@ -214,5 +233,76 @@ public class MapActivity extends AppCompatActivity {
         dianti = true;
     }
 
+    //--------------------------以下是地图相关内容--------------------------
+    private void initMapView(Bundle savedInstanceState) {
+        mMapView = (MapView) findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(new onMapReadyCallback());
+    }
 
+    private void initMapData() {
+        mFloorBean = FileUtils.getSourceName("F1");
+    }
+
+    class onMapReadyCallback implements OnMapReadyCallback{
+
+        @Override
+        public void onMapReady(MapboxMap mapboxMap) {
+            mMapboxMap = mapboxMap;
+            MapInitUtils.initMapSetting(self,mMapboxMap);
+            //删除图层后加载自己的地图
+            MapUtils.removeAllOriginalLayers(mMapboxMap);
+            // 加载地图
+            loadSelfMap();
+        }
+    }
+
+    private void loadSelfMap() {
+        MapInitUtils.addBackgroudLayer(getApplicationContext(), mMapboxMap);
+        MapInitUtils.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
+        MapInitUtils.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
+//        addFacilityLayer(TYPE_NOICON);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMapView.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMapView.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMapView.onStop();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mMapView.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMapView.onSaveInstanceState(outState);
+    }
 }
