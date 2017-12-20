@@ -58,14 +58,37 @@ public class Config {
     //儿童医院的style
 //    public static final String MAPSTYLE_PATH = "Ch_style.json";
     public static final String MAPSTYLE_PATH = "Ch_style_3D_2.json";
+//
+//    //---对应的儿童医院的楼层id TODO
+//    public static final int FLOORID_B1_CH= 0;
+//    public static final int FLOORID_F1_CH= 1962509;
+//    public static final int FLOORID_F2_CH= 1963071;
+//    public static final int FLOORID_F3_CH= 1963404;
+//    public static final int FLOORID_F4_CH= 3208951;
+//    public static final int FLOORID_F5_CH= 2;
 
-    //---对应的儿童医院的楼层id TODO
-    public static final int FLOORID_B1_CH= 0;
-    public static final int FLOORID_F1_CH= 1962509;
-    public static final int FLOORID_F2_CH= 1963071;
-    public static final int FLOORID_F3_CH= 1963404;
-    public static final int FLOORID_F4_CH= 3208951;
-    public static final int FLOORID_F5_CH= 2;
+
+
+        //---对应的儿童医院的楼层id TODO
+    public static final int FLOORID_B2_CH= 2696743;
+    public static final int FLOORID_B1_CH= 2696763;
+    public static final int FLOORID_F0_CH= 2571204;
+    public static final int FLOORID_F1_CH= 2452754;
+    public static final int FLOORID_F2_CH= 2453325;
+    public static final int FLOORID_F3_CH= 2454077;
+    public static final int FLOORID_F4_CH= 2454930;
+    public static final int FLOORID_F5_CH= 2700757;
+    public static final int FLOORID_F6_CH= 2701555;
+    public static final int FLOORID_F7_CH= 2702302;
+    public static final int FLOORID_F8_CH= 2703007;
+    public static final int FLOORID_F9_CH= 2703596;
+    public static final int FLOORID_F10_CH= 2704202;
+    public static final int FLOORID_F11_CH= 2704624;
+    public static final int FLOORID_F12_CH= 2704905;
+    public static final int FLOORID_F13_CH= 2705297;
+    public static final int FLOORID_F14_CH= 2705689;
+    public static final int FLOORID_F15_CH= 2706052;
+
 
 
 

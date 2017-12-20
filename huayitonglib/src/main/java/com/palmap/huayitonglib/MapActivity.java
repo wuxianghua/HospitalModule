@@ -2,7 +2,6 @@ package com.palmap.huayitonglib;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -23,7 +21,9 @@ import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.FileUtils;
-import com.palmap.huayitonglib.utils.MapInitUtils2;
+import com.palmap.huayitonglib.utils.GuoMapUtils;
+import com.palmap.huayitonglib.utils.MapInitUtils;
+import com.palmap.huayitonglib.utils.MapUtils;
 import com.palmap.huayitonglib.utils.MapUtils2;
 
 public class MapActivity extends AppCompatActivity {
@@ -32,7 +32,8 @@ public class MapActivity extends AppCompatActivity {
     private MapboxMap mMapboxMap;
     private MapActivity self;
     private FloorBean mFloorBean;
-
+    //当前FloorId为平面层楼层
+    private int mCurrentFloorId = Config.FLOORID_F0_CH;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,14 +86,7 @@ public class MapActivity extends AppCompatActivity {
                 dianti = true;
                 futi = true;
             } else {
-                xishoujian_image.setBackgroundResource(R.mipmap.ic_map_xishoujian);
-                yinhang_image.setBackgroundResource(R.mipmap.ic_map_yinhang);
-                dianti_image.setBackgroundResource(R.mipmap.ic_map_dianti);
-                futi_image.setBackgroundResource(R.mipmap.ic_map_futi);
-                xishoujian = true;
-                yinhang = true;
-                dianti = true;
-                futi = true;
+                initCommonIcon();
             }
         } else if (i == R.id.yinhang_image) {
             if (yinhang) {
@@ -105,14 +99,7 @@ public class MapActivity extends AppCompatActivity {
                 dianti = true;
                 futi = true;
             } else {
-                yinhang_image.setBackgroundResource(R.mipmap.ic_map_yinhang);
-                xishoujian_image.setBackgroundResource(R.mipmap.ic_map_xishoujian);
-                dianti_image.setBackgroundResource(R.mipmap.ic_map_dianti);
-                futi_image.setBackgroundResource(R.mipmap.ic_map_futi);
-                yinhang = true;
-                xishoujian = true;
-                dianti = true;
-                futi = true;
+                initCommonIcon();
             }
 
         } else if (i == R.id.dianti_image) {
@@ -126,14 +113,7 @@ public class MapActivity extends AppCompatActivity {
                 yinhang = true;
                 futi = true;
             } else {
-                dianti_image.setBackgroundResource(R.mipmap.ic_map_dianti);
-                yinhang_image.setBackgroundResource(R.mipmap.ic_map_yinhang);
-                xishoujian_image.setBackgroundResource(R.mipmap.ic_map_xishoujian);
-                futi_image.setBackgroundResource(R.mipmap.ic_map_futi);
-                dianti = true;
-                xishoujian = true;
-                yinhang = true;
-                futi = true;
+                initCommonIcon();
             }
 
         } else if (i == R.id.futi_image) {
@@ -147,22 +127,16 @@ public class MapActivity extends AppCompatActivity {
                 yinhang = true;
                 dianti = true;
             } else {
-                futi_image.setBackgroundResource(R.mipmap.ic_map_futi);
-                dianti_image.setBackgroundResource(R.mipmap.ic_map_dianti);
-                yinhang_image.setBackgroundResource(R.mipmap.ic_map_yinhang);
-                xishoujian_image.setBackgroundResource(R.mipmap.ic_map_xishoujian);
-                futi = true;
-                xishoujian = true;
-                yinhang = true;
-                dianti = true;
+                initCommonIcon();
             }
 
+        } else if (i == R.id.jia_rr) {
+            //地图放大
+            MapUtils.setMapExtend(mMapboxMap);
+        } else if (i == R.id.jian_rr) {
+            //地图缩小
+            MapUtils.setMapSmall(mMapboxMap);
         }
-//        else if (i == R.id.jia_text){
-//            //地图放大
-//        }else if (i == R.id.jian_text){
-//            //地图缩小
-//        }
     }
 
     //------------切换楼层点击按钮
@@ -170,44 +144,69 @@ public class MapActivity extends AppCompatActivity {
         map_scrollview.setVisibility(View.GONE);
         int i = view.getId();
         if (i == R.id.b2) {
-//            shiftFloors();
+            shiftFloors("B2", false);
             changefloor_text.setText("B2");
         } else if (i == R.id.b1) {
+            shiftFloors("B1", false);
             changefloor_text.setText("B1");
         } else if (i == R.id.f0) {
             //平面图------------
+            shiftFloors("F0", false);
             changefloor_text.setText("平面图");
         } else if (i == R.id.f1) {
+            shiftFloors("F1", false);
             changefloor_text.setText("F1");
         } else if (i == R.id.f2) {
+            shiftFloors("F2", false);
             changefloor_text.setText("F2");
         } else if (i == R.id.f3) {
+            shiftFloors("F3", false);
             changefloor_text.setText("F3");
         } else if (i == R.id.f4) {
+            shiftFloors("F4", false);
             changefloor_text.setText("F4");
         } else if (i == R.id.f5) {
+            shiftFloors("F5", false);
             changefloor_text.setText("F5");
         } else if (i == R.id.f6) {
+            shiftFloors("F6", false);
             changefloor_text.setText("F6");
         } else if (i == R.id.f7) {
+            shiftFloors("F7", false);
             changefloor_text.setText("F7");
         } else if (i == R.id.f8) {
+            shiftFloors("F8", false);
             changefloor_text.setText("F8");
         } else if (i == R.id.f9) {
+            shiftFloors("F9", false);
             changefloor_text.setText("F9");
         } else if (i == R.id.f10) {
+            shiftFloors("F10", false);
             changefloor_text.setText("F10");
         } else if (i == R.id.f11) {
+            shiftFloors("F11", false);
             changefloor_text.setText("F11");
         } else if (i == R.id.f12) {
+            shiftFloors("F12", false);
             changefloor_text.setText("F12");
         } else if (i == R.id.f13) {
+            shiftFloors("F13", false);
             changefloor_text.setText("F13");
         } else if (i == R.id.f14) {
+            shiftFloors("F14", false);
             changefloor_text.setText("F14");
         } else if (i == R.id.f15) {
+            shiftFloors("F15", false);
             changefloor_text.setText("F15");
         }
+    }
+
+    public void onNavClick(View view) {
+        int i = view.getId();
+        if (i == R.id.routeLin){
+            //去这里的按钮
+        }
+
     }
 
     //显示和影藏切换楼层滑动框
@@ -224,6 +223,10 @@ public class MapActivity extends AppCompatActivity {
     private void initUiView() {
         //初始化界面的时候，对切换楼层滑动框进行影藏;
         map_scrollview.setVisibility(View.GONE);
+        initCommonIcon();
+    }
+
+    private void initCommonIcon() {
         //过滤图标恢复到第一次进入界面的展示
         futi_image.setBackgroundResource(R.mipmap.ic_map_futi);
         dianti_image.setBackgroundResource(R.mipmap.ic_map_dianti);
@@ -246,12 +249,12 @@ public class MapActivity extends AppCompatActivity {
         mFloorBean = FileUtils.getSourceName("F1");
     }
 
-    class onMapReadyCallback implements OnMapReadyCallback{
+    class onMapReadyCallback implements OnMapReadyCallback {
 
         @Override
         public void onMapReady(MapboxMap mapboxMap) {
             mMapboxMap = mapboxMap;
-            MapInitUtils2.initMapSetting(self,mMapboxMap);
+            GuoMapUtils.initMapSetting(self, mMapboxMap);
             //删除图层后加载自己的地图
             MapUtils2.removeAllOriginalLayers(mMapboxMap);
             // 加载地图
@@ -260,16 +263,17 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void loadSelfMap() {
-        MapInitUtils2.addBackgroudLayer(getApplicationContext(), mMapboxMap);
-        MapInitUtils2.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
-        MapInitUtils2.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
+        GuoMapUtils.addBackgroudLayer(getApplicationContext(), mMapboxMap);
+        GuoMapUtils.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
+        GuoMapUtils.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
 //        addFacilityLayer(TYPE_NOICON);
     }
 
 
     //楼层的标识符
-    private String mAlias= "F1";
+    private String mAlias = "F1";
     double mLatitude, mLngtitude;//墨卡托坐标
+
     //切换楼层的方法
     private void shiftFloors(String alias, boolean isJump) {
 
@@ -278,18 +282,19 @@ public class MapActivity extends AppCompatActivity {
             changefloor_text.setText("F7");
         }
         mFloorBean = FileUtils.getSourceName(mAlias);
-////        MapInitUtils.setOtherUpCamera(mMapboxMap, mLatitude, mLngtitude, poid);
-//        MapInitUtils.setUpCamera(mMapboxMap, mAlias, mLatitude, mLngtitude);
-//        Log.i(TAG, "shiftFloors: 同一楼层，不再切换");
-//        mCurrentFloorId = FileUtils.getFloorId(getBaseContext(), alias);
-//        Log.i("lyb ", "shiftFloors: mCurrentFloorId " + mCurrentFloorId);
+//        MapInitUtils.setOtherUpCamera(mMapboxMap, mLatitude, mLngtitude, poid);
+        MapInitUtils.setUpCamera(mMapboxMap, mAlias, mLatitude, mLngtitude);
+        Log.i("zyy", "shiftFloors: 同一楼层，不再切换");
+        mCurrentFloorId = FileUtils.getFloorId(getBaseContext(), alias);
+        Log.i("lyb ", "shiftFloors: mCurrentFloorId " + mCurrentFloorId);
         if (mMapboxMap.getLayer(Config.LAYERID_FACILITY) != null) {
             mMapboxMap.getLayer(Config.LAYERID_FACILITY).setProperties(PropertyFactory.visibility
                     (Property.NONE));
         }
-        //切换楼层 把除backgroundlayer之外的layer全部清除
-//        MapUtils.removeAllWithOutBackgroundlayer(mMapboxMap);
+//        切换楼层 把除backgroundlayer之外的layer全部清除
+        MapUtils.removeAllWithOutBackgroundlayer(mMapboxMap);
         //-----起点终点在切换容易被覆盖--------要先清除---
+
 //        removeEndMarker();
 //        removeStartMarker();
 //        removeFindMark();
@@ -345,7 +350,8 @@ public class MapActivity extends AppCompatActivity {
 //                break;
 //        }
     }
-//------------------------------------------
+
+    //------------------------------------------
     @Override
     public void onStart() {
         super.onStart();
