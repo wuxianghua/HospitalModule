@@ -9,6 +9,7 @@ import com.palmap.huayitonglib.db.gen.MapPointInfoBeanDao;
 import com.palmap.huayitonglib.utils.FileUtils;
 import com.palmap.huayitonglib.utils.MapPointInfoUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,7 +67,7 @@ public class MapPointInfoDbManager {
         List<MapPointInfoBean> mList = mDao.queryBuilder().where(MapPointInfoBeanDao.Properties.Name.like("%" + value + "%")).build().list();
         if (mList == null || mList.size() == 0){
             Log.d(TAG, "query: 查询结果为空");
-            return null;
+            return new ArrayList<>();
         }
         return mList;
     }

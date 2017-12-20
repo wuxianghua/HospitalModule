@@ -25,24 +25,8 @@ public class SearchListAdapter extends BaseQuickAdapter<MapPointInfoBean, BaseVi
 
     @Override
     protected void convert(BaseViewHolder helper, final MapPointInfoBean item) {
-//        helper.setText(R.id.search_title, item.getName())
-//                .setText(R.id.search_addr, item.getFloorName());
-//        String distance = new Random().nextInt(500) + 50 + "m";
-//        helper.setText(R.id.search_distance, distance);
-
-//        ImageView routeImg = helper.getView(R.id.routeImg);
-//        routeImg.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(mContext, MapboxActivity.class);
-//                intent.putExtra(Constant.KEY_FLOORNAME, item.getFloorName());
-//                intent.putExtra(Constant.KEY_NAME, item.getName());
-//                intent.putExtra(Constant.KEY_FLOORID, item.getFloorId());
-//                intent.putExtra(Constant.KEY_LATITUDE, item.getLatitude());
-//                intent.putExtra(Constant.KEY_LONGITUDE, item.getLongitude());
-//                intent.putExtra(Constant.KEY_POIID, item.getPoiId());
-//                mContext.startActivity(intent);
-//            }
-//        });
+//        helper.setText(R.id.poiNameTv, item.getName())
+//                .setText(R.id.poiAreaTv, item.getAddress())
+//                .setText(R.id.floorTv, item.getFloorName());
     }
 }

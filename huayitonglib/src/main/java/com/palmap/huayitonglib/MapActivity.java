@@ -2,13 +2,9 @@ package com.palmap.huayitonglib;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.os.Message;
-
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,8 +37,6 @@ import com.weigan.loopview.LoopView;
 import com.weigan.loopview.OnItemSelectedListener;
 
 import java.util.ArrayList;
-
-import static com.palmap.huayitonglib.utils.Config.FLOORLIST;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -311,6 +305,8 @@ public class MapActivity extends AppCompatActivity {
 
     private void initMapData() {
         mFloorBean = FileUtils.getSourceName("F1");
+        // 此处只是针对对F1层的着色
+
     }
 
     class onMapReadyCallback implements OnMapReadyCallback {
@@ -336,12 +332,9 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void loadSelfMap() {
-
         GuoMapUtils.addBackgroudLayer(getApplicationContext(), mMapboxMap);
         GuoMapUtils.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
         GuoMapUtils.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
-//        addFacilityLayer(TYPE_NOICON);
-
         addFacilityLayer(TYPE_ALL);
     }
 

@@ -7,11 +7,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.palmap.huayitonglib.R;
+import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
 import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
 import com.palmap.huayitonglib.fragment.SearchListFragment;
 import com.palmap.huayitonglib.fragment.SearchShowFragment;
@@ -25,6 +27,9 @@ public class SearchActivity extends AppCompatActivity {
     private SearchShowFragment mSearchShowFragment;
     private SearchListFragment mSearchListFragment;
     private List<MapPointInfoBean> mList = new ArrayList<>();
+    private static int TYPE_SHOW = 0;
+    private static int TYPE_SEARCH = 1;
+    private int type = TYPE_SHOW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +65,19 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void search(String str){
+        Log.e("db", "search: " + MapPointInfoDbManager.get().getAll().size());
         if (str.length()>0){
-            replaceFragment(mSearchListFragment);
+            mList = MapPointInfoDbManager.get().query(str);
+            if (mList != null && mList.size() !=0){
+                Log.e("db", "search: type " +  type );
+                if (type == TYPE_SEARCH) {
+                    mSearchListFragment.setData(mList);
+                } else {
+                    replaceFragment(mSearchListFragment);
+                }
+//                replaceFragment(mSearchListFragment);
+//                mSearchListFragment.setData(mList);
+            }
         } else {
             replaceFragment(mSearchShowFragment);
         }
@@ -72,15 +88,16 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void replaceFragment(Fragment fragment){
+        if (fragment == mSearchListFragment){
+            type = TYPE_SEARCH;
+        } else {
+            type = TYPE_SHOW;
+        }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.frameLayout, fragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
         mSearch_Ed.setFocusableInTouchMode(true);
-    }
-
-    public List<MapPointInfoBean> getListData(){
-        return mList;
     }
 
     /**

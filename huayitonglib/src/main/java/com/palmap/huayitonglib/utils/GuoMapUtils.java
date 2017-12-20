@@ -133,8 +133,8 @@ public class GuoMapUtils {
         arealayer.setProperties(
                 PropertyFactory.fillExtrusionColor(Function.property(MapConfig2.NAME_AREA_COLOR, new IdentityStops<String>())),
 //                PropertyFactory.fillOpacity(Function.property("opacity", new IdentityStops<Float>())), // 透明度
-                PropertyFactory.fillExtrusionOpacity(0.5f), // 透明度
-                fillExtrusionHeight(Function.property(MapConfig2.NAME_AREA_HEIGHT, new IdentityStops<Float>())),
+//                PropertyFactory.fillExtrusionOpacity(0.5f), // 透明度
+                fillExtrusionHeight(Function.property(MapConfig2.NAME_AREA_HEIGHT, new IdentityStops<Float>()))
 //                        fillExtrusionHeight() // 高度拉伸
 //                        fillExtrusionBase() // 阴影
 //                        fillExtrusionColor() // 颜色
@@ -142,7 +142,7 @@ public class GuoMapUtils {
 //                        fillExtrusionPattern() //模式;   花样，样品;   图案;   榜样，典范;
 //                        fillExtrusionTranslate() //转化
 //                        fillExtrusionTranslateAnchor()
-                PropertyFactory.fillExtrusionBase(0.0f) // 阴影大小
+//                PropertyFactory.fillExtrusionBase(0.0f) // 阴影大小
         );
         mapboxMap.addLayer(arealayer);
 
@@ -232,14 +232,20 @@ public class GuoMapUtils {
     public static void addMapSource(Context context, MapboxMap mMapboxMap, String mSouceId, String fileName) {
         String geojson = MapUtils2.getGeoJson(context, fileName);
 //        FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);//2
-//        // 计算中心点
-//        if (mSouceId.contains("area")) {
-//            //刘艺博的方式
-////            mStyleManager2.attach(featureCollection);
-//
-//            //------json——style的方式
+        // 计算中心点
+        if (mSouceId.contains("area")) {
+            //刘艺博的方式
+            // TODO 此处地图配色
+            StyleManagerHX mStyleManager = new StyleManagerHX();
+            String mapjson = FileUtils.loadFromAssets(context, fileName);//读取原始的地图文件
+            FeatureCollection featureCollection = BaseFeatureCollection.fromJson(mapjson);//转换成featurecollection
+            mStyleManager.attach(featureCollection);//进行着色处理
+            geojson = featureCollection.toJson();//处理好的featurecollection转换成json
+//            FileUtils.writeToFile("F1_area.geojson", geojson);
+
+            //------json——style的方式
 //            styleManager.attachStyle(featureCollection, mSouceId);
-//        }
+        }
 //        GeoJsonSource geoJsonSource = new GeoJsonSource(mSouceId, featureCollection);
 
         GeoJsonSource geoJsonSource = new GeoJsonSource(mSouceId, geojson);
