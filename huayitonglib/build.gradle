@@ -20,6 +20,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
 }
 
 buildscript {
@@ -27,12 +30,6 @@ buildscript {
         mavenCentral()
     }
 }
-
-//allprojects {
-//    repositories {
-//        maven { url "https://jitpack.io" }
-//    }
-//}
 
 greendao {
     schemaVersion 1
@@ -49,12 +46,12 @@ dependencies {
         transitive = true
     }
     compile 'org.greenrobot:greendao:3.2.2'
-
     compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:recyclerview-v7:26.+'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:support-v4:26.+'
-    compile 'com.android.support:recyclerview-v7:26.+'
     compile files('libs/jackson-all-1.9.2.jar')
     compile files('libs/json-simple-1.1.jar')
     compile files('libs/jts-1.13.jar')
