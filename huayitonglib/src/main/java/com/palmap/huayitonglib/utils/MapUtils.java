@@ -243,15 +243,16 @@ public class MapUtils {
             addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.diantitubiao, mapboxMap);
         } else if (category == 24097000 || category == 24098000) { // 楼梯
 //                        addLocalIcon(feature.getStringProperty("logo"), R.mipmap.louti);
-        } else if (category == 23043000) { // 大门
-            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.damen, mapboxMap);
-        } else if (category == 23018000) { // 综合服务
-            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.gonggongfuwu, mapboxMap);
-        } else if (category == 23041000) { // 出入口
-            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.churiukoutubiao, mapboxMap);
-        }else if (category == 15001000){
+        } else if (category == 15001000){//银行
             addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.churiukoutubiao, mapboxMap);
         }
+// else if (category == 23043000) { // 大门
+//            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.damen, mapboxMap);
+//        } else if (category == 23018000) { // 综合服务
+//            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.gonggongfuwu, mapboxMap);
+//        } else if (category == 23041000) { // 出入口
+//            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.churiukoutubiao, mapboxMap);
+//        }
     }
 
     /**
