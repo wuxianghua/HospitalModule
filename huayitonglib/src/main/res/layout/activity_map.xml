@@ -155,7 +155,6 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:gravity="center_vertical"
-                    android:onClick="onNavClick"
                     android:orientation="horizontal">
 
                     <ImageView

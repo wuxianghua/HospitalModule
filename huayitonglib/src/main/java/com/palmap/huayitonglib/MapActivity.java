@@ -3,16 +3,16 @@ package com.palmap.huayitonglib;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -20,6 +20,7 @@ import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.palmap.huayitonglib.activity.SearchActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
+import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.FileUtils;
@@ -356,7 +357,24 @@ public class MapActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        // 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
+        if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0){
+            handler.sendEmptyMessageDelayed(1, 50);
+        }
     }
+
+    Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+
+            if(msg.what == 1){
+                Toast.makeText(self,"首次安装，正在准备数据，请耐心等待",Toast.LENGTH_SHORT).show();
+                MapPointInfoDbManager.get().insertAllData(self);
+            }
+            super.handleMessage(msg);
+        }
+
+    };
+
 
     @Override
     public void onPause() {
