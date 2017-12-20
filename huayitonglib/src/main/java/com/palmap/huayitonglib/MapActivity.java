@@ -1,11 +1,14 @@
 package com.palmap.huayitonglib;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.os.Handler;
 import android.os.Message;
 
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,6 +34,12 @@ import com.palmap.huayitonglib.utils.GuoMapUtils;
 import com.palmap.huayitonglib.utils.MapInitUtils;
 import com.palmap.huayitonglib.utils.MapUtils;
 import com.palmap.huayitonglib.utils.MapUtils2;
+import com.weigan.loopview.LoopView;
+import com.weigan.loopview.OnItemSelectedListener;
+
+import java.util.ArrayList;
+
+import static com.palmap.huayitonglib.utils.Config.FLOORLIST;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -49,6 +58,7 @@ public class MapActivity extends AppCompatActivity {
     private static final int TYPE_BRAND = 3;
     private static final int TYPE_ALL = 4;
     private static final int TYPE_NOICON = 5;
+    Handler h = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,10 +68,13 @@ public class MapActivity extends AppCompatActivity {
         self = this;
         initMapData();
         initMapView(savedInstanceState);
+
     }
+
     ScrollView map_scrollview;
     TextView changefloor_text;
     ImageView xishoujian_image, yinhang_image, dianti_image, futi_image;
+    LoopView loopView;
 
     private void initView() {
         map_scrollview = (ScrollView) findViewById(R.id.map_scrollview);
@@ -70,6 +83,51 @@ public class MapActivity extends AppCompatActivity {
         yinhang_image = (ImageView) findViewById(R.id.yinhang_image);
         dianti_image = (ImageView) findViewById(R.id.dianti_image);
         futi_image = (ImageView) findViewById(R.id.futi_image);
+//        loopView = (LoopView) findViewById(R.id.loopView);
+        initLoopView();
+
+    }
+
+    private void initLoopView() {
+
+        //        // 1、直接new 一个线程类，传入参数实现Runnable接口的对象（new Runnable），相当于方法二
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //------------------处理切换楼层3d滚轮
+                loopView = (LoopView) findViewById(R.id.loopView);
+                ArrayList<String> list = new ArrayList();
+                for (int i = 0; i < Config.FLOORLIST.length; i++) {
+                    list.add(Config.FLOORLIST[i]);
+                }
+                loopView.setItems(list);
+//                loopView.setBackgroundColor(Color.parseColor("#ffffff"));
+                //设置是否循环播放
+                loopView.setNotLoop();
+                //设置初始位置
+                loopView.setInitPosition(14);
+                loopView.setTextSize(12);//设置字体大小
+                loopView.setCenterTextColor(Color.parseColor("#32B9AA"));//设置字体大小
+
+                loopView.setDividerColor(Color.parseColor("#32B9AA"));
+                loopView.setDrawingCacheBackgroundColor(Color.parseColor("#32B9AA"));
+                //滚动监听
+                loopView.setListener(new OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(int index) {
+                        String floor = Config.FLOORLIST[index];
+                        Log.i("onItemSelected", "onItemSelected:------------- "+floor);
+                        if (floor.equals("平面图")){
+                            shiftFloors("F0",false);
+                        }else {
+                            shiftFloors(floor,false);
+                        }
+
+                    }
+                });
+            }
+        },500);
+
     }
 
     //公共图标设置按钮，变量
@@ -154,69 +212,69 @@ public class MapActivity extends AppCompatActivity {
 
     //------------切换楼层点击按钮
     public void onChangeFloorClick(View view) {
-        map_scrollview.setVisibility(View.GONE);
-        int i = view.getId();
-        if (i == R.id.b2) {
-            shiftFloors("B2", false);
-            changefloor_text.setText("B2");
-        } else if (i == R.id.b1) {
-            shiftFloors("B1", false);
-            changefloor_text.setText("B1");
-        } else if (i == R.id.f0) {
-            //平面图------------
-            shiftFloors("F0", false);
-            changefloor_text.setText("平面图");
-        } else if (i == R.id.f1) {
-            shiftFloors("F1", false);
-            changefloor_text.setText("F1");
-        } else if (i == R.id.f2) {
-            shiftFloors("F2", false);
-            changefloor_text.setText("F2");
-        } else if (i == R.id.f3) {
-            shiftFloors("F3", false);
-            changefloor_text.setText("F3");
-        } else if (i == R.id.f4) {
-            shiftFloors("F4", false);
-            changefloor_text.setText("F4");
-        } else if (i == R.id.f5) {
-            shiftFloors("F5", false);
-            changefloor_text.setText("F5");
-        } else if (i == R.id.f6) {
-            shiftFloors("F6", false);
-            changefloor_text.setText("F6");
-        } else if (i == R.id.f7) {
-            shiftFloors("F7", false);
-            changefloor_text.setText("F7");
-        } else if (i == R.id.f8) {
-            shiftFloors("F8", false);
-            changefloor_text.setText("F8");
-        } else if (i == R.id.f9) {
-            shiftFloors("F9", false);
-            changefloor_text.setText("F9");
-        } else if (i == R.id.f10) {
-            shiftFloors("F10", false);
-            changefloor_text.setText("F10");
-        } else if (i == R.id.f11) {
-            shiftFloors("F11", false);
-            changefloor_text.setText("F11");
-        } else if (i == R.id.f12) {
-            shiftFloors("F12", false);
-            changefloor_text.setText("F12");
-        } else if (i == R.id.f13) {
-            shiftFloors("F13", false);
-            changefloor_text.setText("F13");
-        } else if (i == R.id.f14) {
-            shiftFloors("F14", false);
-            changefloor_text.setText("F14");
-        } else if (i == R.id.f15) {
-            shiftFloors("F15", false);
-            changefloor_text.setText("F15");
-        }
+//        map_scrollview.setVisibility(View.GONE);
+//        int i = view.getId();
+//        if (i == R.id.b2) {
+//            shiftFloors("B2", false);
+//            changefloor_text.setText("B2");
+//        } else if (i == R.id.b1) {
+//            shiftFloors("B1", false);
+//            changefloor_text.setText("B1");
+//        } else if (i == R.id.f0) {
+//            //平面图------------
+//            shiftFloors("F0", false);
+//            changefloor_text.setText("平面图");
+//        } else if (i == R.id.f1) {
+//            shiftFloors("F1", false);
+//            changefloor_text.setText("F1");
+//        } else if (i == R.id.f2) {
+//            shiftFloors("F2", false);
+//            changefloor_text.setText("F2");
+//        } else if (i == R.id.f3) {
+//            shiftFloors("F3", false);
+//            changefloor_text.setText("F3");
+//        } else if (i == R.id.f4) {
+//            shiftFloors("F4", false);
+//            changefloor_text.setText("F4");
+//        } else if (i == R.id.f5) {
+//            shiftFloors("F5", false);
+//            changefloor_text.setText("F5");
+//        } else if (i == R.id.f6) {
+//            shiftFloors("F6", false);
+//            changefloor_text.setText("F6");
+//        } else if (i == R.id.f7) {
+//            shiftFloors("F7", false);
+//            changefloor_text.setText("F7");
+//        } else if (i == R.id.f8) {
+//            shiftFloors("F8", false);
+//            changefloor_text.setText("F8");
+//        } else if (i == R.id.f9) {
+//            shiftFloors("F9", false);
+//            changefloor_text.setText("F9");
+//        } else if (i == R.id.f10) {
+//            shiftFloors("F10", false);
+//            changefloor_text.setText("F10");
+//        } else if (i == R.id.f11) {
+//            shiftFloors("F11", false);
+//            changefloor_text.setText("F11");
+//        } else if (i == R.id.f12) {
+//            shiftFloors("F12", false);
+//            changefloor_text.setText("F12");
+//        } else if (i == R.id.f13) {
+//            shiftFloors("F13", false);
+//            changefloor_text.setText("F13");
+//        } else if (i == R.id.f14) {
+//            shiftFloors("F14", false);
+//            changefloor_text.setText("F14");
+//        } else if (i == R.id.f15) {
+//            shiftFloors("F15", false);
+//            changefloor_text.setText("F15");
+//        }
     }
 
     public void onNavClick(View view) {
         int i = view.getId();
-        if (i == R.id.routeLin){
+        if (i == R.id.routeLin) {
             //去这里的按钮
         }
 
@@ -225,17 +283,17 @@ public class MapActivity extends AppCompatActivity {
     //显示和影藏切换楼层滑动框
     private void changeFloorScroll() {
         //点击切换楼层的按钮
-        if (map_scrollview.getVisibility() == View.GONE) {
-            map_scrollview.setVisibility(View.VISIBLE);
+        if (loopView.getVisibility() == View.GONE) {
+            loopView.setVisibility(View.VISIBLE);
         } else {
-            map_scrollview.setVisibility(View.GONE);
+            loopView.setVisibility(View.GONE);
         }
     }
 
     //第一次进入界面的展示
     private void initUiView() {
         //初始化界面的时候，对切换楼层滑动框进行影藏;
-        map_scrollview.setVisibility(View.GONE);
+        loopView.setVisibility(View.GONE);
         initCommonIcon();
     }
 
@@ -272,6 +330,15 @@ public class MapActivity extends AppCompatActivity {
             MapUtils2.removeAllOriginalLayers(mMapboxMap);
             // 加载地图
             loadSelfMap();
+//            new Thread(new Runnable() {
+//                @RequiresApi(api = Build.VERSION_CODES.M)
+//                @Override
+//                public void run() {
+//                    // 写子线程中的操作
+//
+//
+//                }
+//            }).start();
         }
     }
 
@@ -292,7 +359,12 @@ public class MapActivity extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(alias)) {
             mAlias = alias;
-            changefloor_text.setText("F7");
+            if (mAlias.equals("F0")){
+                changefloor_text.setText("平面图");
+            }else {
+                changefloor_text.setText(mAlias);
+            }
+
         }
         mFloorBean = FileUtils.getSourceName(mAlias);
 //        MapInitUtils.setOtherUpCamera(mMapboxMap, mLatitude, mLngtitude, poid);
@@ -375,17 +447,17 @@ public class MapActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
-        // 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
-        if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0){
-            handler.sendEmptyMessageDelayed(1, 50);
-        }
+//        // 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
+//        if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
+//            handler.sendEmptyMessageDelayed(1, 50);
+//        }
     }
 
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
 
-            if(msg.what == 1){
-                Toast.makeText(self,"首次安装，正在准备数据，请耐心等待",Toast.LENGTH_SHORT).show();
+            if (msg.what == 1) {
+                Toast.makeText(self, "首次安装，正在准备数据，请耐心等待", Toast.LENGTH_SHORT).show();
                 MapPointInfoDbManager.get().insertAllData(self);
             }
             super.handleMessage(msg);
