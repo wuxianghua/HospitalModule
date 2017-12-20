@@ -1,4 +1,4 @@
-package com.palmap.huayitonglib.navi;
+package com.palmap.huayitonglib.navi.route;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -49,8 +49,11 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
     private Listener<FeatureCollection> listener = DEFAULT_LISTENER;
 
     private static Listener<FeatureCollection> DEFAULT_LISTENER = new Listener<FeatureCollection>() {
+
         @Override
-        public void OnNavigateComplete(NavigateState state, List<AStarPath> routes, FeatureCollection route) {
+        public void onNavigateComplete(NavigateState state, List<AStarPath> routes, double fromX, double fromY, long
+                fromPlanargraph, FeatureCollection from, double fromConX, double fromConY, double toX, double toY,
+                                       long toPlanargraph, FeatureCollection to, double toConX, double toConY) {
 
         }
     };
@@ -128,25 +131,68 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
                 toPlanargraph, 0
         );
         if (routes == null || routes.size() == 0) {
-            this.listener.OnNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, null, null);
+            this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, null, fromX, fromY, fromPlanargraph,
+                    null, 0, 0, toX, toY, toPlanargraph, null, 0, 0);
             return;
         }
+
+        Point shape = null;
+        Point endShape = null;
+
         List<Feature> features = new ArrayList<>();
+        List<Feature> otherFeatures = new ArrayList<>();
         for (AStarPath aStarPath : routes) {
             AStarVertex fromVertex = aStarPath.getFrom();
             AStarVertex toVertex = aStarPath.getTo();
-            Point startPoint = (Point) fromVertex.getVertex().getShape();
-            double[] startPosition = webMercator2LatLng(startPoint.getX(), startPoint.getY());
-            Point endPoint = (Point) toVertex.getVertex().getShape();
-            double[] endPosition = webMercator2LatLng(endPoint.getX(), endPoint.getY());
-            List<Position> positionList = new ArrayList<>();
-            positionList.add(Position.fromCoordinates(startPosition[1], startPosition[0]));
-            positionList.add(Position.fromCoordinates(endPosition[1], endPosition[0]));
-            LineString lineString = LineString.fromCoordinates(positionList);
-            features.add(Feature.fromGeometry(lineString));
+            if (fromPlanargraph == fromVertex.getVertex().getPlanarGraphId()) {
+                Point startPoint = (Point) fromVertex.getVertex().getShape();
+                double[] startPosition = webMercator2LatLng(startPoint.getX(), startPoint
+                        .getY());
+                Point endPoint = (Point) toVertex.getVertex().getShape();
+                double[] endPosition = webMercator2LatLng(endPoint.getX(), endPoint.getY());
+                List<Position> positionList = new ArrayList<>();
+                positionList.add(Position.fromCoordinates(startPosition[1], startPosition[0]));
+                positionList.add(Position.fromCoordinates(endPosition[1], endPosition[0]));
+                LineString lineString = LineString.fromCoordinates(positionList);
+                features.add(Feature.fromGeometry(lineString));
+                // TODO: 2017/12/12/012 这个点设置的是否准确  需要验证
+                shape = (Point) toVertex.getVertex().getShape();
+            } else if (toPlanargraph == fromVertex.getVertex().getPlanarGraphId()) {
+                if (endShape == null) {
+                    endShape = (Point) fromVertex.getVertex().getShape();
+                }
+
+                Point startPoint = (Point) fromVertex.getVertex().getShape();
+                double[] startPosition = webMercator2LatLng(startPoint.getX(), startPoint
+                        .getY());
+                Point endPoint = (Point) toVertex.getVertex().getShape();
+                double[] endPosition = webMercator2LatLng(endPoint.getX(), endPoint.getY());
+                List<Position> positionList = new ArrayList<>();
+                positionList.add(Position.fromCoordinates(startPosition[1], startPosition[0]));
+                positionList.add(Position.fromCoordinates(endPosition[1], endPosition[0]));
+                LineString lineString = LineString.fromCoordinates(positionList);
+                otherFeatures.add(Feature.fromGeometry(lineString));
+            }
         }
+
+        if (endShape == null) {
+            shape = null;
+        }
+
         FeatureCollection routeFeatureCollection = FeatureCollection.fromFeatures(features);
-        this.listener.OnNavigateComplete(NavigateState.OK, routes, routeFeatureCollection);
+        FeatureCollection otherRouteFeatureCollection = FeatureCollection.fromFeatures(otherFeatures);
+
+        if (endShape != null && shape != null) {
+            this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, routes, fromX, fromY,
+                    fromPlanargraph,
+                    routeFeatureCollection, shape.getX(), shape.getY(), toX, toY, toPlanargraph,
+                    otherRouteFeatureCollection, endShape.getX(), endShape.getY());
+        } else {
+            this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, routes, fromX, fromY,
+                    fromPlanargraph,
+                    routeFeatureCollection, 0, 0, toX, toY, toPlanargraph,
+                    otherRouteFeatureCollection, 0, 0);
+        }
     }
 
     /**
@@ -169,7 +215,8 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
 
     private boolean precondition() {
         if (aStar == null) {
-            this.listener.OnNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, null, null);
+            this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, null, 0, 0, 0,
+                    null, 0, 0, 0, 0, 0, null, 0, 0);
             return false;
         }
         return true;
