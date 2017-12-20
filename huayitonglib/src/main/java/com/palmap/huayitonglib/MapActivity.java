@@ -157,11 +157,12 @@ public class MapActivity extends AppCompatActivity {
                 dianti = true;
             }
 
-        }else if (i == R.id.jia_text){
-            //地图放大
-        }else if (i == R.id.jian_text){
-            //地图缩小
         }
+//        else if (i == R.id.jia_text){
+//            //地图放大
+//        }else if (i == R.id.jian_text){
+//            //地图缩小
+//        }
     }
 
     //------------切换楼层点击按钮
