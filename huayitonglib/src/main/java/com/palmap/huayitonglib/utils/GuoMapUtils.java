@@ -44,7 +44,7 @@ public class GuoMapUtils {
         mMapboxMap.getUiSettings().setCompassMargins(30, 150, DisplayUtil.getScreenWith(context) - 100, 20);
         // getActivity容易有空指针bug 切换指南针的图片
         mMapboxMap.getUiSettings().setCompassImage(context.getResources().getDrawable(R.mipmap.ic_map_compass));
-        mMapboxMap.setMaxZoomPreference(25);
+        mMapboxMap.setMaxZoomPreference(20);
         mMapboxMap.setMinZoomPreference(15);
     }
 

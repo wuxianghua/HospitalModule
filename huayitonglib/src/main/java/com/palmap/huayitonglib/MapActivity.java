@@ -12,6 +12,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -52,7 +53,12 @@ public class MapActivity extends AppCompatActivity {
     private FloorBean mFloorBean;
     //当前FloorId为平面层楼层
     private int mCurrentFloorId = Config.FLOORID_F0_CH;
+
+
+    //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
+
     Handler h = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +68,7 @@ public class MapActivity extends AppCompatActivity {
         self = this;
         initMapData();
         initMapView(savedInstanceState);
+
     }
 
     ScrollView map_scrollview;
@@ -109,17 +116,17 @@ public class MapActivity extends AppCompatActivity {
                     @Override
                     public void onItemSelected(int index) {
                         String floor = Config.FLOORLIST[index];
-                        Log.i("onItemSelected", "onItemSelected:------------- "+floor);
-                        if (floor.equals("平面图")){
-                            shiftFloors("F0",false);
-                        }else {
-                            shiftFloors(floor,false);
+                        Log.i("onItemSelected", "onItemSelected:------------- " + floor);
+                        if (floor.equals("平面图")) {
+                            shiftFloors("F0", false);
+                        } else {
+                            shiftFloors(floor, false);
                         }
 
                     }
                 });
             }
-        },500);
+        }, 500);
 
     }
 
@@ -149,23 +156,25 @@ public class MapActivity extends AppCompatActivity {
                 yinhang = true;
                 dianti = true;
                 futi = true;
+                addFacilityLayer(TYPE_RESTROOM);
             } else {
                 initCommonIcon();
             }
         } else if (i == R.id.yinhang_image) {
-            if (yinhang) {
-                yinhang_image.setBackgroundResource(R.mipmap.ic_map_yinhang_dianji);
-                xishoujian_image.setBackgroundResource(R.mipmap.ic_map_xishoujian);
-                dianti_image.setBackgroundResource(R.mipmap.ic_map_dianti);
-                futi_image.setBackgroundResource(R.mipmap.ic_map_futi);
-                yinhang = false;
-                xishoujian = true;
-                dianti = true;
-                futi = true;
-            } else {
-                initCommonIcon();
-            }
-
+//            if (yinhang) {
+//                yinhang_image.setBackgroundResource(R.mipmap.ic_map_yinhang_dianji);
+//                xishoujian_image.setBackgroundResource(R.mipmap.ic_map_xishoujian);
+//                dianti_image.setBackgroundResource(R.mipmap.ic_map_dianti);
+//                futi_image.setBackgroundResource(R.mipmap.ic_map_futi);
+//                yinhang = false;
+//                xishoujian = true;
+//                dianti = true;
+//                futi = true;
+//                addFacilityLayer(TYPE_BRAND);
+//            } else {
+//                initCommonIcon();
+//            }
+            centerToast("地图数据完善中，暂无银行数据");
         } else if (i == R.id.dianti_image) {
             if (dianti) {
                 dianti_image.setBackgroundResource(R.mipmap.ic_map_dianti_dianji);
@@ -176,10 +185,10 @@ public class MapActivity extends AppCompatActivity {
                 xishoujian = true;
                 yinhang = true;
                 futi = true;
+                addFacilityLayer(TYPE_ELEVATOR);
             } else {
                 initCommonIcon();
             }
-
         } else if (i == R.id.futi_image) {
             if (futi) {
                 futi_image.setBackgroundResource(R.mipmap.ic_map_futi_dianji);
@@ -190,16 +199,18 @@ public class MapActivity extends AppCompatActivity {
                 xishoujian = true;
                 yinhang = true;
                 dianti = true;
+                addFacilityLayer(TYPE_ESCALATOR);
             } else {
                 initCommonIcon();
             }
-
         } else if (i == R.id.jia_rr) {
             //地图放大
             MapUtils.setMapExtend(mMapboxMap);
         } else if (i == R.id.jian_rr) {
             //地图缩小
             MapUtils.setMapSmall(mMapboxMap);
+        } else if (i == R.id.yuyin_rr) {
+            centerToast("正在建设中，敬请期待");
         }
     }
 
@@ -300,6 +311,7 @@ public class MapActivity extends AppCompatActivity {
         xishoujian = true;
         yinhang = true;
         dianti = true;
+        addFacilityLayer(TYPE_NOICON);
     }
 
     //--------------------------以下是地图相关内容--------------------------
@@ -341,16 +353,16 @@ public class MapActivity extends AppCompatActivity {
         GuoMapUtils.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
         GuoMapUtils.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
 //        addFacilityLayer(TYPE_NOICON);
-
-        addFacilityLayer(TYPE_ALL);
+        addFacilityLayer(TYPE_NOICON);
     }
 
     //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
     private static final int TYPE_RESTROOM = 0;
     private static final int TYPE_ESCALATOR = 1;
     private static final int TYPE_ELEVATOR = 2;
-    private static final int TYPE_ALL = 3;
-    private static final int TYPE_NOICON = 4;
+    private static final int TYPE_BRAND = 3;
+    private static final int TYPE_ALL = 4;
+    private static final int TYPE_NOICON = 5;
 
     private void addFacilityLayer(int type) {
         GuoMapUtils.initFacilityData(getBaseContext(), mMapboxMap, mFloorBean);
@@ -365,19 +377,23 @@ public class MapActivity extends AppCompatActivity {
             switch (type) {
                 case TYPE_ELEVATOR:
                     //设置的所有电梯图标
-                    MapUtils2.setElevatorIcon(this, mMapboxMap, feature);
+                    MapUtils.setElevatorIcon(this, mMapboxMap, feature);
                     break;
                 case TYPE_ESCALATOR:
                     //设置的楼梯设备图标
-                    MapUtils2.setEscalatorIcon(this, mMapboxMap, feature);
+                    MapUtils.setEscalatorIcon(this, mMapboxMap, feature);
                     break;
                 case TYPE_RESTROOM:
                     //设置的洗手间图标
-                    MapUtils2.setRestRoomIcon(this, mMapboxMap, feature);
+                    MapUtils.setRestRoomIcon(this, mMapboxMap, feature);
+                    break;
+                case TYPE_BRAND:
+                    //设置的洗手间图标
+                    MapUtils.setBankIcon(this, mMapboxMap, feature);
                     break;
                 case TYPE_ALL:
                     //设置的所有设备图标
-                    MapUtils2.setAllMapIcon(this, mMapboxMap, feature);
+                    MapUtils.setAllMapIcon(this, mMapboxMap, feature);
                     break;
                 case TYPE_NOICON:
                     //设置没有应用图标
@@ -398,9 +414,9 @@ public class MapActivity extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(alias)) {
             mAlias = alias;
-            if (mAlias.equals("F0")){
+            if (mAlias.equals("F0")) {
                 changefloor_text.setText("平面图");
-            }else {
+            } else {
                 changefloor_text.setText(mAlias);
             }
 
@@ -473,6 +489,13 @@ public class MapActivity extends AppCompatActivity {
 //            default:
 //                break;
 //        }
+    }
+
+    public void centerToast(String str) {
+        Toast toast = Toast.makeText(getBaseContext(),
+                str, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
     }
 
     //------------------------------------------

@@ -66,6 +66,24 @@
             android:layout_marginLeft="45dp"
             android:text="请输入目的地"
             android:textColor="#CCCCCC" />
+        <RelativeLayout
+            android:id="@+id/yuyin_rr"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:onClick="onClick"
+            >
+            <ImageView
+
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@mipmap/ic_yuyin"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+
+                />
+        </RelativeLayout>
+
     </RelativeLayout>
     //图标过滤
 

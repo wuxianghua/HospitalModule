@@ -304,7 +304,7 @@ public class MapUtils {
             category = feature.getNumberProperty("category").intValue();
         }
         if (category == 15001000) {
-            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.ic_map_marker_zhiti, mapboxMap);
+            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.ic_map_marker_yinhang, mapboxMap);
         }
     }
 
