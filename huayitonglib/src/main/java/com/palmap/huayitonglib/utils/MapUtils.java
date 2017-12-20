@@ -236,15 +236,13 @@ public class MapUtils {
         }
         if (category == 23059000 || category == 23025000 || category == 23063000 || category ==
                 23024000) { // 洗手间
-            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.cesuo, mapboxMap);
+            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.ic_map_marker_xishoujian, mapboxMap);
         } else if (category == 24093000) { // 扶梯
-            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.shoufudianti, mapboxMap);
+            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.ic_map_marker_futi, mapboxMap);
         } else if (category == 24091000) { //电梯
-            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.diantitubiao, mapboxMap);
-        } else if (category == 24097000 || category == 24098000) { // 楼梯
-//                        addLocalIcon(feature.getStringProperty("logo"), R.mipmap.louti);
-        } else if (category == 15001000){//银行
-            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.churiukoutubiao, mapboxMap);
+            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.ic_map_marker_zhiti, mapboxMap);
+        } else if (category == 15001000) {//银行
+            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.ic_map_marker_yinhang, mapboxMap);
         }
 // else if (category == 23043000) { // 大门
 //            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.damen, mapboxMap);
@@ -252,7 +250,9 @@ public class MapUtils {
 //            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.gonggongfuwu, mapboxMap);
 //        } else if (category == 23041000) { // 出入口
 //            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.churiukoutubiao, mapboxMap);
-//        }
+//        } else if (category == 24097000 || category == 24098000) { // 楼梯
+//                        addLocalIcon(feature.getStringProperty("logo"), R.mipmap.louti);
+//    }
     }
 
     /**
@@ -260,39 +260,52 @@ public class MapUtils {
      */
     public static void setRestRoomIcon(Context context, MapboxMap mapboxMap, Feature feature) {
         int category = 0;
-//        if (feature != null && feature.hasProperty("category")) {
-//            category = feature.getNumberProperty("category").intValue();
-//        }
-//        if (category == 23059000 || category == 23025000 || category == 23063000 || category ==
-//                23024000) {
-//            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.cesuodatu, mapboxMap);
-//        }
+        if (feature != null && feature.hasProperty("category")) {
+            category = feature.getNumberProperty("category").intValue();
+        }
+        if (category == 23059000 || category == 23025000 || category == 23063000 || category ==
+                23024000) {
+            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.ic_map_marker_xishoujian, mapboxMap);
+        }
     }
 
     /**
      * 设置地图扶梯设备图标
      */
     public static void setEscalatorIcon(Context context, MapboxMap mapboxMap, Feature feature) {
-//        int category = 0;
-//        if (feature != null && feature.hasProperty("category")) {
-//            category = feature.getNumberProperty("category").intValue();
-//        }
-//        if (category == 24093000) {
-//            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.shoufudiantidatu, mapboxMap);
-//        }
+        int category = 0;
+        if (feature != null && feature.hasProperty("category")) {
+            category = feature.getNumberProperty("category").intValue();
+        }
+        if (category == 24093000) {
+            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.ic_map_marker_futi, mapboxMap);
+        }
     }
 
     /**
      * 设置地图电梯图标
      */
     public static void setElevatorIcon(Context context, MapboxMap mapboxMap, Feature feature) {
-//        int category = 0;
-//        if (feature != null && feature.hasProperty("category")) {
-//            category = feature.getNumberProperty("category").intValue();
-//        }
-//        if (category == 24091000) {
-//            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.diantidatu, mapboxMap);
-//        }
+        int category = 0;
+        if (feature != null && feature.hasProperty("category")) {
+            category = feature.getNumberProperty("category").intValue();
+        }
+        if (category == 24091000) {
+            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.ic_map_marker_zhiti, mapboxMap);
+        }
+    }
+
+    /**
+     * 设置地图银行图标
+     */
+    public static void setBankIcon(Context context, MapboxMap mapboxMap, Feature feature) {
+        int category = 0;
+        if (feature != null && feature.hasProperty("category")) {
+            category = feature.getNumberProperty("category").intValue();
+        }
+        if (category == 15001000) {
+            addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.ic_map_marker_zhiti, mapboxMap);
+        }
     }
 
     //加载本地图标-----

@@ -145,12 +145,12 @@ public class SearchShowFragment extends Fragment {
         }
         mAdapter.refresh(mList);
 
-        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"A1区",F2_A1_Content));
-        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"A2区",F2_A2_Content));
-        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"A3区",F2_A3_Content));
-        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"B区",F2_B_Content));
-        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"E区",F2_E_Content));
-        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"F区",F2_F_Content));
+//        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"A1区",F2_A1_Content));
+//        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"A2区",F2_A2_Content));
+//        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"A3区",F2_A3_Content));
+//        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"B区",F2_B_Content));
+//        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"E区",F2_E_Content));
+//        mExpandableView_F2.addView(CreatLinearLayout(getContext(),"F区",F2_F_Content));
     }
 
     public LinearLayout CreatLinearLayout(Context mContext, String key, String[] array){

@@ -2,6 +2,10 @@ package com.palmap.huayitonglib;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import android.os.Handler;
+import android.os.Message;
+
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -9,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -18,6 +23,7 @@ import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.palmap.huayitonglib.activity.SearchActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
+import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.FileUtils;
@@ -35,6 +41,14 @@ public class MapActivity extends AppCompatActivity {
     //当前FloorId为平面层楼层
     private int mCurrentFloorId = Config.FLOORID_F0_CH;
 
+
+    //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
+    private static final int TYPE_RESTROOM = 0;
+    private static final int TYPE_ESCALATOR = 1;
+    private static final int TYPE_ELEVATOR = 2;
+    private static final int TYPE_BRAND = 3;
+    private static final int TYPE_ALL = 4;
+    private static final int TYPE_NOICON = 5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +59,6 @@ public class MapActivity extends AppCompatActivity {
         initMapData();
         initMapView(savedInstanceState);
     }
-
     ScrollView map_scrollview;
     TextView changefloor_text;
     ImageView xishoujian_image, yinhang_image, dianti_image, futi_image;
@@ -362,7 +375,24 @@ public class MapActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        // 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
+        if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0){
+            handler.sendEmptyMessageDelayed(1, 50);
+        }
     }
+
+    Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+
+            if(msg.what == 1){
+                Toast.makeText(self,"首次安装，正在准备数据，请耐心等待",Toast.LENGTH_SHORT).show();
+                MapPointInfoDbManager.get().insertAllData(self);
+            }
+            super.handleMessage(msg);
+        }
+
+    };
+
 
     @Override
     public void onPause() {

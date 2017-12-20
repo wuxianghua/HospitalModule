@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 26
@@ -21,21 +22,40 @@ android {
     }
 }
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+//allprojects {
+//    repositories {
+//        maven { url "https://jitpack.io" }
+//    }
+//}
+
+greendao {
+    schemaVersion 1
+    daoPackage 'com.palmap.huayitonglib.db.gen'//通过gradle插件生成的数据库相关文件的包名，默认为你的entity所在的包名
+    targetGenDir 'src/main/java'//自定义生成数据库文件的目录
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     compile('com.mapbox.mapboxsdk:mapbox-android-sdk:5.2.0-beta.4@aar') {
         transitive = true
     }
+    compile 'org.greenrobot:greendao:3.2.2'
+
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:support-v4:26.+'
+    compile 'com.android.support:recyclerview-v7:26.+'
     compile files('libs/jackson-all-1.9.2.jar')
     compile files('libs/json-simple-1.1.jar')
     compile files('libs/jts-1.13.jar')
-
 }
