@@ -242,7 +242,7 @@ public class GuoMapUtils {
             mStyleManager.attach(featureCollection);//进行着色处理
             geojson = featureCollection.toJson();//处理好的featurecollection转换成json
 //            FileUtils.writeToFile("F1_area.geojson", geojson);
-
+ 
             //------json——style的方式
 //            styleManager.attachStyle(featureCollection, mSouceId);
         }
