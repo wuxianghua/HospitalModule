@@ -66,20 +66,21 @@
             android:layout_marginLeft="45dp"
             android:text="请输入目的地"
             android:textColor="#CCCCCC" />
+
         <RelativeLayout
             android:id="@+id/yuyin_rr"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:onClick="onClick"
-            >
+            android:onClick="onClick">
+
             <ImageView
 
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="@mipmap/ic_yuyin"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:background="@mipmap/ic_yuyin"
 
                 />
         </RelativeLayout>
@@ -131,16 +132,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
+        //选择终点逻辑
 
         <RelativeLayout
             android:id="@+id/park_zhongdian"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="100dp"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/cardbg_touming"
-            android:padding="10dp">
+            android:padding="10dp"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -150,21 +153,52 @@
                     android:id="@+id/endImg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
                     android:layout_marginLeft="21dp"
+                    android:layout_marginTop="23dp"
                     android:text="终"
-                    android:textColor="#FF7338" />
+                    android:textColor="#FF7338"
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/park_zhongdian_text"
+                    android:id="@+id/park_zhongdian_text01"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/endImg"
-                    android:text="便民门诊 1F A3区"
+                    android:text="心脏科/心血管内科"
                     android:textColor="#666666"
                     android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/park_zhongdian_text02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/park_zhongdian_text01"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/endImg"
+                    android:text="第三大楼A3区          一层"
+                    android:textColor="#999999"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/park_zhongdian_text02"
+                    android:layout_marginTop="5dp"
+                    android:background="#EEEEEE"></LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/park_zhongdian_text02"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="10dp"
+                    android:text="发送位置给好友"
+                    android:textColor="#32B9AA"
+
+                    />
 
                 <LinearLayout
                     android:id="@+id/routeLin"
@@ -175,6 +209,7 @@
                     android:orientation="horizontal">
 
                     <ImageView
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@mipmap/ic_go" />
@@ -407,8 +442,7 @@
                 android:layout_height="150dp"
                 android:layout_marginLeft="10dp"
                 android:background="@mipmap/outline"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/changefloor_text"
@@ -465,5 +499,26 @@
                     android:onClick="onClick" />
             </RelativeLayout>
         </LinearLayout>
+    </RelativeLayout>
+    //地图加载显示布局
+    // 地图加载中
+
+    <RelativeLayout
+        android:id="@+id/loading_rel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp"
+        android:background="#3F000000"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/loading_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/loading" />
+
     </RelativeLayout>
 </RelativeLayout>

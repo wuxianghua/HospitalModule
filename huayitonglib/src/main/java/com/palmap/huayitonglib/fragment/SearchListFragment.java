@@ -31,7 +31,7 @@ public class SearchListFragment extends Fragment{
     private SearchActivity self;
     private RecyclerView mRecycleView;
     private SearchListAdapter mAdapter;
-    private List<MapPointInfoBean> mList;
+    private List<MapPointInfoBean> mList = new ArrayList<>();;
 
     @Nullable
     @Override
@@ -51,15 +51,22 @@ public class SearchListFragment extends Fragment{
         }
     }
 
+    public void setData(List<MapPointInfoBean> list){
+        mList = list;
+        Log.e(TAG, "setData: mlist" + mList.size());
+        mAdapter.setNewData(mList);
+        mAdapter.notifyDataSetChanged();
+    }
+
     private void initView() {
         mRecycleView = view.findViewById(R.id.search_recycleView);
         mRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mList = new ArrayList<>();
-        mList = self.getListData();
+        mList.add(null);
+        mList.add(null);
+        mList.add(null);
         mAdapter = new SearchListAdapter(R.layout.fragment_search_list_item, mList,getContext());
         mRecycleView.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new ListOnItemClickListener());
-
     }
 
 }

@@ -2,19 +2,16 @@ package com.palmap.huayitonglib;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.os.Message;
-
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,8 +39,6 @@ import com.weigan.loopview.LoopView;
 import com.weigan.loopview.OnItemSelectedListener;
 
 import java.util.ArrayList;
-
-import static com.palmap.huayitonglib.utils.Config.FLOORLIST;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -75,8 +70,10 @@ public class MapActivity extends AppCompatActivity {
     TextView changefloor_text;
     ImageView xishoujian_image, yinhang_image, dianti_image, futi_image;
     LoopView loopView;
+    RelativeLayout loading_rel;
 
     private void initView() {
+        loading_rel = (RelativeLayout) findViewById(R.id.loading_rel);
         map_scrollview = (ScrollView) findViewById(R.id.map_scrollview);
         changefloor_text = (TextView) findViewById(R.id.changefloor_text);
         xishoujian_image = (ImageView) findViewById(R.id.xishoujian_image);
@@ -115,18 +112,31 @@ public class MapActivity extends AppCompatActivity {
                 loopView.setListener(new OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(int index) {
-                        String floor = Config.FLOORLIST[index];
+                        final String floor = Config.FLOORLIST[index];
                         Log.i("onItemSelected", "onItemSelected:------------- " + floor);
+
+                        loading_rel.setVisibility(View.VISIBLE);
                         if (floor.equals("平面图")) {
-                            shiftFloors("F0", false);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    shiftFloors("F0", false);
+                                }
+                            }, 100);
+
                         } else {
-                            shiftFloors(floor, false);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    shiftFloors(floor, false);
+                                }
+                            }, 100);
                         }
 
                     }
                 });
             }
-        }, 500);
+        }, 100);
 
     }
 
@@ -323,6 +333,8 @@ public class MapActivity extends AppCompatActivity {
 
     private void initMapData() {
         mFloorBean = FileUtils.getSourceName("F1");
+        // 此处只是针对对F1层的着色
+
     }
 
     class onMapReadyCallback implements OnMapReadyCallback {
@@ -333,6 +345,9 @@ public class MapActivity extends AppCompatActivity {
             GuoMapUtils.initMapSetting(self, mMapboxMap);
             //删除图层后加载自己的地图
             MapUtils2.removeAllOriginalLayers(mMapboxMap);
+
+            loading_rel.setVisibility(View.VISIBLE);
+
             // 加载地图
             loadSelfMap();
 //            new Thread(new Runnable() {
@@ -348,12 +363,16 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void loadSelfMap() {
-
         GuoMapUtils.addBackgroudLayer(getApplicationContext(), mMapboxMap);
         GuoMapUtils.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
         GuoMapUtils.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
+
 //        addFacilityLayer(TYPE_NOICON);
         addFacilityLayer(TYPE_NOICON);
+
+        loading_rel.setVisibility(View.GONE);
+
+
     }
 
     //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
@@ -442,12 +461,7 @@ public class MapActivity extends AppCompatActivity {
 //        removeDianTiMarker();
         //加载地图
         loadSelfMap();
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                loading_rel.setVisibility(View.GONE);
-//            }
-//        }, 500);
+
 //        if (canDisplayEndInfo()) {
 //            Log.i("canDisplayStartInfo", "shiftFloors:-----------canDisplayEndInfo ");
 //            addEndMarker(new LatLng(mPlanRouteBean.getEndLatitude(), mPlanRouteBean.getEndLongtitude()));
