@@ -24,6 +24,9 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.services.commons.geojson.BaseFeatureCollection;
+import com.mapbox.services.commons.geojson.Feature;
+import com.mapbox.services.commons.geojson.FeatureCollection;
 import com.palmap.huayitonglib.activity.SearchActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
@@ -49,15 +52,6 @@ public class MapActivity extends AppCompatActivity {
     private FloorBean mFloorBean;
     //当前FloorId为平面层楼层
     private int mCurrentFloorId = Config.FLOORID_F0_CH;
-
-
-    //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
-    private static final int TYPE_RESTROOM = 0;
-    private static final int TYPE_ESCALATOR = 1;
-    private static final int TYPE_ELEVATOR = 2;
-    private static final int TYPE_BRAND = 3;
-    private static final int TYPE_ALL = 4;
-    private static final int TYPE_NOICON = 5;
     Handler h = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +62,6 @@ public class MapActivity extends AppCompatActivity {
         self = this;
         initMapData();
         initMapView(savedInstanceState);
-
     }
 
     ScrollView map_scrollview;
@@ -343,10 +336,56 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void loadSelfMap() {
+
         GuoMapUtils.addBackgroudLayer(getApplicationContext(), mMapboxMap);
         GuoMapUtils.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
         GuoMapUtils.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
 //        addFacilityLayer(TYPE_NOICON);
+
+        addFacilityLayer(TYPE_ALL);
+    }
+
+    //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
+    private static final int TYPE_RESTROOM = 0;
+    private static final int TYPE_ESCALATOR = 1;
+    private static final int TYPE_ELEVATOR = 2;
+    private static final int TYPE_ALL = 3;
+    private static final int TYPE_NOICON = 4;
+
+    private void addFacilityLayer(int type) {
+        GuoMapUtils.initFacilityData(getBaseContext(), mMapboxMap, mFloorBean);
+        String geojson = MapUtils2.getGeoJson(getBaseContext(), mFloorBean.getFacilityFilename());
+        FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);
+        for (Feature feature : featureCollection.getFeatures()) {
+            //设备图标过滤
+            if (!feature.hasProperty("category")) {
+                continue;
+            }
+            mMapboxMap.removeImage(feature.getStringProperty("logo"));
+            switch (type) {
+                case TYPE_ELEVATOR:
+                    //设置的所有电梯图标
+                    MapUtils2.setElevatorIcon(this, mMapboxMap, feature);
+                    break;
+                case TYPE_ESCALATOR:
+                    //设置的楼梯设备图标
+                    MapUtils2.setEscalatorIcon(this, mMapboxMap, feature);
+                    break;
+                case TYPE_RESTROOM:
+                    //设置的洗手间图标
+                    MapUtils2.setRestRoomIcon(this, mMapboxMap, feature);
+                    break;
+                case TYPE_ALL:
+                    //设置的所有设备图标
+                    MapUtils2.setAllMapIcon(this, mMapboxMap, feature);
+                    break;
+                case TYPE_NOICON:
+                    //设置没有应用图标
+                    mMapboxMap.removeImage(feature.getStringProperty("logo"));
+                    break;
+            }
+        }
+
     }
 
 
