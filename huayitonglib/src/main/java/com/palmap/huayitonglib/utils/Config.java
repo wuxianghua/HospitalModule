@@ -90,7 +90,7 @@ public class Config {
     public static final int FLOORID_F15_CH= 2706052;
 
     public static final String[] FLOORLIST = {"F15", "F14", "F13", "F12", "F11", "F10",
-            "F9", "F8", "F7", "F6", "F5", "F4", "F3", "F2", "F1", "平面图", "B1", "B2"};
+            "F9", "F8", "F7", "F6", "F5", "F4", "F3", "F2", "F1", "B1", "B2"};
 
 
 

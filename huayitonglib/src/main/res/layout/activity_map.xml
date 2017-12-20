@@ -441,7 +441,7 @@
                 android:layout_width="40dp"
                 android:layout_height="150dp"
                 android:layout_marginLeft="10dp"
-                android:background="@mipmap/outline"
+                android:background="@mipmap/bg_gonggongsheshi"
                 android:visibility="gone" />
 
             <TextView
@@ -460,8 +460,8 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="36dp"
-            android:layout_height="72dp"
+            android:layout_width="40dp"
+            android:layout_height="80dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
@@ -474,35 +474,29 @@
                 android:layout_height="40dp"
                 android:onClick="onClick">
 
-                <RelativeLayout
-                    android:id="@+id/jia_text"
+                <ImageView
+                    android:id="@+id/jia_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:background="@mipmap/ic_map_jia"
                     android:gravity="center" />
             </RelativeLayout>
-
-
             <RelativeLayout
                 android:id="@+id/jian_rr"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:onClick="onClick">
-
-                <RelativeLayout
+                <ImageView
+                    android:id="@+id/jian_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:background="@mipmap/ic_map_jian"
-                    android:gravity="center"
-                    android:onClick="onClick" />
+                    android:gravity="center" />
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
     //地图加载显示布局
     // 地图加载中
-
     <RelativeLayout
         android:id="@+id/loading_rel"
         android:layout_width="match_parent"
@@ -519,6 +513,5 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:src="@mipmap/loading" />
-
     </RelativeLayout>
 </RelativeLayout>

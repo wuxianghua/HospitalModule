@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -68,11 +69,16 @@ public class MapActivity extends AppCompatActivity {
 
     ScrollView map_scrollview;
     TextView changefloor_text;
-    ImageView xishoujian_image, yinhang_image, dianti_image, futi_image;
+    ImageView xishoujian_image, yinhang_image, dianti_image, futi_image,jian_image,jia_image;
     LoopView loopView;
     RelativeLayout loading_rel;
 
     private void initView() {
+
+        jian_image = (ImageView) findViewById(R.id.jian_image);
+        jia_image = (ImageView) findViewById(R.id.jia_image);
+        jia_image.setImageResource(R.mipmap.ngr_ic_map_zoomin);
+        jian_image.setImageResource(R.mipmap.ngr_ic_map_zoomout);
         loading_rel = (RelativeLayout) findViewById(R.id.loading_rel);
         map_scrollview = (ScrollView) findViewById(R.id.map_scrollview);
         changefloor_text = (TextView) findViewById(R.id.changefloor_text);
@@ -347,6 +353,24 @@ public class MapActivity extends AppCompatActivity {
             MapUtils2.removeAllOriginalLayers(mMapboxMap);
 
             loading_rel.setVisibility(View.VISIBLE);
+            mMapboxMap.setOnCameraChangeListener(new MapboxMap
+                    .OnCameraChangeListener() {
+                @Override
+                public void onCameraChange(CameraPosition position) {
+                    if (position.zoom <= 15.0) {
+                        //已经到最小了，不能再缩小了，给缩小按钮灰色显示
+                        jia_image.setImageResource(R.mipmap.ngr_ic_map_zoomin);
+                        jian_image.setImageResource(R.mipmap.ic_map_jian);
+
+                    } else if (position.zoom < 20) {
+                        jia_image.setImageResource(R.mipmap.ngr_ic_map_zoomin);
+                        jian_image.setImageResource(R.mipmap.ngr_ic_map_zoomout);
+                    } else if (position.zoom == 20) {
+                        jia_image.setImageResource(R.mipmap.ic_map_jia);
+                        jian_image.setImageResource(R.mipmap.ngr_ic_map_zoomout);
+                    }
+                }
+            });
 
             // 加载地图
             loadSelfMap();
@@ -359,6 +383,8 @@ public class MapActivity extends AppCompatActivity {
 //
 //                }
 //            }).start();
+
+
         }
     }
 
