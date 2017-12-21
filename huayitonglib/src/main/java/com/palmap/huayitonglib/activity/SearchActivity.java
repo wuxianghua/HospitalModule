@@ -3,11 +3,11 @@ package com.palmap.huayitonglib.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -60,7 +60,9 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         public void afterTextChanged(Editable editable) {
             String str = editable.toString();
-            search(str);
+            if (isFormDb){
+                search(str);
+            }
         }
     };
 
@@ -75,7 +77,8 @@ public class SearchActivity extends AppCompatActivity {
 
     // 点击返回
     public void back(View view){
-        if (!TextUtils.isEmpty(mSearch_Ed.getText())){
+//        if (!TextUtils.isEmpty(mSearch_Ed.getText())){
+        if (type == TYPE_SEARCH) {
             closeSoftKeyBoard(this);
             replaceFragment(mSearchShowFragment);
             mSearch_Ed.setText("");
@@ -102,6 +105,28 @@ public class SearchActivity extends AppCompatActivity {
                 } else {
                     replaceFragment(mSearchListFragment);
                 }
+            }
+        } else {
+            replaceFragment(mSearchShowFragment);
+        }
+    }
+
+    private boolean isFormDb = true;
+    public void search(final String str, final List<MapPointInfoBean> mList){
+        if (str.length()>0){
+            if (mList != null){
+                isFormDb = false;
+                Log.e("db", "search: type " +  type  + "----" + mList.size());
+                replaceFragment(mSearchListFragment);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSearch_Ed.setText(str);
+                        mSearch_Ed.setSelection(str.length());
+                        isFormDb = true;
+                        mSearchListFragment.setData(mList);
+                    }
+                });
             }
         } else {
             replaceFragment(mSearchShowFragment);

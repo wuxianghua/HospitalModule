@@ -26,12 +26,25 @@
         android:background="@color/bg"/>
 
     <LinearLayout
+        android:id="@+id/foldAllLin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:orientation="vertical"
         android:background="@drawable/bg">
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg"
+        android:visibility="gone">
 
         <com.palmap.huayitonglib.view.ExpandableView
             android:id="@+id/expandableView"
