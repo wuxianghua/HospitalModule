@@ -16,9 +16,6 @@ import com.iflytek.cloud.ui.RecognizerDialogListener;
 import com.palmap.huayitonglib.speech.utils.JsonParser;
 import com.palmap.huayitonglib.utils.NetUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -97,20 +94,24 @@ public abstract class VoiceListenActivity extends AppCompatActivity {
                 @Override
                 public void onResult(RecognizerResult results, boolean b) {
                     String text = JsonParser.parseIatResult(results.getResultString());
-                    String sn = null;
-                    // 读取json结果中的sn字段
-                    try {
-                        JSONObject resultJson = new JSONObject(results.getResultString());
-                        sn = resultJson.optString("sn");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    handleListenResult(text);
+                    if (mIatDialog != null) {
+                        mIatDialog.dismiss();
                     }
-                    mIatResults.put(sn, text);
-                    StringBuilder builder = new StringBuilder();
-                    for (String key : mIatResults.keySet()) {
-                        builder.append(mIatResults.get(key));
-                    }
-                    handleListenResult(builder.toString());
+//                    String sn = null;
+//                    // 读取json结果中的sn字段
+//                    try {
+//                        JSONObject resultJson = new JSONObject(results.getResultString());
+//                        sn = resultJson.optString("sn");
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    mIatResults.put(sn, text);
+//                    StringBuilder builder = new StringBuilder();
+//                    for (String key : mIatResults.keySet()) {
+//                        builder.append(mIatResults.get(key));
+//                    }
+//                    handleListenResult(builder.toString());
                 }
 
                 @Override

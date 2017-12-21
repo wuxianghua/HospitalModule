@@ -98,15 +98,6 @@ public class SearchActivity extends VoiceListenActivity {
             replaceFragment(mSearchShowFragment);
         } else {
             setEditText(mDefaultKeyWord);
-//            mList.clear();
-//            mList = MapPointInfoDbManager.get().query(mDefaultKeyWord);
-//            replaceFragment(mSearchListFragment);
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    mSearchListFragment.setData(mList);
-//                }
-//            });
         }
     }
 
