@@ -1,5 +1,6 @@
-package com.palmap.huayitonglib.navi;
+package com.palmap.huayitonglib.navi.route;
 
+import com.mapbox.services.commons.geojson.FeatureCollection;
 import com.palmap.huayitonglib.navi.astar.navi.AStarPath;
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -43,7 +44,16 @@ public interface INavigateManager<Route> {
     }
 
     interface Listener<T> {
+        void onNavigateComplete(NavigateState state, List<AStarPath> routes, double fromX, double fromY, long
+                fromPlanargraph, T from, double fromConX, double fromConY, double toX, double toY, long
+                toPlanargraph, T to, double toConX, double toConY);
+    }
+
+    interface Listener1<T> {
         void OnNavigateComplete(NavigateState state, List<AStarPath> routes, T route);
+
+        void onNavigateComplete(NavigateState state, List<AStarPath> routes, double fromX, double fromY, long
+                fromPlanargraph, T from, double toX, double toY, long toPlanargraph, T to);
     }
 
     void setNavigateListener(Listener<Route> listener);

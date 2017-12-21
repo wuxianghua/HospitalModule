@@ -335,7 +335,28 @@ public class MapInitUtils {
                 .include(new LatLng(latitude - 0.002, longitude + 0.002))
                 .include(new LatLng(latitude + 0.002, longitude - 0.002))
                 .build();
-        Log.d("MapInitUtils", "setUpCamera: floorParameter" + floorParameter);
+        // TODO 设置边界
+        mMapboxMap.setLatLngBoundsForCameraTarget(bounds);
+        Log.i("MapInitUtils", "setUpCamera: floorParameter" + floorParameter);
+        double zoom = 16.5;
+        //当楼层的position是3  和4 的时候叫楼层的缩放小一点，别的楼层进行都放比例增大 F0  F1
+        if (floorParameter.equals("F3") || floorParameter.equals("F4")) {
+            zoom = 16;
+        } else if (floorParameter.equals("B1") || floorParameter.equals("B2") || floorParameter.equals("F15")) {  // B1  B2  F15
+            zoom = 17;
+        } else if (floorParameter.equals("F10") || floorParameter.equals("F11") || floorParameter.equals("F12") || floorParameter.equals("F13") ||
+                floorParameter.equals("F14")) { // F10 到 F14
+            zoom = 16.8;
+        } else {
+            zoom = 16.5;
+        }
+        CameraPosition position = new CameraPosition.Builder()
+                .target(new LatLng(latitude, longitude))
+                .zoom(zoom)
+                .tilt(0) // 倾斜角度
+                .build();
+        // 使用一个动画来调整地图
+        mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
 //        if (floorParameter.equals("F1")) {
 //            mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(31.2268634617768,
 //                    121.38649602857757), 17.3));
@@ -357,30 +378,28 @@ public class MapInitUtils {
 //            mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,
 //                    longitude), 19));
 //        }
-        // TODO 中心点
-        mMapboxMap.setLatLngBoundsForCameraTarget(bounds);
 
 //        double zoom = mapboxMap.getCameraPosition().zoom;
 //        LatLng latLng = mapboxMap.getCameraPosition().target;
-        // TODO Change by GHW 因左侧可侧滑，所以中心点向右偏移一点
-        longitude = longitude - 0.00008;
-        if (!floorParameter.equals("F4")){
-            CameraPosition position = new CameraPosition.Builder()
-                    .target(new LatLng(latitude, longitude))
-                    .zoom(19)
-                    .tilt(42) // 倾斜角度
-                    .build();
-            // 使用一个动画来调整地图
-            mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
-        }else {
-            CameraPosition position = new CameraPosition.Builder()
-                    .target(new LatLng(latitude, longitude))
-                    .zoom(19)
-                    .tilt(0) // 倾斜角度
-                    .build();
-            // 使用一个动画来调整地图
-            mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
-        }
+        // 因左侧可侧滑，所以中心点向右偏移一点
+//        longitude = longitude - 0.00008;
+//        if (!floorParameter.equals("F4")){
+//            CameraPosition position = new CameraPosition.Builder()
+//                    .target(new LatLng(latitude, longitude))
+//                    .zoom(19)
+//                    .tilt(42) // 倾斜角度
+//                    .build();
+//            // 使用一个动画来调整地图
+//            mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+//        }else {
+//            CameraPosition position = new CameraPosition.Builder()
+//                    .target(new LatLng(latitude, longitude))
+//                    .zoom(19)
+//                    .tilt(0) // 倾斜角度
+//                    .build();
+//            // 使用一个动画来调整地图
+//            mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+//        }
 
 
 

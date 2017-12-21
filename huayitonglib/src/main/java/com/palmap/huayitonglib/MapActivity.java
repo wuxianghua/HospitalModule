@@ -35,10 +35,15 @@ import com.mapbox.services.commons.models.Position;
 import com.palmap.huayitonglib.activity.SearchActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
+import com.palmap.huayitonglib.navi.shownaviroute.PlanRouteListener;
+import com.palmap.huayitonglib.navi.shownaviroute.RouteBean;
+import com.palmap.huayitonglib.navi.shownaviroute.RouteManager;
+import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.FileUtils;
 import com.palmap.huayitonglib.utils.GuoMapUtils;
+import com.palmap.huayitonglib.utils.MapConfig2;
 import com.palmap.huayitonglib.utils.MapInitUtils;
 import com.palmap.huayitonglib.utils.MapUtils;
 import com.palmap.huayitonglib.utils.GuoMapUtilsTow;
@@ -49,6 +54,9 @@ import com.weigan.loopview.OnItemSelectedListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.palmap.huayitonglib.activity.SearchActivity.SEARCH_END;
+import static com.palmap.huayitonglib.activity.SearchActivity.SEARCH_START;
+
 public class MapActivity extends AppCompatActivity {
 
     private MapView mMapView;
@@ -56,12 +64,13 @@ public class MapActivity extends AppCompatActivity {
     private MapActivity self;
     private FloorBean mFloorBean;
     //当前FloorId为平面层楼层
-    private int mCurrentFloorId = Config.FLOORID_F0_CH;
+    private int mCurrentFloorId = Config.FLOORID_F1_CH;
 
 
     //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
 
     Handler h = null;
+    private RouteManager mRouteManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +89,20 @@ public class MapActivity extends AppCompatActivity {
     ImageView xishoujian_image, yinhang_image, dianti_image, futi_image, jian_image, jia_image;
     LoopView loopView;
     RelativeLayout loading_rel;
+
     RelativeLayout title_rr, search_rr, park_zhongdian, luxianguihua_rr, nagv_01_rr, selectstart_rr_01, nagv_top01;
     LinearLayout setstar_bttom_ll01;
     Button stop_nagv_btn;
 
+
+
+    ImageView view_2D_3D; // 2D.3D切换按钮
+    TextView bilichi_Tv; // 比例尺显示的距离
+
     private void initView() {
+        view_2D_3D = (ImageView) findViewById(R.id.view_2D_3D);
+        bilichi_Tv = (TextView) findViewById(R.id.bilichi_Tv);
+
         jian_image = (ImageView) findViewById(R.id.jian_image);
         jia_image = (ImageView) findViewById(R.id.jia_image);
         jia_image.setImageResource(R.mipmap.ngr_ic_map_zoomin);
@@ -195,7 +213,8 @@ public class MapActivity extends AppCompatActivity {
         } else if (i == R.id.changefloor_text) {
             changeFloorScroll();
         } else if (i == R.id.search_rr) {
-            startActivity(new Intent(this, SearchActivity.class));
+//            startActivity(new Intent(this, SearchActivity.class));
+            searchEndPoi();
             initUiView();
         } else if (i == R.id.xishoujian_image) {
             if (xishoujian) {
@@ -290,6 +309,20 @@ public class MapActivity extends AppCompatActivity {
             changeNavigaView(NAVIGA_SHOW_06);
         }else if (i == R.id.nagv_back_01){
             changeNavigaView(ROUTE_SHOW_05);
+
+        } else if (i == R.id.view_2D_3D){
+            // TODO 2D 3D
+            String str = (String) view_2D_3D.getContentDescription();
+            if (str.equals("2D")){
+                GuoMapUtils.setUp3DMap(mMapboxMap);
+                view_2D_3D.setImageResource(R.mipmap.ic_map_3d);
+                view_2D_3D.setContentDescription("3D");
+            } else {
+                GuoMapUtils.setUp2DMap(mMapboxMap);
+                view_2D_3D.setImageResource(R.mipmap.ic_map_2d);
+                view_2D_3D.setContentDescription("2D");
+            }
+
         }
     }
 
@@ -394,6 +427,31 @@ public class MapActivity extends AppCompatActivity {
                         jia_image.setImageResource(R.mipmap.ic_map_jia);
                         jian_image.setImageResource(R.mipmap.ngr_ic_map_zoomout);
                     }
+
+                    // 比例尺显示（根据方法级别设置比例尺显示距离）
+                    if (position.zoom >= 15 && position.zoom <= 16) {
+                        bilichi_Tv.setText("500 m");
+                    } else if (position.zoom >= 16 && position.zoom < 17) {
+                        bilichi_Tv.setText("200 m");
+                    } else if (position.zoom >= 17 && position.zoom < 18) {
+                        bilichi_Tv.setText("100 m");
+                    } else if (position.zoom >= 18 && position.zoom < 19) {
+                        bilichi_Tv.setText("50 m");
+                    } else if (position.zoom >= 19 && position.zoom < 20) {
+                        bilichi_Tv.setText("20 m");
+                    } else if (position.zoom == 20) {
+                        bilichi_Tv.setText("5 m");
+                    }
+                }
+            });
+            //设置路线管理器
+            setRouteManager();
+
+            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(@NonNull LatLng point) {
+                    mRouteManager.planRoute(104.0632504, 30.6420972, 2452754, point.getLongitude(), point.getLatitude(),
+                            mCurrentFloorId);
                 }
             });
 
@@ -528,13 +586,35 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 设置导航路线管理器
+     */
+    private void setRouteManager() {
+        mRouteManager = RouteManager.get();
+        mRouteManager.init(MapActivity.this, mMapboxMap, "roadNet.json", R.mipmap.ic_map_dianti,
+                MapConfig2.LAYERID_AREA_TEXT);
+        mRouteManager.setPlanRouteListener(new PlanRouteListener() {
+            @Override
+            public boolean onSuccess(RouteBean bean) {
+                Log.d("lybb", "路线规划成功了: ");
+                mRouteManager.showNaviRoute(mCurrentFloorId);
+                return false;
+            }
+
+            @Override
+            public void onError() {
+                Log.d("lybb", "路线规划失败了: ");
+            }
+        });
+    }
+
     private void loadSelfMap() {
         GuoMapUtils.addBackgroudLayer(getApplicationContext(), mMapboxMap);
         GuoMapUtils.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
         GuoMapUtils.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
-//        addFacilityLayer(TYPE_NOICON);
         addFacilityLayer(TYPE_NOICON);
         loading_rel.setVisibility(View.GONE);
+
     }
 
     //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
@@ -867,6 +947,7 @@ public class MapActivity extends AppCompatActivity {
 //            default:
 //                break;
 //        }
+        RouteManager.get().showNaviRoute(mCurrentFloorId);
     }
 
     /**
@@ -981,4 +1062,44 @@ public class MapActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         mMapView.onSaveInstanceState(outState);
     }
+
+    // 跳转到搜索界面 搜索终点
+    private void searchEndPoi(){
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra(Constant.SEATCHTYPE_KEY, SEARCH_END); // 选择终点
+        startActivityForResult(intent, Constant.END_REQUESTCODE);
+    }
+
+    // 搜索起点
+    private void searchStartPoi(){
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra(Constant.SEATCHTYPE_KEY, SEARCH_START); // 选择起点
+        startActivityForResult(intent, Constant.START_REQUESTCODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data != null){
+            if (requestCode == Constant.END_REQUESTCODE) { // 终点
+                if (resultCode == Constant.GOWITHME_RESULTCODE){
+                    // 带我去
+                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra("MapPointInfoBean");
+                    Log.i("map", "onActivityResult: 带我去" + mapPointInfoBean.getName());
+
+                } else if(resultCode == Constant.LOOKMAP_RESULTCODE){
+                    // 看地图
+                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra("MapPointInfoBean");
+                    Log.i("map", "onActivityResult: 看地图" + mapPointInfoBean.getName());
+                }
+            } else if(requestCode == Constant.START_REQUESTCODE) { // 起点
+                if (resultCode == Constant.START_RESULTCODE){
+                    // 设为起点
+                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra("MapPointInfoBean");
+                    Log.i("map", "onActivityResult: 设为起点" + mapPointInfoBean.getName());
+                }
+            }
+        }
+    }
+
 }

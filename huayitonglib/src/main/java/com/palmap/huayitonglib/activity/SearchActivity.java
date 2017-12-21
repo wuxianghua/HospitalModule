@@ -1,22 +1,29 @@
 package com.palmap.huayitonglib.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.palmap.huayitonglib.R;
 import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
 import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
 import com.palmap.huayitonglib.fragment.SearchListFragment;
 import com.palmap.huayitonglib.fragment.SearchShowFragment;
+import com.palmap.huayitonglib.utils.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +37,16 @@ public class SearchActivity extends AppCompatActivity {
     private static int TYPE_SHOW = 0;
     private static int TYPE_SEARCH = 1;
     private int type = TYPE_SHOW;
+    public static int SEARCH_END = 0;
+    public static int SEARCH_START = 1;
+    private int searchType = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        Intent intent = getIntent();
+        searchType = intent.getIntExtra(Constant.SEATCHTYPE_KEY,0);
         initView();
     }
 
@@ -51,40 +63,114 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         public void afterTextChanged(Editable editable) {
             String str = editable.toString();
-            search(str);
+            if (isFormDb){
+                search(str);
+            }
+        }
+    };
+
+    // 点击键盘中的搜索图标或按钮
+    private TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                Log.i("ghw", "onEditorAction: 点击搜索按钮");
+                search(mSearch_Ed.getText().toString());
+                return true;
+            }
+            return false;
         }
     };
 
     private void initView() {
         mSearch_Ed = (EditText) findViewById(R.id.search_Ed);
         mSearch_Ed.addTextChangedListener(mTextWatcher);
+        mSearch_Ed.setOnEditorActionListener(mOnEditorActionListener);
 
         mSearchShowFragment = new SearchShowFragment();
-        mSearchListFragment = new SearchListFragment();
+        mSearchListFragment = new SearchListFragment(searchType);
         replaceFragment(mSearchShowFragment);
+    }
+
+    // 点击返回
+    public void back(View view){
+//        if (!TextUtils.isEmpty(mSearch_Ed.getText())){
+        if (type == TYPE_SEARCH) {
+            closeSoftKeyBoard(this);
+            replaceFragment(mSearchShowFragment);
+            mSearch_Ed.setText("");
+        } else {
+            finish();
+            closeSoftKeyBoard(this);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        if (type == TYPE_SEARCH) {
+            closeSoftKeyBoard(this);
+            replaceFragment(mSearchShowFragment);
+            mSearch_Ed.setText("");
+        } else {
+            finish();
+            closeSoftKeyBoard(this);
+        }
+    }
+
+    // 点击语音图标
+    public void startVoice(View view){
+        Toast.makeText(this, "该功能正在建设中…", Toast.LENGTH_SHORT).show();
     }
 
     private void search(String str){
         Log.e("db", "search: " + MapPointInfoDbManager.get().getAll().size());
         if (str.length()>0){
+            mList.clear();
             mList = MapPointInfoDbManager.get().query(str);
-            if (mList != null && mList.size() !=0){
+            if (mList != null){
                 Log.e("db", "search: type " +  type );
                 if (type == TYPE_SEARCH) {
                     mSearchListFragment.setData(mList);
                 } else {
                     replaceFragment(mSearchListFragment);
                 }
-//                replaceFragment(mSearchListFragment);
-//                mSearchListFragment.setData(mList);
             }
         } else {
             replaceFragment(mSearchShowFragment);
         }
     }
 
+    private boolean isFormDb = true;
+    public void search(final String str, final List<MapPointInfoBean> mList){
+        if (str.length()>0){
+            if (mList != null){
+                isFormDb = false;
+                Log.e("db", "search: type " +  type  + "----" + mList.size());
+                replaceFragment(mSearchListFragment);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSearch_Ed.setText(str);
+                        mSearch_Ed.setSelection(str.length());
+                        isFormDb = true;
+                        mSearchListFragment.setData(mList);
+                    }
+                });
+            }
+        } else {
+            replaceFragment(mSearchShowFragment);
+        }
+    }
+
+    public List<MapPointInfoBean> getList(){
+        return mList;
+    }
+
     public void setEditText(String str){
         mSearch_Ed.setText(str);
+        mSearch_Ed.setSelection(str.length());
+        closeSoftKeyBoard(this);
     }
 
     private void replaceFragment(Fragment fragment){

@@ -7,10 +7,12 @@
     android:background="#F7F7F7"
     tools:context="com.palmap.huayitonglib.MapActivity">
     // 地图容器
+
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></com.mapbox.mapboxsdk.maps.MapView>
+
     <RelativeLayout
         android:id="@+id/top_rr"
         android:layout_width="match_parent"
@@ -50,8 +52,6 @@
             android:id="@+id/search_rr"
             android:layout_width="match_parent"
             android:layout_height="44dp"
-            android:layout_alignEnd="@+id/linearLayout"
-            android:layout_alignRight="@+id/linearLayout"
             android:layout_below="@+id/title_rr"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
@@ -85,8 +85,7 @@
                     android:layout_height="25dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:background="@mipmap/ic_yuyin"
-                    />
+                    android:background="@mipmap/ic_yuyin" />
             </RelativeLayout>
 
         </RelativeLayout>
@@ -265,30 +264,11 @@
                     </RelativeLayout>
                 </LinearLayout>
             </RelativeLayout>
-            //地图加载显示布局
-            // 地图加载中
-
-            <RelativeLayout
-                android:id="@+id/loading_rel"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="48dp"
-                android:background="#3F000000"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/loading_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:src="@mipmap/loading" />
-            </RelativeLayout>
         </RelativeLayout>
 
     </RelativeLayout>
     //图标过滤
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="36dp"
@@ -346,6 +326,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/cardbg_touming"
+            android:onClick="onClick"
             android:visibility="gone">
             //选择终点
 
@@ -538,8 +519,8 @@
                         android:layout_height="44dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_green"
-                        android:text="模拟导航"
                         android:onClick="onClick"
+                        android:text="模拟导航"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
 
@@ -608,6 +589,7 @@
         android:layout_marginBottom="10dp">
 
         <RelativeLayout
+            android:id="@+id/changefloor_rel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
@@ -832,6 +814,7 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/zoom_Lin"
             android:layout_width="40dp"
             android:layout_height="80dp"
             android:layout_alignParentBottom="true"
@@ -868,6 +851,60 @@
                     android:gravity="center" />
             </RelativeLayout>
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/view_2D_3D"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_above="@+id/zoom_Lin"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="10dp"
+            android:contentDescription="2D"
+            android:onClick="onClick"
+            android:src="@mipmap/ic_map_2d" />
+
+        <TextView
+            android:id="@+id/bilichi_Tv"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bilichi"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/changefloor_rel"
+            android:gravity="center_horizontal"
+            android:text="5米"
+            android:textColor="@color/text_666"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/bilichi"
+            android:layout_width="60dp"
+            android:layout_height="5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/changefloor_rel"
+            android:src="@mipmap/ic_map_bilichi" />
+
+    </RelativeLayout>
+
+    //地图加载显示布局
+    // 地图加载中
+
+    <RelativeLayout
+        android:id="@+id/loading_rel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp"
+        android:background="#3F000000"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@mipmap/loading" />
     </RelativeLayout>
 
 </RelativeLayout>

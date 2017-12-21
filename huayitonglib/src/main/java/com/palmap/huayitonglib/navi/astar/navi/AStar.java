@@ -136,7 +136,7 @@ public class AStar {
         Collections.reverse(paths);
         filterExtraPath(paths);
         paths = splitPaths(paths);
-        paths = combineCollinear(paths);
+//        paths = combineCollinear(paths);
         return paths;
     }
 
@@ -377,11 +377,14 @@ public class AStar {
                     LineString lineString = GeometryFactories.pseudoMercator().createLineString(new CoordinateArraySequence(
                             new Coordinate[]{pathLineString.getPointN(i).getCoordinate(), pathLineString.getPointN(i + 1).getCoordinate()}));
                     Path path = new Path();
+                    long planarGraphId = aStarLanePath.getFrom().getVertex().getPlanarGraphId();
                     path.setId(aStarLanePath.getPath().getId());
                     Vertex fromVertex = new Vertex();
                     Vertex toVertex = new Vertex();
                     fromVertex.setShape(pathLineString.getPointN(i));
+                    fromVertex.setPlanarGraphId(planarGraphId);
                     toVertex.setShape(pathLineString.getPointN(i + 1));
+                    toVertex.setPlanarGraphId(planarGraphId);
                     path.setFrom(fromVertex);
                     path.setTo(toVertex);
                     path.setPlanarGraphId(aStarLanePath.getPath().getPlanarGraphId());
@@ -394,11 +397,14 @@ public class AStar {
                     LineString lineString = GeometryFactories.pseudoMercator().createLineString(new CoordinateArraySequence(
                             new Coordinate[]{pathLineString.getPointN(i).getCoordinate(), pathLineString.getPointN(i - 1).getCoordinate()}));
                     Path path = new Path();
+                    long planarGraphId = aStarLanePath.getFrom().getVertex().getPlanarGraphId();
                     path.setId(aStarLanePath.getPath().getId());
                     Vertex fromVertex = new Vertex();
                     Vertex toVertex = new Vertex();
                     fromVertex.setShape(pathLineString.getPointN(i));
+                    fromVertex.setPlanarGraphId(planarGraphId);
                     toVertex.setShape(pathLineString.getPointN(i - 1));
+                    toVertex.setPlanarGraphId(planarGraphId);
                     path.setFrom(fromVertex);
                     path.setTo(toVertex);
                     path.setPlanarGraphId(aStarLanePath.getPath().getPlanarGraphId());

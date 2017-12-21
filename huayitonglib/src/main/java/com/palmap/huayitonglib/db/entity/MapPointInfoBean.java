@@ -4,12 +4,14 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.io.Serializable;
+
 /**
  * Created by hengwei.guo on 2017/12/20 10:48.
  */
 
 @Entity
-public class MapPointInfoBean {
+public class MapPointInfoBean implements Serializable{
 
     /*
     {

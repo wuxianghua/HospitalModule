@@ -41,11 +41,19 @@ public class GuoMapUtils {
         mMapboxMap.getUiSettings().setAttributionEnabled(false);
         // 指南针位置
         // 设置指南针
-        mMapboxMap.getUiSettings().setCompassMargins(30, 150, DisplayUtil.getScreenWith(context) - 100, 20);
+        mMapboxMap.getUiSettings().setCompassMargins(30, DisplayUtil.dip2px(64), DisplayUtil.getScreenWith(context) - 100, 20);
         // getActivity容易有空指针bug 切换指南针的图片
         mMapboxMap.getUiSettings().setCompassImage(context.getResources().getDrawable(R.mipmap.ic_map_compass));
         mMapboxMap.setMaxZoomPreference(20);
         mMapboxMap.setMinZoomPreference(15);
+    }
+
+    /**
+     *  设置指南针距离顶部的距离
+     * @param marginTop 单位dp
+     */
+    public static void setCampassMarTop(Context context, MapboxMap mMapboxMap,float marginTop){
+        mMapboxMap.getUiSettings().setCompassMargins(30, DisplayUtil.dip2px(marginTop), DisplayUtil.getScreenWith(context) - 100, 20);
     }
 
     public static void addBackgroudLayer(Context context, MapboxMap mMapboxMap) {
@@ -131,10 +139,12 @@ public class GuoMapUtils {
         //Area 区域覆盖颜色
         FillExtrusionLayer arealayer = new FillExtrusionLayer(MapConfig2.LAYERID_AREA, sourceId);
         arealayer.setProperties(
-                PropertyFactory.fillExtrusionColor(Function.property(MapConfig2.NAME_AREA_COLOR, new IdentityStops<String>())),
+//                PropertyFactory.fillExtrusionColor(Function.property(MapConfig2.NAME_AREA_COLOR, new IdentityStops<String>())),
+                PropertyFactory.fillExtrusionColor(Function.property("color", new IdentityStops<String>())),
 //                PropertyFactory.fillOpacity(Function.property("opacity", new IdentityStops<Float>())), // 透明度
 //                PropertyFactory.fillExtrusionOpacity(0.5f), // 透明度
-                fillExtrusionHeight(Function.property(MapConfig2.NAME_AREA_HEIGHT, new IdentityStops<Float>()))
+//                fillExtrusionHeight(Function.property(MapConfig2.NAME_AREA_HEIGHT, new IdentityStops<Float>()))
+                fillExtrusionHeight(Function.property("height", new IdentityStops<Float>())),
 //                        fillExtrusionHeight() // 高度拉伸
 //                        fillExtrusionBase() // 阴影
 //                        fillExtrusionColor() // 颜色
@@ -142,7 +152,7 @@ public class GuoMapUtils {
 //                        fillExtrusionPattern() //模式;   花样，样品;   图案;   榜样，典范;
 //                        fillExtrusionTranslate() //转化
 //                        fillExtrusionTranslateAnchor()
-//                PropertyFactory.fillExtrusionBase(0.0f) // 阴影大小
+                PropertyFactory.fillExtrusionBase(0.0f) // 阴影大小
         );
         mapboxMap.addLayer(arealayer);
 
@@ -152,18 +162,17 @@ public class GuoMapUtils {
 
         LineLayer areaLineLayer = new LineLayer(MapConfig2.LAYERID_AREA_LINE, sourceId);
         areaLineLayer.setProperties(
-                PropertyFactory.lineWidth(0.5f),
-                PropertyFactory.lineColor(Function.property(MapConfig2.NAME_AREA_BORDER_COLOR, new
+                PropertyFactory.lineWidth(0.3f),
+                PropertyFactory.lineColor(Function.property("outLineColor", new
                         IdentityStops<String>())),
 //                PropertyFactory.lineColor(Function.property("outLineColor", new IdentityStops<String>()))
-                PropertyFactory.fillExtrusionHeight(0.2f)
+                PropertyFactory.fillExtrusionHeight(Function.property("lineHeight", new IdentityStops<Float>()))
         );
         //-----3D-----(3D的时候线要放在面上面才能显示出来)
         // TODO 现在不要线了
-        mapboxMap.addLayerAbove(areaLineLayer, MapConfig2.LAYERID_AREA);
+//        mapboxMap.addLayerAbove(areaLineLayer, MapConfig2.LAYERID_AREA);
 
-
-//       mMapboxMap.addLayer(areaLineLayer);
+        mapboxMap.addLayer(areaLineLayer);
         if (mapboxMap.getLayer(MapConfig2.LAYERID_AREA_TEXT) != null) {
             mapboxMap.removeLayer(MapConfig2.LAYERID_AREA_TEXT);
         }
@@ -179,7 +188,8 @@ public class GuoMapUtils {
                 PropertyFactory.iconSize(.5f),
                 PropertyFactory.textAnchor(Property.TEXT_JUSTIFY_LEFT),
                 PropertyFactory.iconOffset(new Float[]{-10.f, 0.f}),
-                PropertyFactory.iconImage(Function.property("logo", Stops.<String>identity()))
+                PropertyFactory.iconImage(Function.property("logo", Stops.<String>identity())),
+                PropertyFactory.textPadding(8f)
 
         );
         areaTextLayer.setFilter(Filter.has("display"));
@@ -236,14 +246,19 @@ public class GuoMapUtils {
         if (mSouceId.contains("area")) {
             //刘艺博的方式
             // TODO 此处地图配色
-            StyleManagerHX mStyleManager = new StyleManagerHX();
-            String mapjson = FileUtils.loadFromAssets(context, fileName);//读取原始的地图文件
-            FeatureCollection featureCollection = BaseFeatureCollection.fromJson(mapjson);//转换成featurecollection
-            mStyleManager.attach(featureCollection);//进行着色处理
-            geojson = featureCollection.toJson();//处理好的featurecollection转换成json
+//            StyleManagerHXForH5 mStyleManager = new StyleManagerHXForH5();
+//            String mapjson = FileUtils.loadFromAssets(context, fileName);//读取原始的地图文件
+//            FeatureCollection featureCollection = BaseFeatureCollection.fromJson(mapjson);//转换成featurecollection
+//            mStyleManager.attach(featureCollection);//进行着色处理
+//            geojson = featureCollection.toJson();//处理好的featurecollection转换成json
 //            FileUtils.writeToFile("F1_area.geojson", geojson);
- 
+
             //------json——style的方式
+            String styleJson = FileUtils.loadFromAssets(context, "HxH5Style.json");
+            MapStyleManagerHXForH5 styleManager = new MapStyleManagerHXForH5(styleJson);
+            FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);
+            styleManager.attachStyle(featureCollection, mSouceId);
+            geojson = featureCollection.toJson();//处理好的featurecollection转换成json
 //            styleManager.attachStyle(featureCollection, mSouceId);
         }
 //        GeoJsonSource geoJsonSource = new GeoJsonSource(mSouceId, featureCollection);
@@ -276,7 +291,7 @@ public class GuoMapUtils {
         CameraPosition position = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude))
                 .zoom(16)
-                .tilt(42) // 倾斜角度
+                .tilt(0) // 倾斜角度
                 .build();
         // 使用一个动画来调整地图
         mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
@@ -292,10 +307,10 @@ public class GuoMapUtils {
                 .tilt(0) // 倾斜角度
                 .build();
         // 设置area层对应2D高度，此高度对应style中的2DHeight
-        Layer layer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA);
-        layer.setProperties(
-                fillExtrusionHeight(Function.property("3DHeight", new IdentityStops<Float>()))
-        );
+//        Layer layer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA);
+//        layer.setProperties(
+//                fillExtrusionHeight(Function.property("3DHeight", new IdentityStops<Float>()))
+//        );
         // 添加线 areaLine
         Layer lineLayer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA_LINE);
         if (lineLayer != null) {
@@ -316,16 +331,16 @@ public class GuoMapUtils {
                 .tilt(50) // 倾斜角度
                 .build();
         // 设置area层对应3D高度，此高度对应style中的3DHeight
-        Layer layer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA);
-        layer.setProperties(
-                fillExtrusionHeight(Function.property("3DHeight", new IdentityStops<Float>()))
-        );
-        // 去掉线条，3D添加线条后太难看了,此处对线条进行了隐藏
-        Layer lineLayer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA_LINE);
-        if (lineLayer != null) {
-            lineLayer.setProperties(PropertyFactory.visibility
-                    (Property.NONE));
-        }
+//        Layer layer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA);
+//        layer.setProperties(
+//                fillExtrusionHeight(Function.property("3DHeight", new IdentityStops<Float>()))
+//        );
+//        // 去掉线条，3D添加线条后太难看了,此处对线条进行了隐藏
+//        Layer lineLayer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA_LINE);
+//        if (lineLayer != null) {
+//            lineLayer.setProperties(PropertyFactory.visibility
+//                    (Property.NONE));
+//        }
         // 使用一个动画来调整地图
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
     }

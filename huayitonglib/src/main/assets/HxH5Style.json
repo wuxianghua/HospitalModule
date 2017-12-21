@@ -1,0 +1,130 @@
+{
+  "default": {
+    "Frame": {
+      "renderer": {
+        "type": "simple",
+        "style": {
+          "type": "Polygon",
+          "light": true,
+          "face": {
+            "height": -0.5,
+            "lineHeight": -0.48,
+            "color": "0xffffff",
+            "outline": {
+              "color": "0xffffff"
+            }
+          },
+          "bevelEnabled": true,
+          "bevelSize": 1
+        }
+      }
+    },
+    "Area": {
+      "renderer": {
+        "type": "unique",
+        "keys": [
+          "category"
+        ],
+        "default": {
+          "type": "Polygon",
+          "light": true,
+          "polygonMerge": true,
+          "outlineBlending": false,
+          "face": {
+            "height": 1,
+            "lineHeight": 1.03,
+            "color": "0xffd4da",
+            "font": "arial",
+            "opacity": "0.85"
+          },
+          "outline": {
+            "color": "0xFA7D8F"
+          }
+        },
+        "styles": {
+          "23041000":{"type": "Polygon","face": {"color": "0xCCCC99","height":0.1,"lineHeight":0.12},"outline":{"color":"0xffffff"},"clickable": false},
+          "13091000":{"type": "Polygon","face": {"color": "0xffffff","height":0.1,"lineHeight":0.12},"outline":{"color":"0xffffff"},"clickable": false},
+          "12002000":{"type": "Polygon","face": {"color": "0xffffff","height":0.1,"lineHeight":0.32},"outline":{"color":"0x80211d"},"clickable": false},
+          "12000000":{"type": "Polygon","face": {"color": "0xffffff","height":0.1,"lineHeight":0.32},"outline":{"color":"0x80211d"},"clickable": false},
+          "23043000":{"type": "Polygon","face": {"color": "0xffffff","height":0.1,"lineHeight":0.12},"outline":{"color":"0xffffff"},"clickable": false},
+          "11001000":{"type": "Polygon","face": {"color": "0xffffff","height":0.1,"lineHeight":0.12},"outline":{"color":"0xffffff"},"clickable": false},
+
+          "23062000":{"type": "Polygon","face": {"color": "0xffffff","height":0.1,"lineHeight":0.12},"outline":{"color":"0xc6c6c6"},"clickable": false},
+          "16000000":{"type": "Polygon","face": {"color": "0xffffff","height":0.1,"lineHeight":0.12},"outline":{"color":"0xc6c6c6"},"clickable": false},
+          "23027000":{"type": "Polygon","face": {"color": "0xd2eafb"},"outline":{"color":"0xadd8f7"}},
+          "23002000":{"type": "Polygon","face": {"color": "0xfde3cf"},"outline":{"color":"0xfccca7"}},
+          "21009000":{"type": "Polygon","face": {"color": "0xfde3cf"},"outline":{"color":"0xfccca7"}},
+          "15000000":{"type": "Polygon","face": {"color": "0xfde3cf"},"outline":{"color":"0xfccca7"}},
+
+          "35002000":{"type": "Polygon","face": {"color": "0xdfeec9","height":0.5,"lineHeight":0.5},"outline":{"color":"0xdfeec9"},"clickable": false},
+          "35003000":{"type": "Polygon","face": {"color": "0xdfeec9","height":0.5,"lineHeight":0.5},"outline":{"color":"0xdfeec9"},"clickable": false},
+
+          "33000000":{"type": "Polygon","face": {"color": "0xddedea"}, "outline":{"color":"0xddedea"}},
+          "23048000":{"type": "Polygon","face": {"color": "0xddedea"}, "outline":{"color":"0xddedea"}},
+          "15005000":{"type": "Polygon","face": {"color": "0xddedea"}, "outline":{"color":"0xddedea"}},
+          "23000000":{"type": "Polygon","face": {"color": "0xddedea"}, "outline":{"color":"0xddedea"}},
+          "23999000":{"type": "Polygon","face": {"color": "0xe9e9e9"}, "outline":{"color":"0xe9e9e9"}},
+
+          "23024000":{"type": "Polygon","face": {"color": "0xe4e2fa"}, "outline":{"color":"0xcfcaf6"}},
+          "23025000":{"type": "Polygon","face": {"color": "0xe4e2fa"}, "outline":{"color":"0xcfcaf6"}},
+          "23059000":{"type": "Polygon","face": {"color": "0xe4e2fa"}, "outline":{"color":"0xcfcaf6"}},
+          "23063000":{"type": "Polygon","face": {"color": "0xe4e2fa"}, "outline":{"color":"0xcfcaf6"}},
+          "37000000":{"type": "Polygon","face": {"color": "0xffffff","height":0.5,"lineHeight":0.5},"outline":{"color":"0x9a9a9a"},"clickable": false},
+
+          "24091000":{"type": "Polygon","face": {"color": "0xfff3cf"}, "outline":{"color":"0xffe9a7"}},
+          "24092000":{"type": "Polygon","face": {"color": "0xfff3cf"}, "outline":{"color":"0xffe9a7"}},
+          "24093000":{"type": "Polygon","face": {"color": "0xfff3cf","height":0.5, "lineHeight":0.52}, "outline":{"color":"0xffe9a7"},"clickable": false},
+          "24094000":{"type": "Polygon","face": {"color": "0xfff3cf"}, "outline":{"color":"0xffe9a7"}},
+          "24095000":{"type": "Polygon","face": {"color": "0xfff3cf"}, "outline":{"color":"0xffe9a7"}},
+          "24096000":{"type": "Polygon","face": {"color": "0xfff3cf"}, "outline":{"color":"0xffe9a7"}},
+          "24097000":{"type": "Polygon","face": {"color": "0xfff3cf"}, "outline":{"color":"0xffe9a7"}},
+          "24098000":{"type": "Polygon","face": {"color": "0xfff3cf"}, "outline":{"color":"0xffe9a7"}}
+        }
+      }
+    },
+    "AreaText": {
+      "renderer": {
+        "type": "simple",
+        "style": {
+          "type": "Annotation",
+          "color": "0x475266",
+          "outlineWidth": 5,
+          "outlineColor": "0xffffff",
+          "field": "display",
+          "anchor": [
+            0.5,
+            1
+          ],
+          "collision": true,
+          "depthTest": false,
+          "z": 0.2,
+          "margin": 5
+        }
+      }
+    },
+    "Facility": {
+      "renderer": {
+        "type": "unique",
+        "keys": [
+          "category"
+        ],
+        "default": {
+          "type": "Icon",
+          "serverUrl": "https://api.ipalmap.com/logo/64/",
+          "field": "logo",
+          "anchor": [
+            0.5,
+            1
+          ],
+          "width": 40,
+          "height": 40,
+          "collision": true,
+          "depthTest": true,
+          "z": 1.8,
+          "margin": 0
+        },
+        "styles": {}
+      }
+    }
+  }
+}
