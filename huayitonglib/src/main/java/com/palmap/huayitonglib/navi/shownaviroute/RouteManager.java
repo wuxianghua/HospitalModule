@@ -116,10 +116,10 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
      * 初始化
      *
      * @param context
-     * @param mapboxMap 地图引擎
+     * @param mapboxMap     地图引擎
      * @param routeDataPath 地图数据路径
-     * @param resId 连接点图标资源id
-     * @param aboveId 导航线要在那个层之上
+     * @param resId         连接点图标资源id
+     * @param aboveId       导航线要在那个层之上
      */
     @Override
     public void init(Context context, MapboxMap mapboxMap, String routeDataPath, int resId, String aboveId) {
@@ -198,16 +198,23 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     }
 
     /**
-     * 清除显示路线,并且将保存的路线信息清除，请谨慎调用
+     * 清除显示路线
      */
     @Override
     public void clearRoute() {
-        mRouteBean = new RouteBean();
         for (String layerId : mLayerIds) {
             if (mMapboxMap.getLayer(layerId) != null) {
                 mMapboxMap.removeLayer(layerId);
             }
         }
+    }
+
+    /**
+     * 将保存的路线信息清除，请谨慎调用
+     */
+    @Override
+    public void clearRouteRecord() {
+        mRouteBean = new RouteBean();
     }
 
     /**
