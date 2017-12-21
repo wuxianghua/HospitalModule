@@ -30,9 +30,9 @@ import static com.palmap.huayitonglib.utils.MapConfig2.LAYERID_BACKGROUND;
  * Created by GWH
  */
 
-public class MapUtils2 {
+public class GuoMapUtilsTow {
     //-------------------------------地图数值-----------------------------
-    public static final String TAG = MapUtils2.class.getSimpleName();
+    public static final String TAG = GuoMapUtilsTow.class.getSimpleName();
 
     // 根据frame层数据计算地图中心点（目前算的是平均数）
     public static LatLng getCenterPoint(FeatureCollection featureCollection) {

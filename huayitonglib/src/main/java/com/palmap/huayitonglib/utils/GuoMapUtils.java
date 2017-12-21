@@ -87,13 +87,13 @@ public class GuoMapUtils {
     public static void addFrameMapSource(Context context, MapboxMap mMapboxMap, String mSouceId, String fileName, int
             floorParameter) {
 
-        String geojson = MapUtils2.getGeoJson(context, fileName);
+        String geojson = GuoMapUtilsTow.getGeoJson(context, fileName);
         FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);//2
 //        // 计算中心点
         if (mSouceId.contains("frame")) {
             Log.i("addFrameMapSource", "addFrameMapSource: ------------1");
             //平均值获取中心点------
-            LatLng latlng = MapUtils2.getCenterPoint(featureCollection);
+            LatLng latlng = GuoMapUtilsTow.getCenterPoint(featureCollection);
             if (latlng != null) {
                 setUpCamera(mMapboxMap, latlng.getLatitude(), latlng.getLongitude());
             }
@@ -188,7 +188,7 @@ public class GuoMapUtils {
 
     public static void addFacilityData(Context context, MapboxMap mMapboxMap, FloorBean mFloorBean){
         initFacilityData(context, mMapboxMap, mFloorBean);
-        String geojson = MapUtils2.getGeoJson(context, mFloorBean.getFacilityFilename());
+        String geojson = GuoMapUtilsTow.getGeoJson(context, mFloorBean.getFacilityFilename());
         FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);
         for (Feature feature : featureCollection.getFeatures()) {
             String logo = feature.getStringProperty("logo");
@@ -230,7 +230,7 @@ public class GuoMapUtils {
     }
 
     public static void addMapSource(Context context, MapboxMap mMapboxMap, String mSouceId, String fileName) {
-        String geojson = MapUtils2.getGeoJson(context, fileName);
+        String geojson = GuoMapUtilsTow.getGeoJson(context, fileName);
 //        FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);//2
         // 计算中心点
         if (mSouceId.contains("area")) {
@@ -256,7 +256,7 @@ public class GuoMapUtils {
     }
 
     public static void addMapFacilitySource(Context context, MapboxMap mMapboxMap, String mSouceId, String fileName) {
-        String geojson = MapUtils2.getGeoJson(context, fileName);
+        String geojson = GuoMapUtilsTow.getGeoJson(context, fileName);
         FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);//2
         GeoJsonSource geoJsonSource = new GeoJsonSource(mSouceId, featureCollection);
         if (mMapboxMap.getSource(mSouceId) == null) {
