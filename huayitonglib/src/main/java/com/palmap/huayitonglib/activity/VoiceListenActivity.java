@@ -58,6 +58,9 @@ public abstract class VoiceListenActivity extends AppCompatActivity {
         if (!NetUtils.isNetworkAvailable(this)) {
             Toast.makeText(this, "当前没有网络连接哦…", Toast.LENGTH_SHORT).show();
         } else {
+            if (mIatDialog == null) {
+                initVoiceListen();
+            }
             if (mIatDialog != null) {
                 mIatResults.clear();
                 mIatDialog.show();
@@ -85,6 +88,8 @@ public abstract class VoiceListenActivity extends AppCompatActivity {
     }
 
     public abstract void handleListenResult(String value);
+
+    public abstract void onListenError();
 
     private RecognizerDialogListener getDialogListener() {
         if (mRecognizerDialogListener == null) {

@@ -66,7 +66,7 @@ public class MapActivity extends VoiceListenActivity {
     private FloorBean mFloorBean;
     //当前FloorId为平面层楼层
     private int mCurrentFloorId = Config.FLOORID_F1_CH;
-
+    private boolean mIsSearchEndPoi = true;//是否为搜索终点（语音搜索使用）
 
     //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
 
@@ -280,6 +280,7 @@ public class MapActivity extends VoiceListenActivity {
             //地图缩小
             MapUtils.setMapSmall(mMapboxMap);
         } else if (i == R.id.yuyin_rr) {
+            mIsSearchEndPoi = true;
             showListenDialog();
         } else if (i == R.id.share_rr) {
             centerToast("正在建设中，敬请期待");
@@ -1077,9 +1078,19 @@ public class MapActivity extends VoiceListenActivity {
             if (results.isEmpty()) {
                 Toast.makeText(this, String.format("没有找到 %s，请重新搜索", value), Toast.LENGTH_SHORT).show();
             } else {
-                // TODO: 2017/12/21 跳转界面
+                if (mIsSearchEndPoi) {
+                    searchEndPoi(value);
+                } else {
+                    searchStartPoi(value);
+                }
             }
         }
+        mIsSearchEndPoi = true;
+    }
+
+    @Override
+    public void onListenError() {
+        mIsSearchEndPoi = true;
     }
 
     @Override
