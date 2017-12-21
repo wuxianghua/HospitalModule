@@ -3,6 +3,7 @@ package com.palmap.hospitalmodule;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.palmap.huayitonglib.MapActivity;
 
@@ -13,5 +14,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         startActivity( new Intent(this, MapActivity.class));
+    }
+    public void onMainClick(View view){
+
     }
 }

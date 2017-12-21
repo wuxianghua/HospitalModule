@@ -100,8 +100,7 @@
                 android:id="@+id/selectstart_rr_01"
                 android:layout_width="match_parent"
                 android:layout_height="86dp"
-                android:background="@color/colorAppSkin"
-                android:visibility="gone">
+                android:background="@color/colorAppSkin">
 
                 <RelativeLayout
                     android:id="@+id/selectstart_back_01"
@@ -119,11 +118,28 @@
 
                 <RelativeLayout
                     android:id="@+id/selectstart_star_01"
-                    android:layout_width="276dp"
+                    android:layout_width="match_parent"
                     android:layout_height="32dp"
+                    android:layout_marginRight="50dp"
                     android:layout_marginTop="5dp"
                     android:layout_toRightOf="@+id/selectstart_back_01"
                     android:background="#662EB2A4">
+
+                    <RelativeLayout
+                        android:id="@+id/selectstart_yuyin_rr"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_alignParentRight="true"
+                        android:onClick="onClick"
+                        >
+
+                        <ImageView
+                            android:layout_width="16sp"
+                            android:layout_height="16sp"
+                            android:layout_centerInParent="true"
+                            android:background="@mipmap/ic_yuyin_white" />
+                    </RelativeLayout>
+
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -135,6 +151,7 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/start_top_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -163,11 +180,36 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/endname_top_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="40dp"
-                        android:text="便民门诊    1F A3区"
+                        android:maxLines="10"
+                        android:text="便民门诊"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/endfloorname_top_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@+id/endname_top_text"
+                        android:text="1F"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/endaddress_top_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/endfloorname_top_text"
+                        android:maxLines="10"
+                        android:text="A3区"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp" />
                 </RelativeLayout>
@@ -209,6 +251,7 @@
                         android:background="@mipmap/nav_ic_left" />
 
                     <TextView
+                        android:id="@+id/nagv_fangxiang_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -241,11 +284,21 @@
                         android:layout_weight="1">
 
                         <TextView
+                            android:id="@+id/dangqianweizhi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="当前位置:"
+                            android:textColor="#ffffff" />
+
+                        <TextView
                             android:id="@+id/dangqianweizhi_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:text="当前位置:F1"
+                            android:layout_marginLeft="8dp"
+                            android:layout_toRightOf="@+id/dangqianweizhi"
+                            android:text="F1"
                             android:textColor="#ffffff" />
                     </RelativeLayout>
 
@@ -255,11 +308,21 @@
                         android:layout_weight="1">
 
                         <TextView
+                            android:id="@+id/modidi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="目的地:"
+                            android:textColor="#ffffff" />
+
+                        <TextView
                             android:id="@+id/modidi_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:text="当前位置:F2"
+                            android:layout_marginLeft="8dp"
+                            android:layout_toRightOf="@+id/modidi"
+                            android:text="F1"
                             android:textColor="#ffffff" />
                     </RelativeLayout>
                 </LinearLayout>
@@ -327,12 +390,16 @@
             android:layout_height="wrap_content"
             android:background="@drawable/cardbg_touming"
             android:onClick="onClick"
-            android:visibility="gone">
+            android:visibility="gone"
+
+            >
             //选择终点
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="92dp">
+                android:layout_height="92dp"
+
+                >
 
                 <TextView
                     android:id="@+id/endImg"
@@ -351,6 +418,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/endImg"
+                    android:maxLines="10"
                     android:text="心脏科/心血管内科"
                     android:textColor="#666666"
                     android:textSize="14sp" />
@@ -363,7 +431,22 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/endImg"
-                    android:text="第三大楼A3区          一层"
+                    android:maxLines="10"
+                    android:text="第三大楼A3区"
+                    android:textColor="#999999"
+                    android:textSize="14sp"
+
+                    />
+
+                <TextView
+                    android:id="@+id/park_zhongdian_text03"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/park_zhongdian_text01"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/park_zhongdian_text02"
+                    android:text="一层"
                     android:textColor="#999999"
                     android:textSize="14sp" />
 
@@ -551,6 +634,7 @@
             android:visibility="gone">
 
             <TextView
+                android:id="@+id/nagv_01_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -558,13 +642,23 @@
                 android:textColor="#666666"
                 android:textSize="15sp" />
 
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+            <RelativeLayout
+                android:id="@+id/nagv_yuyin_rr"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="30dp"
-                android:background="@mipmap/ic_card_yuyin_guan" />
+                android:layout_centerInParent="true"
+                android:layout_marginRight="15dp"
+                android:onClick="onClick">
+
+                <ImageView
+                    android:id="@+id/nagv_yuyin_image"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_centerInParent="true"
+                    android:background="@mipmap/ic_card_yuyin_guan" />
+            </RelativeLayout>
+
         </RelativeLayout>
         //导航结束
 
