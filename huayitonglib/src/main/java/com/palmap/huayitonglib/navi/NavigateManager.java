@@ -26,11 +26,14 @@ public class NavigateManager {
     private NavigateUpdateListener mNavigateUpdateListener = null;
 
     public NavigateManager() {
-
     }
 
     public NavigateManager(List<AStarPath> aStarPaths) {
         setAStarPath(aStarPaths);
+    }
+
+    public List<PartInfo> getPartInfos() {
+        return mPartInfos;
     }
 
     public void setAStarPath(List<AStarPath> aStarPaths) {
@@ -94,7 +97,7 @@ public class NavigateManager {
         StringBuilder tipBuilder = new StringBuilder();
         tipBuilder.append("直行").append((int) naviInfo.getRemainLength()).append("米后").append
                 (targetPart.getNextAction().toString());
-        if(mNavigateUpdateListener != null){
+        if (mNavigateUpdateListener != null) {
             mNavigateUpdateListener.onNavigateUpdate(naviInfo);
         }
     }

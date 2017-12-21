@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.palmap.huayitonglib.MapActivity;
 
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

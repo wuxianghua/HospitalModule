@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -28,7 +28,9 @@ import com.palmap.huayitonglib.utils.Constant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends VoiceListenActivity {
+
+    private static final String TAG = SearchActivity.class.getSimpleName();
 
     private EditText mSearch_Ed;
     private SearchShowFragment mSearchShowFragment;
@@ -46,8 +48,9 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         Intent intent = getIntent();
-        searchType = intent.getIntExtra(Constant.SEATCHTYPE_KEY,0);
+        searchType = intent.getIntExtra(Constant.SEATCHTYPE_KEY, 0);
         initView();
+        initVoiceListen();
     }
 
     // 搜索监听
@@ -63,7 +66,7 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         public void afterTextChanged(Editable editable) {
             String str = editable.toString();
-            if (isFormDb){
+            if (isFormDb) {
                 search(str);
             }
         }
@@ -73,7 +76,7 @@ public class SearchActivity extends AppCompatActivity {
     private TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH){
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 Log.i("ghw", "onEditorAction: 点击搜索按钮");
                 search(mSearch_Ed.getText().toString());
                 return true;
@@ -93,8 +96,18 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     // 点击返回
-    public void back(View view){
+    public void back(View view) {
 //        if (!TextUtils.isEmpty(mSearch_Ed.getText())){
+        goBack();
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        goBack();
+    }
+
+    private void goBack() {
         if (type == TYPE_SEARCH) {
             closeSoftKeyBoard(this);
             replaceFragment(mSearchShowFragment);
@@ -106,30 +119,37 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-//        super.onBackPressed();
-        if (type == TYPE_SEARCH) {
-            closeSoftKeyBoard(this);
-            replaceFragment(mSearchShowFragment);
-            mSearch_Ed.setText("");
+    public void handleListenResult(String value) {
+        if (TextUtils.isEmpty(value)) {
+            Toast.makeText(this, "没有听清楚哦，请重新搜索", Toast.LENGTH_SHORT).show();
         } else {
-            finish();
-            closeSoftKeyBoard(this);
+            mList.clear();
+            mList = MapPointInfoDbManager.get().query(value);
+            if (mList.isEmpty()) {
+                Toast.makeText(this, String.format("没有找到 %s，请重新搜索", value), Toast.LENGTH_SHORT).show();
+            } else {
+                setEditText(value);
+            }
         }
     }
 
-    // 点击语音图标
-    public void startVoice(View view){
-        Toast.makeText(this, "该功能正在建设中…", Toast.LENGTH_SHORT).show();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
-    private void search(String str){
+    // 点击语音图标
+    public void startVoice(View view) {
+        showListenDialog();
+    }
+
+    private void search(String str) {
         Log.e("db", "search: " + MapPointInfoDbManager.get().getAll().size());
-        if (str.length()>0){
+        if (!TextUtils.isEmpty(str)) {
             mList.clear();
             mList = MapPointInfoDbManager.get().query(str);
-            if (mList != null){
-                Log.e("db", "search: type " +  type );
+            if (mList != null) {
+                Log.e("db", "search: type " + type);
                 if (type == TYPE_SEARCH) {
                     mSearchListFragment.setData(mList);
                 } else {
@@ -142,11 +162,12 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private boolean isFormDb = true;
-    public void search(final String str, final List<MapPointInfoBean> mList){
-        if (str.length()>0){
-            if (mList != null){
+
+    public void search(final String str, final List<MapPointInfoBean> mList) {
+        if (str.length() > 0) {
+            if (mList != null) {
                 isFormDb = false;
-                Log.e("db", "search: type " +  type  + "----" + mList.size());
+                Log.e("db", "search: type " + type + "----" + mList.size());
                 replaceFragment(mSearchListFragment);
                 new Handler().post(new Runnable() {
                     @Override
@@ -163,18 +184,18 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
-    public List<MapPointInfoBean> getList(){
+    public List<MapPointInfoBean> getList() {
         return mList;
     }
 
-    public void setEditText(String str){
+    public void setEditText(String str) {
         mSearch_Ed.setText(str);
         mSearch_Ed.setSelection(str.length());
         closeSoftKeyBoard(this);
     }
 
-    private void replaceFragment(Fragment fragment){
-        if (fragment == mSearchListFragment){
+    private void replaceFragment(Fragment fragment) {
+        if (fragment == mSearchListFragment) {
             type = TYPE_SEARCH;
         } else {
             type = TYPE_SHOW;

@@ -1,13 +1,18 @@
-package com.palmap.huayitonglib.navi.shownaviroute;
+package com.palmap.huayitonglib.navi.showroute;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.services.commons.geojson.FeatureCollection;
+import com.palmap.huayitonglib.navi.astar.navi.AStarPath;
+
+import java.util.List;
 
 /**
  * Created by yibo.liu on 2017/12/19 18:24.
  */
 
 public class RouteBean {
+    //astart算法算出来的数据
+    private List<AStarPath> routes;
 
     //起点信息
     private long fromFloorId;
@@ -20,6 +25,14 @@ public class RouteBean {
     private LatLng toLatLng;
     private FeatureCollection toFeatureCollection;
     private LatLng toConnection;
+
+    public List<AStarPath> getRoutes() {
+        return routes;
+    }
+
+    public void setRoutes(List<AStarPath> routes) {
+        this.routes = routes;
+    }
 
     public long getFromFloorId() {
         return fromFloorId;

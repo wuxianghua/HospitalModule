@@ -32,22 +32,23 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.services.commons.geojson.BaseFeatureCollection;
 import com.mapbox.services.commons.geojson.Feature;
 import com.mapbox.services.commons.geojson.FeatureCollection;
-import com.mapbox.services.commons.models.Position;
 import com.palmap.huayitonglib.activity.SearchActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
-import com.palmap.huayitonglib.navi.shownaviroute.PlanRouteListener;
-import com.palmap.huayitonglib.navi.shownaviroute.RouteBean;
-import com.palmap.huayitonglib.navi.shownaviroute.RouteManager;
+import com.palmap.huayitonglib.navi.showroute.Navi;
+import com.palmap.huayitonglib.navi.showroute.PlanRouteListener;
+import com.palmap.huayitonglib.navi.showroute.RouteBean;
+import com.palmap.huayitonglib.navi.showroute.RouteManager;
 import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
+import com.palmap.huayitonglib.utils.CoordinateUtil;
 import com.palmap.huayitonglib.utils.FileUtils;
 import com.palmap.huayitonglib.utils.GuoMapUtils;
+import com.palmap.huayitonglib.utils.GuoMapUtilsTow;
 import com.palmap.huayitonglib.utils.MapConfig2;
 import com.palmap.huayitonglib.utils.MapInitUtils;
 import com.palmap.huayitonglib.utils.MapUtils;
-import com.palmap.huayitonglib.utils.GuoMapUtilsTow;
 import com.palmap.huayitonglib.utils.MarkerUtils;
 import com.weigan.loopview.LoopView;
 import com.weigan.loopview.OnItemSelectedListener;
@@ -371,7 +372,6 @@ public class MapActivity extends AppCompatActivity {
             changeNavigaView(NAVIGA_SHOW_06);
         } else if (i == R.id.nagv_back_01) {
             changeNavigaView(ROUTE_SHOW_05);
-
         } else if (i == R.id.nagv_yuyin_rr) {
 
             //导航中语音提示按钮开关
@@ -388,9 +388,11 @@ public class MapActivity extends AppCompatActivity {
                 view_2D_3D.setImageResource(R.mipmap.ic_map_2d);
                 view_2D_3D.setContentDescription("2D");
             }
-
-        } else if (i == R.id.selectstart_yuyin_rr) {
-            //选择起点语音按钮
+        } else if (i == R.id.selectstart_star_01){
+            // 选择起点时，点击起点搜索框跳转到搜索页面
+            if (isJumpStartPoint){
+                searchStartPoi();
+            }
         }
     }
 
@@ -513,15 +515,15 @@ public class MapActivity extends AppCompatActivity {
                 }
             });
             //设置路线管理器
-            setRouteManager();
-
-            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(@NonNull LatLng point) {
-                    mRouteManager.planRoute(104.0632504, 30.6420972, 2452754, point.getLongitude(), point.getLatitude(),
-                            mCurrentFloorId);
-                }
-            });
+//            setRouteManager();
+//
+//            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
+//                @Override
+//                public void onMapClick(@NonNull LatLng point) {
+//                    mRouteManager.planRoute(104.0632504, 30.6420972, 2452754, point.getLongitude(), point.getLatitude(),
+//                            mCurrentFloorId);
+//                }
+//            });
 
             //地图点击事件
             mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
@@ -654,6 +656,8 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    Navi navi;
+
     /**
      * 设置导航路线管理器
      */
@@ -661,11 +665,12 @@ public class MapActivity extends AppCompatActivity {
         mRouteManager = RouteManager.get();
         mRouteManager.init(MapActivity.this, mMapboxMap, "roadNet.json", R.mipmap.ic_map_dianti,
                 MapConfig2.LAYERID_AREA_TEXT);
-        mRouteManager.setPlanRouteListener(new PlanRouteListener() {
+        mRouteManager.registerPlanRouteListener(new PlanRouteListener() {
             @Override
             public boolean onSuccess(RouteBean bean) {
                 Log.d("lybb", "路线规划成功了: ");
                 mRouteManager.showNaviRoute(mCurrentFloorId);
+                navi.startSimulateNavi(bean);
                 return false;
             }
 
@@ -674,6 +679,9 @@ public class MapActivity extends AppCompatActivity {
                 Log.d("lybb", "路线规划失败了: ");
             }
         });
+
+        navi = new Navi();
+        navi.init(this, mMapboxMap, R.mipmap.ic_wodeweizi);
     }
 
     private void loadSelfMap() {
@@ -748,8 +756,11 @@ public class MapActivity extends AppCompatActivity {
     public static final int NAVIGA_SHOW_06 = 6;
     //导航结束
     public static final int STOPNAVIGA_SHOW_07 = 6;
+    // 此变量只用于判断是否允许点击起点框跳转到搜索界面
+    private boolean isJumpStartPoint = true;
 
     public void changeNavigaView(int types) {
+        isJumpStartPoint = true;
         if (types == SHOUYE_SHOW_01) {
             //标题栏
             title_rr.setVisibility(View.VISIBLE);
@@ -884,6 +895,8 @@ public class MapActivity extends AppCompatActivity {
             isHaveSetEnd = true;
             type = 5;
             mapStatus = false;
+            // TODO 此处需设置起点框不能点击
+            isJumpStartPoint = false;
         } else if (types == NAVIGA_SHOW_06) {
             //标题栏
             title_rr.setVisibility(View.GONE);
@@ -1090,18 +1103,19 @@ public class MapActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
-//        // 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
-//        if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
-//            handler.sendEmptyMessageDelayed(1, 50);
-//        }
+        // TODO (记得处理) 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
+        if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
+            handler.sendEmptyMessageDelayed(1, 50);
+            loading_rel.setVisibility(View.VISIBLE);
+        }
     }
 
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-
             if (msg.what == 1) {
-                Toast.makeText(self, "首次安装，正在准备数据，请耐心等待", Toast.LENGTH_SHORT).show();
+                Toast.makeText(self, "首次安装，正在准备数据，请耐心等待", Toast.LENGTH_LONG).show();
                 MapPointInfoDbManager.get().insertAllData(self);
+                loading_rel.setVisibility(View.GONE);
             }
             super.handleMessage(msg);
         }
@@ -1160,19 +1174,60 @@ public class MapActivity extends AppCompatActivity {
             if (requestCode == Constant.END_REQUESTCODE) { // 终点
                 if (resultCode == Constant.GOWITHME_RESULTCODE) {
                     // 带我去
-                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra("MapPointInfoBean");
+                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra
+                            ("MapPointInfoBean");
                     Log.i("map", "onActivityResult: 带我去" + mapPointInfoBean.getName());
+                    // 判断是否是当前楼层
+                    if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId){
+                        String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId()));
+                        shiftFloors(floorAlias,true);
+                    }
+                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()),Double.valueOf(mapPointInfoBean.getLatitude()));
+                    addEndMarker(point);
+                    mEndFloorId = mCurrentFloorId = Integer.valueOf(mapPointInfoBean.getFloorId());
+                    mEndLongtitude = point.getLongitude();
+                    mEndLatitude = point.getLatitude();
+                    changeNavigaView(STARTSELEE_UNSHOW_03);
+                    mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point,19));
+
 
                 } else if (resultCode == Constant.LOOKMAP_RESULTCODE) {
                     // 看地图
-                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra("MapPointInfoBean");
+                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra
+                            ("MapPointInfoBean");
                     Log.i("map", "onActivityResult: 看地图" + mapPointInfoBean.getName());
+                    // 判断是否是当前楼层
+                    if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId){
+                        String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId()));
+                        shiftFloors(floorAlias,true);
+                    }
+                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()),Double.valueOf(mapPointInfoBean.getLatitude()));
+                    addEndMarker(point);
+                    mEndFloorId = mCurrentFloorId = Integer.valueOf(mapPointInfoBean.getFloorId());
+                    mEndLongtitude = point.getLongitude();
+                    mEndLatitude = point.getLatitude();
+                    changeNavigaView(ENDSELEE_SHOW_02);
+                    mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point,19));
                 }
             } else if (requestCode == Constant.START_REQUESTCODE) { // 起点
                 if (resultCode == Constant.START_RESULTCODE) {
                     // 设为起点
-                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra("MapPointInfoBean");
+                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra
+                            ("MapPointInfoBean");
                     Log.i("map", "onActivityResult: 设为起点" + mapPointInfoBean.getName());
+                    // 判断是否是当前楼层
+                    if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId){
+                        String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId()));
+                        shiftFloors(floorAlias,true);
+                    }
+                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()),Double.valueOf(mapPointInfoBean.getLatitude()));
+                    addStartMarker(point);
+                    mStartFloorId = mCurrentFloorId = Integer.valueOf(mapPointInfoBean.getFloorId());
+                    mStartLongtitude = point.getLongitude();
+                    mStartLatitude = point.getLatitude();
+                    //进入路线规划
+                    changeNavigaView(ROUTE_SHOW_05);
+                    mMapboxMap.animateCamera(CameraUpdateFactory.newLatLng(point));
                 }
             }
         }

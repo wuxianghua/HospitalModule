@@ -32,7 +32,7 @@
         <!--android:value="HospitalModule"/>-->
 
         <activity
-            android:name=".MapActivity"
+            android:name=".activity.MapActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.SearchActivity"

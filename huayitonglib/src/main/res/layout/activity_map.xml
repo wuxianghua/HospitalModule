@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F7F7F7"
-    tools:context="com.palmap.huayitonglib.MapActivity">
+    tools:context="com.palmap.huayitonglib.activity.MapActivity">
     // 地图容器
 
     <com.mapbox.mapboxsdk.maps.MapView
@@ -100,7 +100,8 @@
                 android:id="@+id/selectstart_rr_01"
                 android:layout_width="match_parent"
                 android:layout_height="86dp"
-                android:background="@color/colorAppSkin">
+                android:background="@color/colorAppSkin"
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:id="@+id/selectstart_back_01"
@@ -123,15 +124,15 @@
                     android:layout_marginRight="50dp"
                     android:layout_marginTop="5dp"
                     android:layout_toRightOf="@+id/selectstart_back_01"
-                    android:background="#662EB2A4">
+                    android:background="#662EB2A4"
+                    android:onClick="onClick">
 
                     <RelativeLayout
                         android:id="@+id/selectstart_yuyin_rr"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_alignParentRight="true"
-                        android:onClick="onClick"
-                        >
+                        android:onClick="onClick">
 
                         <ImageView
                             android:layout_width="16sp"
@@ -977,6 +978,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/changefloor_rel"
+            android:scaleType="fitXY"
             android:src="@mipmap/ic_map_bilichi" />
 
     </RelativeLayout>

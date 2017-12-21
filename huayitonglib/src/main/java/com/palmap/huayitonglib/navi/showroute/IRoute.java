@@ -1,4 +1,4 @@
-package com.palmap.huayitonglib.navi.shownaviroute;
+package com.palmap.huayitonglib.navi.showroute;
 
 import android.content.Context;
 
@@ -24,7 +24,7 @@ public interface IRoute<T, K> {
      *
      * @param listener
      */
-    void setPlanRouteListener(PlanRouteListener listener);
+    void registerPlanRouteListener(PlanRouteListener listener);
 
     /**
      * 规划路线
