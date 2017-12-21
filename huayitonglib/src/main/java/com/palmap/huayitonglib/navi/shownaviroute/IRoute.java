@@ -9,9 +9,15 @@ import android.content.Context;
 public interface IRoute<T, K> {
 
     /**
+     * 初始化
+     *
      * @param context
+     * @param mapEngine 地图引擎
+     * @param routeDataPath 地图数据路径
+     * @param resId 连接点图标资源id
+     * @param aboveId 导航线要在那个层之上
      */
-    void init(Context context, T mapEngine, String routeDataPath, String resId);
+    void init(Context context, T mapEngine, String routeDataPath, int resId, String aboveId);
 
     /**
      * 路线规划的监听器
@@ -48,7 +54,7 @@ public interface IRoute<T, K> {
     void showNaviRoute(long currentFloorId);
 
     /**
-     * 清除显示路线
+     * 清除显示路线,并且将保存的路线信息清除，请谨慎调用
      */
     void clearRoute();
 }

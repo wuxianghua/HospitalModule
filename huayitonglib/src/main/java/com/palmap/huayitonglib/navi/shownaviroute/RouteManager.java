@@ -4,24 +4,34 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PointF;
+import android.util.Log;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.style.layers.FillExtrusionLayer;
+import com.mapbox.mapboxsdk.style.layers.Layer;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.services.commons.geojson.Feature;
 import com.mapbox.services.commons.geojson.FeatureCollection;
+import com.mapbox.services.commons.geojson.LineString;
 import com.mapbox.services.commons.geojson.Point;
 import com.mapbox.services.commons.models.Position;
 import com.palmap.huayitonglib.navi.astar.navi.AStarPath;
 import com.palmap.huayitonglib.navi.route.INavigateManager;
 import com.palmap.huayitonglib.navi.route.MapBoxNavigateManager;
+import com.palmap.huayitonglib.utils.Config;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+
+import static com.mapbox.services.commons.models.Position.fromCoordinates;
 
 /**
  * Created by yibo.liu on 2017/12/19 17:38.
@@ -44,6 +54,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     private PlanRouteListener mPlanRouteListener;
     private RouteBean mRouteBean;
     private List<String> mLayerIds;
+    private String mAboveId;
 
     private RouteManager() {
 
@@ -60,7 +71,6 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
         return sInstance;
     }
 
-
     private INavigateManager.Listener<FeatureCollection> mListener = new INavigateManager.Listener<FeatureCollection>
             () {
         @Override
@@ -71,14 +81,24 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
 
             if (state == INavigateManager.NavigateState.OK) {
                 mRouteBean.setFromFloorId(fromPlanargraph);
-                mRouteBean.setFromConnection(new LatLng(fromConY, fromConX));
+                LatLng fromConlatLng = null;
+                if (fromConX != 0) {
+                    fromConlatLng = CoordinateUtils.webMercator2LatLng(fromConX, fromConY);
+                }
+                mRouteBean.setFromConnection(fromConlatLng);
                 mRouteBean.setFromFeatureCollection(from);
-                mRouteBean.setFromLatlng(new LatLng(fromY, fromX));
+                LatLng fromLatlng = CoordinateUtils.webMercator2LatLng(fromX, fromY);
+                mRouteBean.setFromLatlng(fromLatlng);
 
                 mRouteBean.setToFloorId(toPlanargraph);
-                mRouteBean.setToConnection(new LatLng(toConY, toConX));
+                LatLng toConlatLng = null;
+                if (toConX != 0) {
+                    toConlatLng = CoordinateUtils.webMercator2LatLng(toConX, toConY);
+                }
+                mRouteBean.setToConnection(toConlatLng);
                 mRouteBean.setToFeatureCollection(to);
-                mRouteBean.setToLatLng(new LatLng(toY, toX));
+                LatLng toLatLng = CoordinateUtils.webMercator2LatLng(toX, toY);
+                mRouteBean.setToLatLng(toLatLng);
 
                 if (mPlanRouteListener != null) {
                     mPlanRouteListener.onSuccess(mRouteBean);
@@ -92,17 +112,27 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
         }
     };
 
+    /**
+     * 初始化
+     *
+     * @param context
+     * @param mapboxMap 地图引擎
+     * @param routeDataPath 地图数据路径
+     * @param resId 连接点图标资源id
+     * @param aboveId 导航线要在那个层之上
+     */
     @Override
-    public void init(Context context, MapboxMap mapboxMap, String routeDataPath, String resId) {
+    public void init(Context context, MapboxMap mapboxMap, String routeDataPath, int resId, String aboveId) {
 
         mMapboxMap = mapboxMap;
         mMapboxMap.addImage(CONNECTION_IMAGE_NAME, BitmapUtils.decodeSampledBitmapFromResource(context.getResources()
-                , 1, 100, 100));
+                , resId, 100, 100));
 
         mNavigateManager = new MapBoxNavigateManager(context, routeDataPath);
         mNavigateManager.setNavigateListener(mListener);
         mRouteBean = new RouteBean();
         mLayerIds = new Vector<>();
+        mAboveId = aboveId;
     }
 
     @Override
@@ -113,12 +143,20 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     @Override
     public void planRoute(double fromlong, double fromlat, long fromPlanargraph, double tolong, double tolat, long
             toPlanargraph) {
-        mNavigateManager.navigation(fromlong, fromlat, fromPlanargraph, tolong, tolat, toPlanargraph);
+
+        Position fromPosition = CoordinateUtils.latlng2WebMercator(fromlat, fromlong);
+        Position toPosition = CoordinateUtils.latlng2WebMercator(tolat, tolong);
+
+        mNavigateManager.navigation(fromPosition.getLongitude(), fromPosition.getLatitude(), fromPlanargraph,
+                toPosition.getLongitude(), toPosition.getLatitude(), toPlanargraph);
     }
 
+    /**
+     * @param source
+     */
     @Override
     public void showNaviRoute(FeatureCollection source) {
-        drawLine(source, SOURCEID__ROUTE, LAYERID__ROUTE);
+        drawLine(source, SOURCEID__ROUTE, LAYERID__ROUTE, mAboveId);
     }
 
     /**
@@ -136,7 +174,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     }
 
     private void showStartRoute() {
-        drawLine(mRouteBean.getFromFeatureCollection(), SOURCEID__ROUTE, LAYERID__ROUTE);
+        drawLine(mRouteBean.getFromFeatureCollection(), SOURCEID__ROUTE, LAYERID__ROUTE, mAboveId);
         if (canDrawConPoint()) {
             drawPoint(mRouteBean.getFromConnection(), SOURCEID_CONNECTION, LAYERID_CONNECTION);
         }
@@ -153,14 +191,14 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     }
 
     private void showEndRoute() {
-        drawLine(mRouteBean.getToFeatureCollection(), SOURCEID__ROUTE, LAYERID__ROUTE);
+        drawLine(mRouteBean.getToFeatureCollection(), SOURCEID__ROUTE, LAYERID__ROUTE, mAboveId);
         if (canDrawConPoint()) {
             drawPoint(mRouteBean.getToConnection(), SOURCEID_CONNECTION, LAYERID_CONNECTION);
         }
     }
 
     /**
-     * 清除路线
+     * 清除显示路线,并且将保存的路线信息清除，请谨慎调用
      */
     @Override
     public void clearRoute() {
@@ -179,10 +217,9 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
      * @param sourceId
      * @param layerId
      */
-    private void drawLine(FeatureCollection source, String sourceId, String layerId) {
+    private void drawLine(FeatureCollection source, String sourceId, String layerId, String aboveId) {
         try {
             if (mMapboxMap.getLayer(layerId) == null) {
-
                 GeoJsonSource jsonSource;
 
                 if (source == null) {
@@ -197,9 +234,21 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                 }
                 mMapboxMap.addSource(jsonSource);
 
-                FillExtrusionLayer startLayer = new FillExtrusionLayer(layerId, sourceId);
+                LineLayer startLayer = new LineLayer(layerId, sourceId);
+                startLayer.setProperties(
+                        //加虚线- - - - - - - - - - - -
+                        PropertyFactory.lineDasharray(new Float[]{3f, 1f}),
+                        PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+                        PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+                        PropertyFactory.lineWidth(2.5f),
+                        PropertyFactory.lineColor(Color.parseColor("#ff3333")));
+
                 mLayerIds.add(layerId);
-                mMapboxMap.addLayer(startLayer);
+                if (mMapboxMap.getLayer(aboveId) != null) {
+                    mMapboxMap.addLayerAbove(startLayer, aboveId);
+                } else {
+                    mMapboxMap.addLayer(startLayer);
+                }
 
             } else {
                 GeoJsonSource geoJsonSource = (GeoJsonSource) mMapboxMap.getSourceAs(sourceId);
@@ -211,7 +260,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                 }
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -224,7 +273,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
      */
     private void drawPoint(LatLng latLng, String sourceId, String layerId) {
         try {
-            if (mMapboxMap.getLayer(layerId) != null) {
+            if (mMapboxMap.getLayer(layerId) == null) {
 
                 GeoJsonSource geoJsonSource;
 
@@ -244,9 +293,14 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                 mMapboxMap.addSource(geoJsonSource);
 
                 SymbolLayer symbolLayer = new SymbolLayer(layerId, sourceId);
-                symbolLayer.setProperties(PropertyFactory.iconImage(""), PropertyFactory
+                symbolLayer.setProperties(PropertyFactory.iconImage(CONNECTION_IMAGE_NAME), PropertyFactory
                         .iconAnchor(Property.ICON_ANCHOR_BOTTOM));
-                mMapboxMap.addLayer(symbolLayer);
+                mLayerIds.add(layerId);
+                if (mMapboxMap.getLayer(LAYERID__ROUTE) != null) {
+                    mMapboxMap.addLayerAbove(symbolLayer, LAYERID__ROUTE);
+                } else {
+                    mMapboxMap.addLayer(symbolLayer);
+                }
             } else {
 
                 GeoJsonSource geoJsonSource = (GeoJsonSource) mMapboxMap.getSourceAs(sourceId);

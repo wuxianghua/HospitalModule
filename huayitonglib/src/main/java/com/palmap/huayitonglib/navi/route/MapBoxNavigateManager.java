@@ -183,12 +183,12 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
         FeatureCollection otherRouteFeatureCollection = FeatureCollection.fromFeatures(otherFeatures);
 
         if (endShape != null && shape != null) {
-            this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, routes, fromX, fromY,
+            this.listener.onNavigateComplete(NavigateState.OK, routes, fromX, fromY,
                     fromPlanargraph,
                     routeFeatureCollection, shape.getX(), shape.getY(), toX, toY, toPlanargraph,
                     otherRouteFeatureCollection, endShape.getX(), endShape.getY());
         } else {
-            this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, routes, fromX, fromY,
+            this.listener.onNavigateComplete(NavigateState.OK, routes, fromX, fromY,
                     fromPlanargraph,
                     routeFeatureCollection, 0, 0, toX, toY, toPlanargraph,
                     otherRouteFeatureCollection, 0, 0);
@@ -201,8 +201,8 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
     public static double[] webMercator2LatLng(double x, double y) {
         double x1 = x / 20037508.34 * 180.0;
         double y1 = y / 20037508.34 * 180.0;
-        y = 180 / Math.PI * (2 * Math.atan(Math.exp(y * Math.PI / 180)) - Math.PI / 2);
-        return new double[]{x1, y1};
+        y1 = 180 / Math.PI * (2 * Math.atan(Math.exp(y1 * Math.PI / 180)) - Math.PI / 2);
+        return new double[]{y1, x1};
     }
 
     @Override
