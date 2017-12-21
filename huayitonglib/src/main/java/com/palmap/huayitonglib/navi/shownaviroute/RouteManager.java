@@ -1,37 +1,26 @@
 package com.palmap.huayitonglib.navi.shownaviroute;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PointF;
-import android.util.Log;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.style.layers.FillExtrusionLayer;
-import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.mapbox.services.commons.geojson.Feature;
 import com.mapbox.services.commons.geojson.FeatureCollection;
-import com.mapbox.services.commons.geojson.LineString;
 import com.mapbox.services.commons.geojson.Point;
 import com.mapbox.services.commons.models.Position;
+import com.palmap.huayitonglib.navi.NavigateManager;
 import com.palmap.huayitonglib.navi.astar.navi.AStarPath;
 import com.palmap.huayitonglib.navi.route.INavigateManager;
 import com.palmap.huayitonglib.navi.route.MapBoxNavigateManager;
-import com.palmap.huayitonglib.utils.Config;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-
-import static com.mapbox.services.commons.models.Position.fromCoordinates;
 
 /**
  * Created by yibo.liu on 2017/12/19 17:38.
