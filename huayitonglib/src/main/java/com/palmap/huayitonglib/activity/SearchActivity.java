@@ -1,6 +1,7 @@
 package com.palmap.huayitonglib.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,7 +44,8 @@ public class SearchActivity extends VoiceListenActivity {
     public static int SEARCH_START = 1;
     private int searchType = 0;
 
-    @Override
+
+  @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
