@@ -1,5 +1,7 @@
 package com.palmap.huayitonglib.utils;
 
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
 import static java.lang.Math.atan;
 import static java.lang.Math.exp;
 
@@ -35,4 +37,10 @@ public class CoordinateUtil {
         return new double[]{x, y};
     }
 
+    public static LatLng webMercator2LatLng(double x1, double y1) {
+        double x = x1 / 20037508.34 * 180.0;
+        double y = y1 / 20037508.34 * 180.0;
+        y = 180 / Math.PI * (2 * Math.atan(Math.exp(y * Math.PI / 180)) - Math.PI / 2);
+        return new LatLng(y, x);
+    }
 }
