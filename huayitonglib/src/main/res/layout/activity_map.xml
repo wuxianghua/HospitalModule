@@ -100,8 +100,7 @@
                 android:id="@+id/selectstart_rr_01"
                 android:layout_width="match_parent"
                 android:layout_height="86dp"
-                android:background="@color/colorAppSkin"
-                android:visibility="gone">
+                android:background="@color/colorAppSkin">
 
                 <RelativeLayout
                     android:id="@+id/selectstart_back_01"
