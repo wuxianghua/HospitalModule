@@ -60,6 +60,7 @@ public class MapActivity extends AppCompatActivity {
     //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
 
     Handler h = null;
+    private RouteManager mRouteManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -377,6 +378,16 @@ public class MapActivity extends AppCompatActivity {
                     }
                 }
             });
+            //设置路线管理器
+            setRouteManager();
+
+            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(@NonNull LatLng point) {
+                    mRouteManager.planRoute(104.0632504, 30.6420972, 2452754, point.getLongitude(), point.getLatitude(),
+                            mCurrentFloorId);
+                }
+            });
 
             // 加载地图
             loadSelfMap();
@@ -392,6 +403,28 @@ public class MapActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    /**
+     * 设置导航路线管理器
+     */
+    private void setRouteManager() {
+        mRouteManager = RouteManager.get();
+        mRouteManager.init(MapActivity.this, mMapboxMap, "roadNet.json", R.mipmap.ic_map_dianti,
+                MapConfig2.LAYERID_AREA_TEXT);
+        mRouteManager.setPlanRouteListener(new PlanRouteListener() {
+            @Override
+            public boolean onSuccess(RouteBean bean) {
+                Log.d("lybb", "路线规划成功了: ");
+                mRouteManager.showNaviRoute(mCurrentFloorId);
+                return false;
+            }
+
+            @Override
+            public void onError() {
+                Log.d("lybb", "路线规划失败了: ");
+            }
+        });
     }
 
     private void loadSelfMap() {
@@ -532,6 +565,7 @@ public class MapActivity extends AppCompatActivity {
 //            default:
 //                break;
 //        }
+        RouteManager.get().showNaviRoute(mCurrentFloorId);
     }
 
     public void centerToast(String str) {
