@@ -136,7 +136,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     }
 
     @Override
-    public void setListener(PlanRouteListener listener) {
+    public void setPlanRouteListener(PlanRouteListener listener) {
         mPlanRouteListener = listener;
     }
 
@@ -175,26 +175,23 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
 
     private void showStartRoute() {
         drawLine(mRouteBean.getFromFeatureCollection(), SOURCEID__ROUTE, LAYERID__ROUTE, mAboveId);
-        if (canDrawConPoint()) {
-            drawPoint(mRouteBean.getFromConnection(), SOURCEID_CONNECTION, LAYERID_CONNECTION);
-        }
+        drawPoint(mRouteBean.getFromConnection(), SOURCEID_CONNECTION, LAYERID_CONNECTION);
     }
 
     /**
-     * 是否需要展示连接点
+     * 是否跨楼层
      *
      * @return
      */
-    private boolean canDrawConPoint() {
+    private boolean isAcrossTheFloor() {
         if (mRouteBean.getFromFloorId() == mRouteBean.getToFloorId()) return false;
         return true;
     }
 
+
     private void showEndRoute() {
         drawLine(mRouteBean.getToFeatureCollection(), SOURCEID__ROUTE, LAYERID__ROUTE, mAboveId);
-        if (canDrawConPoint()) {
-            drawPoint(mRouteBean.getToConnection(), SOURCEID_CONNECTION, LAYERID_CONNECTION);
-        }
+        drawPoint(mRouteBean.getToConnection(), SOURCEID_CONNECTION, LAYERID_CONNECTION);
     }
 
     /**

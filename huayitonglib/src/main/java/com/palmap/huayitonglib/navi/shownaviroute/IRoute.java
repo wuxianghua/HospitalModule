@@ -24,7 +24,7 @@ public interface IRoute<T, K> {
      *
      * @param listener
      */
-    void setListener(PlanRouteListener listener);
+    void setPlanRouteListener(PlanRouteListener listener);
 
     /**
      * 规划路线

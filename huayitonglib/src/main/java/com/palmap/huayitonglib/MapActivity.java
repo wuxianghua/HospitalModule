@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -29,10 +31,14 @@ import com.mapbox.services.commons.geojson.FeatureCollection;
 import com.palmap.huayitonglib.activity.SearchActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
+import com.palmap.huayitonglib.navi.shownaviroute.PlanRouteListener;
+import com.palmap.huayitonglib.navi.shownaviroute.RouteBean;
+import com.palmap.huayitonglib.navi.shownaviroute.RouteManager;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.FileUtils;
 import com.palmap.huayitonglib.utils.GuoMapUtils;
+import com.palmap.huayitonglib.utils.MapConfig2;
 import com.palmap.huayitonglib.utils.MapInitUtils;
 import com.palmap.huayitonglib.utils.MapUtils;
 import com.palmap.huayitonglib.utils.MapUtils2;
@@ -48,7 +54,7 @@ public class MapActivity extends AppCompatActivity {
     private MapActivity self;
     private FloorBean mFloorBean;
     //当前FloorId为平面层楼层
-    private int mCurrentFloorId = Config.FLOORID_F0_CH;
+    private int mCurrentFloorId = Config.FLOORID_F1_CH;
 
 
     //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
@@ -69,7 +75,7 @@ public class MapActivity extends AppCompatActivity {
 
     ScrollView map_scrollview;
     TextView changefloor_text;
-    ImageView xishoujian_image, yinhang_image, dianti_image, futi_image,jian_image,jia_image;
+    ImageView xishoujian_image, yinhang_image, dianti_image, futi_image, jian_image, jia_image;
     LoopView loopView;
     RelativeLayout loading_rel;
 

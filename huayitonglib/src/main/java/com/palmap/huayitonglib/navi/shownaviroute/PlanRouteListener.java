@@ -6,12 +6,6 @@ package com.palmap.huayitonglib.navi.shownaviroute;
 
 public interface PlanRouteListener {
 
-    /**
-     * 如果返回true 则显示路线
-     *
-     * @param bean
-     * @return
-     */
     boolean onSuccess(RouteBean bean);
 
     void onError();
