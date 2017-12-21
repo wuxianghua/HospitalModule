@@ -60,6 +60,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
         return sInstance;
     }
 
+    //astar算法计算路线的监听器
     private INavigateManager.Listener<FeatureCollection> mListener = new INavigateManager.Listener<FeatureCollection>
             () {
         @Override
@@ -124,6 +125,11 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
         mAboveId = aboveId;
     }
 
+    /**
+     * 设置规划路线的监听器
+     *
+     * @param listener
+     */
     @Override
     public void setPlanRouteListener(PlanRouteListener listener) {
         mPlanRouteListener = listener;
@@ -177,7 +183,9 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
         return true;
     }
 
-
+    /**
+     * 显示终点楼层的路线
+     */
     private void showEndRoute() {
         drawLine(mRouteBean.getToFeatureCollection(), SOURCEID__ROUTE, LAYERID__ROUTE, mAboveId);
         drawPoint(mRouteBean.getToConnection(), SOURCEID_CONNECTION, LAYERID_CONNECTION);
@@ -308,5 +316,12 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
         } catch (Exception e) {
 
         }
+    }
+
+    /**
+     * 开始模拟导航
+     */
+    private void startSimulateNavi() {
+
     }
 }
