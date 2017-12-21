@@ -1,4 +1,4 @@
-package com.palmap.huayitonglib.navi.shownaviroute;
+package com.palmap.huayitonglib.navi.showroute;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;

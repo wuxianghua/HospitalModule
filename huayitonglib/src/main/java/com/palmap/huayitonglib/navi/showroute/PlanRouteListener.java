@@ -1,4 +1,4 @@
-package com.palmap.huayitonglib.navi.shownaviroute;
+package com.palmap.huayitonglib.navi.showroute;
 
 /**
  * Created by yibo.liu on 2017/12/20 16:28.

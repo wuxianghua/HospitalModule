@@ -1,4 +1,4 @@
-package com.palmap.huayitonglib.navi.shownaviroute;
+package com.palmap.huayitonglib.navi.showroute;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,14 +13,13 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.services.commons.geojson.FeatureCollection;
 import com.mapbox.services.commons.geojson.Point;
 import com.mapbox.services.commons.models.Position;
-import com.palmap.huayitonglib.navi.NavigateManager;
 import com.palmap.huayitonglib.navi.astar.navi.AStarPath;
 import com.palmap.huayitonglib.navi.route.INavigateManager;
 import com.palmap.huayitonglib.navi.route.MapBoxNavigateManager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by yibo.liu on 2017/12/19 17:38.
@@ -30,7 +29,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     public static final String TAG = RouteManager.class.getSimpleName();
 
     private static final String CONNECTION_IMAGE_NAME = "connection_image";
-    private static final String LAYERID__ROUTE = "layerid-route";
+    public static final String LAYERID__ROUTE = "layerid-route";
     private static final String SOURCEID__ROUTE = "sourceid-route";
     private static final String LAYERID_CONNECTION = "layerid-connection";
     private static final String SOURCEID_CONNECTION = "sourceid-connection";
@@ -40,10 +39,12 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     private MapboxMap mMapboxMap;
     private MapBoxNavigateManager mNavigateManager;
 
-    private PlanRouteListener mPlanRouteListener;
     private RouteBean mRouteBean;
     private List<String> mLayerIds;
     private String mAboveId;
+
+    //    private PlanRouteListener mPlanRouteListener;
+    private List<PlanRouteListener> mPlanRouteListeners;
 
     private RouteManager() {
 
@@ -70,6 +71,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                                                to, double toConX, double toConY) {
 
             if (state == INavigateManager.NavigateState.OK) {
+                mRouteBean.setRoutes(routes);
                 mRouteBean.setFromFloorId(fromPlanargraph);
                 LatLng fromConlatLng = null;
                 if (fromConX != 0) {
@@ -90,17 +92,30 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                 LatLng toLatLng = CoordinateUtils.webMercator2LatLng(toX, toY);
                 mRouteBean.setToLatLng(toLatLng);
 
-                if (mPlanRouteListener != null) {
-                    mPlanRouteListener.onSuccess(mRouteBean);
-                }
+                notifyPlanRouteSuccess();
 
             } else {
-                if (mPlanRouteListener != null) {
-                    mPlanRouteListener.onError();
-                }
+                notifyPlanRouteError();
             }
         }
     };
+
+    private void notifyPlanRouteError() {
+        for (PlanRouteListener planRouteListener : mPlanRouteListeners) {
+            if (planRouteListener != null) {
+                planRouteListener.onError();
+            }
+        }
+    }
+
+    private void notifyPlanRouteSuccess() {
+        for (PlanRouteListener planRouteListener : mPlanRouteListeners) {
+            if (planRouteListener != null) {
+                planRouteListener.onSuccess(mRouteBean);
+            }
+        }
+    }
+
 
     /**
      * 初始化
@@ -121,8 +136,10 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
         mNavigateManager = new MapBoxNavigateManager(context, routeDataPath);
         mNavigateManager.setNavigateListener(mListener);
         mRouteBean = new RouteBean();
-        mLayerIds = new Vector<>();
+        mLayerIds = new ArrayList<>();
         mAboveId = aboveId;
+
+        mPlanRouteListeners = new ArrayList<>();
     }
 
     /**
@@ -131,8 +148,10 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
      * @param listener
      */
     @Override
-    public void setPlanRouteListener(PlanRouteListener listener) {
-        mPlanRouteListener = listener;
+    public void registerPlanRouteListener(PlanRouteListener listener) {
+        if (!mPlanRouteListeners.contains(listener)) {
+            mPlanRouteListeners.add(listener);
+        }
     }
 
     @Override
@@ -316,12 +335,5 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
         } catch (Exception e) {
 
         }
-    }
-
-    /**
-     * 开始模拟导航
-     */
-    private void startSimulateNavi() {
-
     }
 }

@@ -34,11 +34,13 @@ public class AStar {
         this.vertexLoader = vertexLoader;
     }
 
-    public List<AStarPath> astar(Point from, long fromPlanarGraphId, Point to, long toPlanarGraphId, double floorHeightDiff) {
+    public List<AStarPath> astar(Point from, long fromPlanarGraphId, Point to, long toPlanarGraphId, double
+            floorHeightDiff) {
         return astar(from, fromPlanarGraphId, null, to, toPlanarGraphId, null, floorHeightDiff);
     }
 
-    public List<AStarPath> astar(Point from, long fromPlanarGraphId, PoiInfo fromArea, Point to, long toPlanarGraphId, PoiInfo toArea, double floorHeightDiff) {
+    public List<AStarPath> astar(Point from, long fromPlanarGraphId, PoiInfo fromArea, Point to, long
+            toPlanarGraphId, PoiInfo toArea, double floorHeightDiff) {
         List<AStarPath> paths = new ArrayList<>();
         if (DistanceOp.distance(from, to) < NaviConstants.TOLERANCE) {
             return paths;
@@ -136,12 +138,13 @@ public class AStar {
         Collections.reverse(paths);
         filterExtraPath(paths);
         paths = splitPaths(paths);
-//        paths = combineCollinear(paths);
+        paths = combineCollinear(paths);
         return paths;
     }
 
     /**
      * 起点终点在同一条路网，直接相连
+     *
      * @param from       起点投影
      * @param to         终点投影
      * @param nearstPath 最近的路网
@@ -161,9 +164,11 @@ public class AStar {
         LineString lineString = null;
         for (Geometry geometry : endSpilt) {
             LineString line = (LineString) geometry;
-            if (line.getStartPoint().distance(startPoint) < NaviConstants.TOLERANCE && line.getEndPoint().distance(endPoint) < NaviConstants.TOLERANCE) {
+            if (line.getStartPoint().distance(startPoint) < NaviConstants.TOLERANCE && line.getEndPoint().distance
+                    (endPoint) < NaviConstants.TOLERANCE) {
                 lineString = line;
-            } else if (line.getEndPoint().distance(startPoint) < NaviConstants.TOLERANCE && line.getStartPoint().distance(endPoint) < NaviConstants.TOLERANCE) {
+            } else if (line.getEndPoint().distance(startPoint) < NaviConstants.TOLERANCE && line.getStartPoint()
+                    .distance(endPoint) < NaviConstants.TOLERANCE) {
                 lineString = (LineString) line.reverse();
             }
         }
@@ -247,6 +252,8 @@ public class AStar {
         path.setId(path1.getPath().getId());
         path.setPlanarGraphId(path1.getPath().getPlanarGraphId());
         path.setMapId(path1.getPath().getMapId());
+        path.setFrom(path1.getFrom().getVertex());
+        path.setTo(path2.getTo().getVertex());
         LineString shape1 = (LineString) path1.getPath().getShape().clone();
         LineString shape2 = (LineString) path2.getPath().getShape().clone();
         if (path1.isReverse() != path2.isReverse()) {
@@ -283,7 +290,8 @@ public class AStar {
         if (checkIfMultiPoints(path1) || checkIfMultiPoints(path2)) {
             return false;
         }
-//        if(DistanceOp.distance(path1.getPath().getShape().getEndPoint(),path2.getPath().getShape().getStartPoint()) > OFFSET)
+//        if(DistanceOp.distance(path1.getPath().getShape().getEndPoint(),path2.getPath().getShape().getStartPoint())
+// > OFFSET)
 //            return false;
         return checkIfCollinear(path1, path2);
     }
@@ -374,8 +382,10 @@ public class AStar {
         if (count > 2) {
             if (!aStarLanePath.isReverse()) {
                 for (int i = 0; i < count - 1; i++) {
-                    LineString lineString = GeometryFactories.pseudoMercator().createLineString(new CoordinateArraySequence(
-                            new Coordinate[]{pathLineString.getPointN(i).getCoordinate(), pathLineString.getPointN(i + 1).getCoordinate()}));
+                    LineString lineString = GeometryFactories.pseudoMercator().createLineString(new
+                            CoordinateArraySequence(
+                            new Coordinate[]{pathLineString.getPointN(i).getCoordinate(), pathLineString.getPointN(i
+                                    + 1).getCoordinate()}));
                     Path path = new Path();
                     long planarGraphId = aStarLanePath.getFrom().getVertex().getPlanarGraphId();
                     path.setId(aStarLanePath.getPath().getId());
@@ -394,8 +404,10 @@ public class AStar {
                 }
             } else {
                 for (int i = count - 1; i > 0; i--) {
-                    LineString lineString = GeometryFactories.pseudoMercator().createLineString(new CoordinateArraySequence(
-                            new Coordinate[]{pathLineString.getPointN(i).getCoordinate(), pathLineString.getPointN(i - 1).getCoordinate()}));
+                    LineString lineString = GeometryFactories.pseudoMercator().createLineString(new
+                            CoordinateArraySequence(
+                            new Coordinate[]{pathLineString.getPointN(i).getCoordinate(), pathLineString.getPointN(i
+                                    - 1).getCoordinate()}));
                     Path path = new Path();
                     long planarGraphId = aStarLanePath.getFrom().getVertex().getPlanarGraphId();
                     path.setId(aStarLanePath.getPath().getId());
@@ -415,7 +427,7 @@ public class AStar {
                 }
             }
             return aStarPaths;
-        }else {
+        } else {
             aStarPaths.add(aStarLanePath);
             return aStarPaths;
         }

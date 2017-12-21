@@ -13,10 +13,10 @@ import java.util.List;
 
 public class NavigateFactory {
 
-    private static final double MIN_DISTANCE = 3;
+    private static final double MIN_DISTANCE = 1;
 
     public static List<NodeInfo> makeMockPointArray(double distance, List<PartInfo> partInfos) {
-        distance = distance <= 0 ? 1d : distance;
+        distance = distance <= 0 ? MIN_DISTANCE : distance;
         List<NodeInfo> mockPointArray = new ArrayList<>();
         long floorId = -1;
         for (PartInfo part : partInfos) {
@@ -26,7 +26,7 @@ public class NavigateFactory {
             if (part.getStartNode() == null || part.getEndNode() == null) {
                 continue;
             }
-            int mockPointCount = (int) Math.ceil(part.getLength() / distance);
+            int mockPointCount = (int)(part.getLength() / distance);
             if (part.getFloorId() != floorId && part.getIndex() == 0) {
                 mockPointArray.add(part.getStartNode());
             }
@@ -36,7 +36,7 @@ public class NavigateFactory {
                 if (part.getStartNode().getX() == part.getEndNode().getX()) {
                     for (int i = 0; i < mockPointCount; i++) {
                         double mockY = part.getStartNode().getY() + distance * (i + 1);
-                        if (part.getEndNode().getY() - mockY < MIN_DISTANCE) {
+                        if (part.getEndNode().getY() - mockY < distance) {
                             mockPointArray.add(part.getEndNode());
                             break;
                         } else {
@@ -47,7 +47,7 @@ public class NavigateFactory {
                 } else if (part.getStartNode().getY() == part.getEndNode().getY()) {
                     for (int i = 0; i < mockPointCount; i++) {
                         double mockX = part.getStartNode().getX() + distance * (i + 1);
-                        if (part.getEndNode().getX() - mockX < MIN_DISTANCE) {
+                        if (part.getEndNode().getX() - mockX < distance) {
                             mockPointArray.add(part.getEndNode());
                             break;
                         } else {
@@ -58,10 +58,10 @@ public class NavigateFactory {
                 } else {
                     for (int i = 0; i < mockPointCount; i++) {
                         double dDistance = distance * (i + 1);
-                        double mockX = part.getStartNode().getX() + dDistance * Math.sin(dDistance);
-                        double mockY = part.getStartNode().getY() + dDistance * Math.cos(dDistance);
+                        double mockX = part.getStartNode().getX() + dDistance * Math.sin(Math.toRadians(part.getAngle()));
+                        double mockY = part.getStartNode().getY() + dDistance * Math.cos(Math.toRadians(part.getAngle()));
                         NodeInfo mockNode = new NodeInfo(mockX, mockY, part.getStartNode().getZ());
-                        if (calculateLength(part.getEndNode(), mockNode) < MIN_DISTANCE) {
+                        if (calculateLength(part.getEndNode(), mockNode) < distance) {
                             mockPointArray.add(part.getEndNode());
                             break;
                         } else {

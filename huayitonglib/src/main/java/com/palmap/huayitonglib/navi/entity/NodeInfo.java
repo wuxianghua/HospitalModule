@@ -97,7 +97,7 @@ public class NodeInfo {
         double x = mX / 20037508.34 * 180;
         double y = mY / 20037508.34 * 180;
         y = 180 / Math.PI * (2 * atan(exp(y * Math.PI / 180)) - Math.PI / 2);
-        mLngLat = new LngLat(x, y, mZ);
+        mLngLat = new LngLat(y, x, mZ);
     }
 
     // 经纬度转Wev墨卡托

@@ -26,11 +26,14 @@ public class NavigateManager {
     private NavigateUpdateListener mNavigateUpdateListener = null;
 
     public NavigateManager() {
-
     }
 
     public NavigateManager(List<AStarPath> aStarPaths) {
         setAStarPath(aStarPaths);
+    }
+
+    public List<PartInfo> getPartInfos() {
+        return mPartInfos;
     }
 
     public void setAStarPath(List<AStarPath> aStarPaths) {
