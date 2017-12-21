@@ -297,6 +297,8 @@ public class GuoMapUtils {
         mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
     }
 
+
+
     // 设置2D模式地图（旋转地图 + 设置area层高度）
     public static void setUp2DMap(MapboxMap mapboxMap) {
         double zoom = mapboxMap.getCameraPosition().zoom;
