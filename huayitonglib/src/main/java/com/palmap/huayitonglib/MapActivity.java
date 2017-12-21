@@ -1,4 +1,4 @@
-package com.palmap.huayitonglib;
+package com.palmap.huayitonglib.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -32,14 +31,14 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.services.commons.geojson.BaseFeatureCollection;
 import com.mapbox.services.commons.geojson.Feature;
 import com.mapbox.services.commons.geojson.FeatureCollection;
-import com.palmap.huayitonglib.activity.SearchActivity;
+import com.palmap.huayitonglib.R;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
+import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
 import com.palmap.huayitonglib.navi.showroute.Navi;
 import com.palmap.huayitonglib.navi.showroute.PlanRouteListener;
 import com.palmap.huayitonglib.navi.showroute.RouteBean;
 import com.palmap.huayitonglib.navi.showroute.RouteManager;
-import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.CoordinateUtil;
@@ -59,7 +58,7 @@ import java.util.List;
 import static com.palmap.huayitonglib.activity.SearchActivity.SEARCH_END;
 import static com.palmap.huayitonglib.activity.SearchActivity.SEARCH_START;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends VoiceListenActivity {
 
     private MapView mMapView;
     private MapboxMap mMapboxMap;
@@ -96,7 +95,6 @@ public class MapActivity extends AppCompatActivity {
     LinearLayout setstar_bttom_ll01;
     Button stop_nagv_btn;
     TextView endname_top_text, start_top_text, endfloorname_top_text, endaddress_top_text;
-
 
     ImageView view_2D_3D; // 2D.3D切换按钮
     TextView bilichi_Tv; // 比例尺显示的距离
@@ -277,7 +275,7 @@ public class MapActivity extends AppCompatActivity {
             changeFloorScroll();
         } else if (i == R.id.search_rr) {
 //            startActivity(new Intent(this, SearchActivity.class));
-            searchEndPoi();
+            searchEndPoi("");
             initUiView();
         } else if (i == R.id.xishoujian_image) {
             if (xishoujian) {
@@ -343,7 +341,7 @@ public class MapActivity extends AppCompatActivity {
             //地图缩小
             MapUtils.setMapSmall(mMapboxMap);
         } else if (i == R.id.yuyin_rr) {
-            centerToast("正在建设中，敬请期待");
+            showListenDialog();
         } else if (i == R.id.share_rr) {
             centerToast("正在建设中，敬请期待");
         } else if (i == R.id.routeLin) {
@@ -374,10 +372,15 @@ public class MapActivity extends AppCompatActivity {
             changeNavigaView(ROUTE_SHOW_05);
         } else if (i == R.id.nagv_yuyin_rr) {
 
+<<<<<<< HEAD:huayitonglib/src/main/java/com/palmap/huayitonglib/MapActivity.java
             //导航中语音提示按钮开关
             centerToast("功能正在建设中，敬请期待");
         } else if (i == R.id.view_2D_3D) {
             // TODO 2D 3D
+=======
+        } else if (i == R.id.view_2D_3D) {
+            // 2D 3D
+>>>>>>> add04e3e0f151bd5d29f1e50f1a76344e035cb1f:huayitonglib/src/main/java/com/palmap/huayitonglib/activity/MapActivity.java
             String str = (String) view_2D_3D.getContentDescription();
             if (str.equals("2D")) {
                 GuoMapUtils.setUp3DMap(mMapboxMap);
@@ -388,10 +391,15 @@ public class MapActivity extends AppCompatActivity {
                 view_2D_3D.setImageResource(R.mipmap.ic_map_2d);
                 view_2D_3D.setContentDescription("2D");
             }
+<<<<<<< HEAD:huayitonglib/src/main/java/com/palmap/huayitonglib/MapActivity.java
         } else if (i == R.id.selectstart_star_01){
+=======
+
+        } else if (i == R.id.selectstart_star_01) {
+>>>>>>> add04e3e0f151bd5d29f1e50f1a76344e035cb1f:huayitonglib/src/main/java/com/palmap/huayitonglib/activity/MapActivity.java
             // 选择起点时，点击起点搜索框跳转到搜索页面
-            if (isJumpStartPoint){
-                searchStartPoi();
+            if (isJumpStartPoint) {
+                searchStartPoi("");
             }
         }
     }
@@ -1142,6 +1150,20 @@ public class MapActivity extends AppCompatActivity {
     }
 
     @Override
+    public void handleListenResult(String value) {
+        if (TextUtils.isEmpty(value)) {
+            Toast.makeText(this, "没有听清楚哦，请重新搜索", Toast.LENGTH_SHORT).show();
+        } else {
+            List<MapPointInfoBean> results = MapPointInfoDbManager.get().query(value);
+            if (results.isEmpty()) {
+                Toast.makeText(this, String.format("没有找到 %s，请重新搜索", value), Toast.LENGTH_SHORT).show();
+            } else {
+                // TODO: 2017/12/21 跳转界面
+            }
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
@@ -1154,16 +1176,18 @@ public class MapActivity extends AppCompatActivity {
     }
 
     // 跳转到搜索界面 搜索终点
-    private void searchEndPoi() {
+    private void searchEndPoi(String keyWord) {
         Intent intent = new Intent(this, SearchActivity.class);
         intent.putExtra(Constant.SEATCHTYPE_KEY, SEARCH_END); // 选择终点
+        intent.putExtra(Constant.SEATCH_KEYWORD, keyWord == null ? "" : keyWord);//搜索关键字
         startActivityForResult(intent, Constant.END_REQUESTCODE);
     }
 
     // 搜索起点
-    private void searchStartPoi() {
+    private void searchStartPoi(String keyWord) {
         Intent intent = new Intent(this, SearchActivity.class);
         intent.putExtra(Constant.SEATCHTYPE_KEY, SEARCH_START); // 选择起点
+        intent.putExtra(Constant.SEATCH_KEYWORD, keyWord == null ? "" : keyWord);//搜索关键字
         startActivityForResult(intent, Constant.START_REQUESTCODE);
     }
 
@@ -1178,17 +1202,17 @@ public class MapActivity extends AppCompatActivity {
                             ("MapPointInfoBean");
                     Log.i("map", "onActivityResult: 带我去" + mapPointInfoBean.getName());
                     // 判断是否是当前楼层
-                    if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId){
+                    if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId) {
                         String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId()));
-                        shiftFloors(floorAlias,true);
+                        shiftFloors(floorAlias, true);
                     }
-                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()),Double.valueOf(mapPointInfoBean.getLatitude()));
+                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()), Double.valueOf(mapPointInfoBean.getLatitude()));
                     addEndMarker(point);
                     mEndFloorId = mCurrentFloorId = Integer.valueOf(mapPointInfoBean.getFloorId());
                     mEndLongtitude = point.getLongitude();
                     mEndLatitude = point.getLatitude();
                     changeNavigaView(STARTSELEE_UNSHOW_03);
-                    mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point,19));
+                    mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 19));
 
 
                 } else if (resultCode == Constant.LOOKMAP_RESULTCODE) {
@@ -1197,17 +1221,17 @@ public class MapActivity extends AppCompatActivity {
                             ("MapPointInfoBean");
                     Log.i("map", "onActivityResult: 看地图" + mapPointInfoBean.getName());
                     // 判断是否是当前楼层
-                    if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId){
+                    if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId) {
                         String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId()));
-                        shiftFloors(floorAlias,true);
+                        shiftFloors(floorAlias, true);
                     }
-                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()),Double.valueOf(mapPointInfoBean.getLatitude()));
+                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()), Double.valueOf(mapPointInfoBean.getLatitude()));
                     addEndMarker(point);
                     mEndFloorId = mCurrentFloorId = Integer.valueOf(mapPointInfoBean.getFloorId());
                     mEndLongtitude = point.getLongitude();
                     mEndLatitude = point.getLatitude();
                     changeNavigaView(ENDSELEE_SHOW_02);
-                    mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point,19));
+                    mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 19));
                 }
             } else if (requestCode == Constant.START_REQUESTCODE) { // 起点
                 if (resultCode == Constant.START_RESULTCODE) {
@@ -1216,11 +1240,11 @@ public class MapActivity extends AppCompatActivity {
                             ("MapPointInfoBean");
                     Log.i("map", "onActivityResult: 设为起点" + mapPointInfoBean.getName());
                     // 判断是否是当前楼层
-                    if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId){
+                    if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId) {
                         String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId()));
-                        shiftFloors(floorAlias,true);
+                        shiftFloors(floorAlias, true);
                     }
-                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()),Double.valueOf(mapPointInfoBean.getLatitude()));
+                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()), Double.valueOf(mapPointInfoBean.getLatitude()));
                     addStartMarker(point);
                     mStartFloorId = mCurrentFloorId = Integer.valueOf(mapPointInfoBean.getFloorId());
                     mStartLongtitude = point.getLongitude();

@@ -17,6 +17,7 @@ public class Constant {
 
     // 以下是地图界面和搜索界面交互相关参数
     public static final String SEATCHTYPE_KEY = "search_tyle";
+    public static final String SEATCH_KEYWORD = "search_keyWord";
     public static final int END_REQUESTCODE = 1000;
     public static final int START_REQUESTCODE = 2000;
     public static final int GOWITHME_RESULTCODE = 3000;
