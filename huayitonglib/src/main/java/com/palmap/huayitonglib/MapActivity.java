@@ -371,16 +371,11 @@ public class MapActivity extends VoiceListenActivity {
         } else if (i == R.id.nagv_back_01) {
             changeNavigaView(ROUTE_SHOW_05);
         } else if (i == R.id.nagv_yuyin_rr) {
-
-<<<<<<< HEAD:huayitonglib/src/main/java/com/palmap/huayitonglib/MapActivity.java
             //导航中语音提示按钮开关
-            centerToast("功能正在建设中，敬请期待");
+
         } else if (i == R.id.view_2D_3D) {
             // TODO 2D 3D
-=======
-        } else if (i == R.id.view_2D_3D) {
-            // 2D 3D
->>>>>>> add04e3e0f151bd5d29f1e50f1a76344e035cb1f:huayitonglib/src/main/java/com/palmap/huayitonglib/activity/MapActivity.java
+
             String str = (String) view_2D_3D.getContentDescription();
             if (str.equals("2D")) {
                 GuoMapUtils.setUp3DMap(mMapboxMap);
@@ -391,12 +386,9 @@ public class MapActivity extends VoiceListenActivity {
                 view_2D_3D.setImageResource(R.mipmap.ic_map_2d);
                 view_2D_3D.setContentDescription("2D");
             }
-<<<<<<< HEAD:huayitonglib/src/main/java/com/palmap/huayitonglib/MapActivity.java
-        } else if (i == R.id.selectstart_star_01){
-=======
+
 
         } else if (i == R.id.selectstart_star_01) {
->>>>>>> add04e3e0f151bd5d29f1e50f1a76344e035cb1f:huayitonglib/src/main/java/com/palmap/huayitonglib/activity/MapActivity.java
             // 选择起点时，点击起点搜索框跳转到搜索页面
             if (isJumpStartPoint) {
                 searchStartPoi("");
