@@ -392,12 +392,9 @@ public class MapActivity extends AppCompatActivity {
         GuoMapUtils.addBackgroudLayer(getApplicationContext(), mMapboxMap);
         GuoMapUtils.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
         GuoMapUtils.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
-
-//        addFacilityLayer(TYPE_NOICON);
         addFacilityLayer(TYPE_NOICON);
 
         loading_rel.setVisibility(View.GONE);
-
 
     }
 

@@ -131,10 +131,12 @@ public class GuoMapUtils {
         //Area 区域覆盖颜色
         FillExtrusionLayer arealayer = new FillExtrusionLayer(MapConfig2.LAYERID_AREA, sourceId);
         arealayer.setProperties(
-                PropertyFactory.fillExtrusionColor(Function.property(MapConfig2.NAME_AREA_COLOR, new IdentityStops<String>())),
+//                PropertyFactory.fillExtrusionColor(Function.property(MapConfig2.NAME_AREA_COLOR, new IdentityStops<String>())),
+                PropertyFactory.fillExtrusionColor(Function.property("color", new IdentityStops<String>())),
 //                PropertyFactory.fillOpacity(Function.property("opacity", new IdentityStops<Float>())), // 透明度
 //                PropertyFactory.fillExtrusionOpacity(0.5f), // 透明度
-                fillExtrusionHeight(Function.property(MapConfig2.NAME_AREA_HEIGHT, new IdentityStops<Float>()))
+//                fillExtrusionHeight(Function.property(MapConfig2.NAME_AREA_HEIGHT, new IdentityStops<Float>()))
+                fillExtrusionHeight(Function.property("height", new IdentityStops<Float>()))
 //                        fillExtrusionHeight() // 高度拉伸
 //                        fillExtrusionBase() // 阴影
 //                        fillExtrusionColor() // 颜色
@@ -152,11 +154,11 @@ public class GuoMapUtils {
 
         LineLayer areaLineLayer = new LineLayer(MapConfig2.LAYERID_AREA_LINE, sourceId);
         areaLineLayer.setProperties(
-                PropertyFactory.lineWidth(0.5f),
-                PropertyFactory.lineColor(Function.property(MapConfig2.NAME_AREA_BORDER_COLOR, new
+                PropertyFactory.lineWidth(0.3f),
+                PropertyFactory.lineColor(Function.property("outLineColor", new
                         IdentityStops<String>())),
 //                PropertyFactory.lineColor(Function.property("outLineColor", new IdentityStops<String>()))
-                PropertyFactory.fillExtrusionHeight(0.2f)
+                PropertyFactory.fillExtrusionHeight(Function.property("lineHeight", new IdentityStops<Float>()))
         );
         //-----3D-----(3D的时候线要放在面上面才能显示出来)
         // TODO 现在不要线了
@@ -236,14 +238,19 @@ public class GuoMapUtils {
         if (mSouceId.contains("area")) {
             //刘艺博的方式
             // TODO 此处地图配色
-            StyleManagerHX mStyleManager = new StyleManagerHX();
-            String mapjson = FileUtils.loadFromAssets(context, fileName);//读取原始的地图文件
-            FeatureCollection featureCollection = BaseFeatureCollection.fromJson(mapjson);//转换成featurecollection
-            mStyleManager.attach(featureCollection);//进行着色处理
-            geojson = featureCollection.toJson();//处理好的featurecollection转换成json
+//            StyleManagerHXForH5 mStyleManager = new StyleManagerHXForH5();
+//            String mapjson = FileUtils.loadFromAssets(context, fileName);//读取原始的地图文件
+//            FeatureCollection featureCollection = BaseFeatureCollection.fromJson(mapjson);//转换成featurecollection
+//            mStyleManager.attach(featureCollection);//进行着色处理
+//            geojson = featureCollection.toJson();//处理好的featurecollection转换成json
 //            FileUtils.writeToFile("F1_area.geojson", geojson);
- 
+
             //------json——style的方式
+            String styleJson = FileUtils.loadFromAssets(context, "HxH5Style.json");
+            MapStyleManagerHXForH5 styleManager = new MapStyleManagerHXForH5(styleJson);
+            FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);
+            styleManager.attachStyle(featureCollection, mSouceId);
+            geojson = featureCollection.toJson();//处理好的featurecollection转换成json
 //            styleManager.attachStyle(featureCollection, mSouceId);
         }
 //        GeoJsonSource geoJsonSource = new GeoJsonSource(mSouceId, featureCollection);
@@ -276,7 +283,7 @@ public class GuoMapUtils {
         CameraPosition position = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude))
                 .zoom(16)
-                .tilt(42) // 倾斜角度
+                .tilt(0) // 倾斜角度
                 .build();
         // 使用一个动画来调整地图
         mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));

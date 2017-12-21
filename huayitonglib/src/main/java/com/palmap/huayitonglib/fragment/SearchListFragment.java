@@ -37,6 +37,7 @@ public class SearchListFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_search_list, null);
+        self = (SearchActivity) getActivity();
         initView();
         return view;
     }
@@ -47,26 +48,33 @@ public class SearchListFragment extends Fragment{
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             Log.i(TAG, "onItemClick: 跳转到地图");
-
+            int id = view.getId();
+            if (id == R.id.goWithMe){ // 点击带我去
+                Log.i(TAG, "onItemClick: 带我去");
+            } else if (id == R.id.lookMap){ // 点击看地图
+                Log.i(TAG, "onItemClick: 看地图");
+            }
         }
     }
 
     public void setData(List<MapPointInfoBean> list){
         mList = list;
         Log.e(TAG, "setData: mlist" + mList.size());
-        mAdapter.setNewData(mList);
-        mAdapter.notifyDataSetChanged();
+//        mAdapter.setNewData(mList);
+//        mAdapter.notifyDataSetChanged();
+        mAdapter = new SearchListAdapter(R.layout.fragment_search_list_item, mList,getContext());
+        mRecycleView.setAdapter(mAdapter);
+        mAdapter.setOnItemClickListener(new ListOnItemClickListener());
     }
 
     private void initView() {
         mRecycleView = view.findViewById(R.id.search_recycleView);
         mRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mList.add(null);
-        mList.add(null);
-        mList.add(null);
+        mList = self.getList();
         mAdapter = new SearchListAdapter(R.layout.fragment_search_list_item, mList,getContext());
         mRecycleView.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new ListOnItemClickListener());
+
     }
 
 }

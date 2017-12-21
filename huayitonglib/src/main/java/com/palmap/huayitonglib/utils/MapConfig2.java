@@ -65,12 +65,12 @@ public class MapConfig2 {
     public static final String COLOR_OTHERS = "#e8d4dc";//其他教学楼，水塔楼学院
     public static final String COLOR_OTHERS_BORDER = "#e8d4dc";//其他教学楼，水塔楼学院 边框
     public static final String COLOR_OTHERS_TEXT = "#5c4e56";//住院楼 文字颜色
-    public static final float TEXTSIZE_OTHERS = 12f;//住院楼 字体大小
+    public static final float TEXTSIZE_OTHERS = 13f;//住院楼 字体大小
 
     public static final String DEFAULT_COLOR = "#e1efec";//默认颜色
     public static final String DEFAULT_COLOR_BORDER = "#e1efec";//默认边线颜色
     public static final String DEFAULT_COLOR_TEXT = "#3f373a";//默认字体颜色
-    public static final float DEFAULT_TEXTSIZE = 10f;//默认字体大小
+    public static final float DEFAULT_TEXTSIZE = 12f;//默认字体大小
     public static final float DEFAULT_HEIGHT = 0.5f;//住默认高度，解决碰撞
     public static final boolean DEFAULT_CLIABLE = false;//默认可点击
 

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.palmap.huayitonglib.R;
 import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
 
 import java.util.List;
@@ -25,8 +26,8 @@ public class SearchListAdapter extends BaseQuickAdapter<MapPointInfoBean, BaseVi
 
     @Override
     protected void convert(BaseViewHolder helper, final MapPointInfoBean item) {
-//        helper.setText(R.id.poiNameTv, item.getName())
-//                .setText(R.id.poiAreaTv, item.getAddress())
-//                .setText(R.id.floorTv, item.getFloorName());
+        helper.setText(R.id.poiNameTv, item.getName())
+                .setText(R.id.poiAreaTv, item.getAddress())
+                .setText(R.id.floorTv, item.getFloorName());
     }
 }

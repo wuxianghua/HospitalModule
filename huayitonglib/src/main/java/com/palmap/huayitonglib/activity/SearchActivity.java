@@ -6,11 +6,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.palmap.huayitonglib.R;
 import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
@@ -64,6 +66,21 @@ public class SearchActivity extends AppCompatActivity {
         replaceFragment(mSearchShowFragment);
     }
 
+    // 点击返回
+    public void back(View view){
+        if (!TextUtils.isEmpty(mSearch_Ed.getText())){
+            replaceFragment(mSearchShowFragment);
+            mSearch_Ed.setText("");
+        } else {
+            finish();
+        }
+    }
+
+    // 点击语音图标
+    public void startVoice(View view){
+        Toast.makeText(this, "该功能正在建设中…", Toast.LENGTH_SHORT).show();
+    }
+
     private void search(String str){
         Log.e("db", "search: " + MapPointInfoDbManager.get().getAll().size());
         if (str.length()>0){
@@ -75,16 +92,20 @@ public class SearchActivity extends AppCompatActivity {
                 } else {
                     replaceFragment(mSearchListFragment);
                 }
-//                replaceFragment(mSearchListFragment);
-//                mSearchListFragment.setData(mList);
             }
         } else {
             replaceFragment(mSearchShowFragment);
         }
     }
 
+    public List<MapPointInfoBean> getList(){
+        return mList;
+    }
+
     public void setEditText(String str){
         mSearch_Ed.setText(str);
+        mSearch_Ed.setSelection(str.length());
+        closeSoftKeyBoard(this);
     }
 
     private void replaceFragment(Fragment fragment){

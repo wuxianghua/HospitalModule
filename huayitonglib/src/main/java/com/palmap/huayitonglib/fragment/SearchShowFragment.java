@@ -42,7 +42,7 @@ public class SearchShowFragment extends Fragment {
     //子控件的的大小
     private ViewGroup.MarginLayoutParams layoutParams;
 
-    private String[] searchNames = {"急诊","缴费","取药","取报告","自助挂号","抽血","输液","洗手间"};
+    private String[] searchNames = {"急诊","缴费","取药","取报告","挂号","抽血","输液","洗手间"};
     private int[] searchImg = {R.mipmap.ic_search_jizhen,R.mipmap.ic_search_jiaofei,R.mipmap.ic_search_quyao,
             R.mipmap.ic_search_qubaogao,R.mipmap.ic_search_jizhen,R.mipmap.ic_search_chouxue,
             R.mipmap.ic_search_shuye,R.mipmap.ic_search_xishoujian};
