@@ -135,7 +135,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
 
         mNavigateManager = new MapBoxNavigateManager(context, routeDataPath);
         mNavigateManager.setNavigateListener(mListener);
-        mRouteBean = new RouteBean();
+        mRouteBean = null;
         mLayerIds = new ArrayList<>();
         mAboveId = aboveId;
 
@@ -180,6 +180,9 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
      */
     @Override
     public void showNaviRoute(long currentFloorId) {
+        if (mRouteBean == null) {
+            return;
+        }
         if (currentFloorId == mRouteBean.getFromFloorId() && mRouteBean.getFromFeatureCollection() != null) {
             showStartRoute();
         } else if (currentFloorId == mRouteBean.getToFloorId() && mRouteBean.getToFeatureCollection() != null) {
@@ -227,7 +230,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
      */
     @Override
     public void clearRouteRecord() {
-        mRouteBean = new RouteBean();
+        mRouteBean = null;
     }
 
     /**

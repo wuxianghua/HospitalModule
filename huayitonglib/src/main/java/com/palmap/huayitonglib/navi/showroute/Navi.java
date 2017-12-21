@@ -10,6 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.animation.LinearInterpolator;
 
+import com.iflytek.sunflower.util.m;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -79,11 +80,15 @@ public class Navi {
      * 开始模拟导航
      */
     public void startSimulateNavi(RouteBean bean) {
-        stopSimulateNavi();
+        mRouteBean = bean;
+
+        if (mSimulateNaviStateListener != null) {
+            mSimulateNaviStateListener.onPre(bean.getFromFloorId());
+        }
 
         mNavigateManager.setAStarPath(bean.getRoutes());
         List<PartInfo> partInfos = mNavigateManager.getPartInfos();
-        handleNodeInfo(partInfos);
+        handleNodeInfo(partInfos, bean.getFromFloorId(), bean.getToFloorId());
 
         if (mPoints.isEmpty()) {
             addOrUpdateLocationMark(null);
@@ -91,30 +96,61 @@ public class Navi {
             addOrUpdateLocationMark(mPoints.get(0));
         }
 
-        mHandler.sendEmptyMessage(MSG_SIMULATE_NAVI);
+        if (mSimulateNaviStateListener != null) {
+            mSimulateNaviStateListener.onStart(bean.getFromFloorId());
+        }
+
+        startInner(mRouteBean.getFromFloorId(), mFromNodeInfos);
     }
 
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == MSG_SIMULATE_NAVI) {
-                start();
+            switch (msg.what) {
+                case MSG_SIMULATE_NAVI:
+                    repeat();
+                    break;
+                case MSG_SIMULATE_NAVI_FINISH_ONE_FLOOR:
+                    if (mRouteBean.getFromFloorId() != mRouteBean.getToFloorId() && mCurrentFloorId != mRouteBean
+                            .getFromFloorId()) {
+                        if (mSimulateNaviStateListener != null) {
+                            mSimulateNaviStateListener.onFinish(mCurrentFloorId, mRouteBean.getFromFloorId(),
+                                    mRouteBean.getToFloorId());
+                            startInner(mRouteBean.getToFloorId(), mToNodeInfos);
+                        }
+                    }
+                    break;
             }
         }
     };
 
+    private List<NodeInfo> mUsedNoInfos = new ArrayList<>();
+
+    private void startInner(long floorId, List<NodeInfo> nodeInfos) {
+
+        stopSimulateNavi();
+
+        mCurrentFloorId = floorId;
+        mUsedNoInfos.addAll(nodeInfos);
+        mHandler.sendEmptyMessage(MSG_SIMULATE_NAVI);
+    }
+
+    private long mCurrentFloorId;
+
     public static final int MSG_SIMULATE_NAVI = 1000;
+    public static final int MSG_SIMULATE_NAVI_FINISH_ONE_FLOOR = 1001;
 
     private int mIndex = 0;
     private double mPreBearing = 0;
     private static final int ZOOM_NAVI = 18;
+    private RouteBean mRouteBean;
 
-    private void start() {
+    private void repeat() {
 
-        if (mIndex < (mNodeInfos.size() - 1)) {
+        if (mIndex < (mUsedNoInfos.size() - 1)) {
 
-            NodeInfo nodeInfo = mNodeInfos.get(mIndex);
-            NodeInfo nextNodeInfo = mNodeInfos.get(mIndex + 1);
+            NodeInfo nodeInfo = mUsedNoInfos.get(mIndex);
+            NodeInfo nextNodeInfo = mUsedNoInfos.get(mIndex + 1);
 
             LatLng from = new LatLng(nodeInfo.getLngLat().getLat(), nodeInfo.getLngLat().getLng());
             LatLng to = new LatLng(nextNodeInfo.getLngLat().getLat(), nextNodeInfo.getLngLat().getLng());
@@ -139,21 +175,29 @@ public class Navi {
                 animateLocation(from, to);
                 mIndex++;
             }
-
-            mHandler.sendEmptyMessageDelayed(MSG_SIMULATE_NAVI, TIMES);
         }
     }
 
-    private List<NodeInfo> mNodeInfos;
+    private List<NodeInfo> mFromNodeInfos = new ArrayList<>();
+    private List<NodeInfo> mToNodeInfos = new ArrayList<>();
 
-    private void handleNodeInfo(List<PartInfo> partInfos) {
+    private void handleNodeInfo(List<PartInfo> partInfos, long fromFloorId, long toFloorId) {
 
-        mNodeInfos = NavigateFactory.makeMockPointArray(5, partInfos);
+        List<NodeInfo> nodeInfos = NavigateFactory.makeMockPointArray(5, partInfos);
+
+        for (NodeInfo nodeInfo : nodeInfos) {
+            if (nodeInfo.getZ() == fromFloorId) {
+                mFromNodeInfos.add(nodeInfo);
+            } else if (nodeInfo.getZ() == toFloorId) {
+                mToNodeInfos.add(nodeInfo);
+            }
+        }
+
         if (!mPoints.isEmpty()) {
             mPoints.clear();
         }
 
-        for (NodeInfo nodeInfo : mNodeInfos) {
+        for (NodeInfo nodeInfo : nodeInfos) {
             LatLng latLng = new LatLng(nodeInfo.getLngLat().getLat(), nodeInfo.getLngLat().getLng());
             mPoints.add(latLng);
         }
@@ -182,7 +226,8 @@ public class Navi {
                 LatLng evaluatelatlng = mLatlngEvaluator.evaluate(valueAnimator.getAnimatedFraction(), startLatLng,
                         endLatLng);
                 addOrUpdateLocationMark(evaluatelatlng);
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(evaluatelatlng).build();
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(evaluatelatlng).zoom(ZOOM_NAVI)
+                        .build();
                 mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), TIMES);
             }
         });
@@ -203,6 +248,9 @@ public class Navi {
     }
 
     private void stopSimulateNavi() {
+        if (mUsedNoInfos.isEmpty()) {
+            mUsedNoInfos.clear();
+        }
         mIndex = 0;
         mHandler.removeCallbacksAndMessages(null);
         if (mValueAnimator != null) {
@@ -210,6 +258,10 @@ public class Navi {
         }
     }
 
+    private SimulateNaviStateListener mSimulateNaviStateListener;
 
+    public void setSimulateStateListener(SimulateNaviStateListener listener) {
+        mSimulateNaviStateListener = listener;
+    }
 
 }

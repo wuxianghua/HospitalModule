@@ -39,6 +39,7 @@ import com.palmap.huayitonglib.navi.showroute.Navi;
 import com.palmap.huayitonglib.navi.showroute.PlanRouteListener;
 import com.palmap.huayitonglib.navi.showroute.RouteBean;
 import com.palmap.huayitonglib.navi.showroute.RouteManager;
+import com.palmap.huayitonglib.navi.showroute.SimulateNaviStateListener;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.CoordinateUtil;
@@ -95,6 +96,7 @@ public class MapActivity extends VoiceListenActivity {
     LinearLayout setstar_bttom_ll01;
     Button stop_nagv_btn;
     TextView endname_top_text, start_top_text, endfloorname_top_text, endaddress_top_text;
+
 
     ImageView view_2D_3D; // 2D.3D切换按钮
     TextView bilichi_Tv; // 比例尺显示的距离
@@ -485,7 +487,8 @@ public class MapActivity extends VoiceListenActivity {
 
             //删除图层后加载自己的地图
 
-            mMarkerUtils = new MarkerUtils(mMapboxMap, getBaseContext(), R.mipmap.ic_map_qidian, R.mipmap.ic_map_zhongdian);
+            mMarkerUtils = new MarkerUtils(mMapboxMap, getBaseContext(), R.mipmap.ic_map_qidian, R.mipmap
+                    .ic_map_zhongdian);
             mMapboxMap.setOnCameraChangeListener(new MapboxMap
                     .OnCameraChangeListener() {
                 @Override
@@ -521,7 +524,7 @@ public class MapActivity extends VoiceListenActivity {
             });
             //设置路线管理器
 //            setRouteManager();
-//
+
 //            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
 //                @Override
 //                public void onMapClick(@NonNull LatLng point) {
@@ -534,6 +537,7 @@ public class MapActivity extends VoiceListenActivity {
             mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(@NonNull LatLng point) {
+
                     PointF pointF2 = mMapboxMap.getProjection().toScreenLocation(point);
                     List<Feature> features = mMapboxMap.queryRenderedFeatures(pointF2);
                     try {
@@ -692,6 +696,35 @@ public class MapActivity extends VoiceListenActivity {
 
         navi = new Navi();
         navi.init(this, mMapboxMap, R.mipmap.ic_wodeweizi);
+
+        navi.setSimulateStateListener(new SimulateNaviStateListener() {
+            @Override
+            public void onPre(long fromFloorId) {
+                if (fromFloorId != mCurrentFloorId) {
+                    String floorAlias = FileUtils.getFloorAlias(MapActivity.this, (int) fromFloorId);
+                    shiftFloors(floorAlias, false);
+                }
+            }
+
+            @Override
+            public void onStart(long floorId) {
+
+            }
+
+            @Override
+            public void onFinish(long finishFloorId, long fromFloorId, long toFloorId) {
+                if (finishFloorId != toFloorId) {
+                    String floorAlias = FileUtils.getFloorAlias(MapActivity.this, (int) toFloorId);
+                    shiftFloors(floorAlias, false);
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+
     }
 
     private void loadSelfMap() {
