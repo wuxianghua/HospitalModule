@@ -446,15 +446,15 @@ public class MapActivity extends AppCompatActivity {
                 }
             });
             //设置路线管理器
-            setRouteManager();
-
-            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(@NonNull LatLng point) {
-                    mRouteManager.planRoute(104.0632504, 30.6420972, 2452754, point.getLongitude(), point.getLatitude(),
-                            mCurrentFloorId);
-                }
-            });
+//            setRouteManager();
+//
+//            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
+//                @Override
+//                public void onMapClick(@NonNull LatLng point) {
+//                    mRouteManager.planRoute(104.0632504, 30.6420972, 2452754, point.getLongitude(), point.getLatitude(),
+//                            mCurrentFloorId);
+//                }
+//            });
 
             //地图点击事件
             mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
