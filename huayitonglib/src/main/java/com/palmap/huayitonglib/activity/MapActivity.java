@@ -1,4 +1,4 @@
-package com.palmap.huayitonglib;
+package com.palmap.huayitonglib.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,8 +31,7 @@ import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.services.commons.geojson.BaseFeatureCollection;
 import com.mapbox.services.commons.geojson.Feature;
 import com.mapbox.services.commons.geojson.FeatureCollection;
-import com.mapbox.services.commons.models.Position;
-import com.palmap.huayitonglib.activity.SearchActivity;
+import com.palmap.huayitonglib.R;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
 import com.palmap.huayitonglib.navi.showroute.Navi;
@@ -1022,9 +1021,9 @@ public class MapActivity extends AppCompatActivity {
         super.onResume();
         mMapView.onResume();
 //        // 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
-//        if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
-//            handler.sendEmptyMessageDelayed(1, 50);
-//        }
+        if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
+            handler.sendEmptyMessageDelayed(1, 50);
+        }
     }
 
     Handler handler = new Handler() {

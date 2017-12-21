@@ -18,7 +18,7 @@ import com.palmap.huayitonglib.speech.ISpeechManager;
  * Created by yangjinhuang on 2017/12/21
  */
 
-public class IFlyTekManager implements ISpeechManager {
+public class IFlyTekSpeechManager implements ISpeechManager {
 
     public enum Speaker {
         PUTONG_M,   //普通话（男）
@@ -54,7 +54,7 @@ public class IFlyTekManager implements ISpeechManager {
         }
     }
 
-    private static String TAG = IFlyTekManager.class.getSimpleName();
+    private static String TAG = IFlyTekSpeechManager.class.getSimpleName();
 
     private SpeechSynthesizer mTts;         //语音合成对象
     private String mEngineType = SpeechConstant.TYPE_CLOUD; //引擎类型
@@ -68,15 +68,19 @@ public class IFlyTekManager implements ISpeechManager {
     private SynthesizerListener mTtsListener;   //合成回调监听
     private OnSpeechListener mOnSpeechListener; //播放监听
 
-    public IFlyTekManager(Context context, final OnInitListener onInitListener) {
+    public IFlyTekSpeechManager(Context context, final OnInitListener onInitListener) {
         mTts = SpeechSynthesizer.createSynthesizer(context, new InitListener() {
             @Override
             public void onInit(int code) {
                 if (code != ErrorCode.SUCCESS) {
-                    onInitListener.onInitFailure("初始化失败,错误码：" + code);
-                    Log.e(TAG, "初始化失败,错误码：" + code);
+                    if (onInitListener != null) {
+                        onInitListener.onInitFailure("初始化失败,错误码：" + code);
+                        Log.e(TAG, "初始化失败,错误码：" + code);
+                    }
                 } else {
-                    onInitListener.onInitSuccess();
+                    if (onInitListener != null) {
+                        onInitListener.onInitSuccess();
+                    }
                 }
             }
         });
