@@ -658,6 +658,11 @@ public class MapActivity extends VoiceListenActivity {
 
             // 加载地图
             loadSelfMap();
+
+            // TODO (记得处理) 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
+            if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
+                handler.sendEmptyMessageDelayed(1, 3000);
+            }
         }
     }
 
@@ -1035,7 +1040,7 @@ public class MapActivity extends VoiceListenActivity {
 //            default:
 //                break;
 //        }
-        RouteManager.get().showNaviRoute(mCurrentFloorId);
+//        RouteManager.get().showNaviRoute(mCurrentFloorId);
     }
 
     /**
@@ -1107,11 +1112,6 @@ public class MapActivity extends VoiceListenActivity {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
-        // TODO (记得处理) 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
-        if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
-            handler.sendEmptyMessageDelayed(1, 50);
-            loading_rel.setVisibility(View.VISIBLE);
-        }
     }
 
     Handler handler = new Handler() {
@@ -1119,7 +1119,6 @@ public class MapActivity extends VoiceListenActivity {
             if (msg.what == 1) {
                 Toast.makeText(self, "首次安装，正在准备数据，请耐心等待", Toast.LENGTH_LONG).show();
                 MapPointInfoDbManager.get().insertAllData(self);
-                loading_rel.setVisibility(View.GONE);
             }
             super.handleMessage(msg);
         }
