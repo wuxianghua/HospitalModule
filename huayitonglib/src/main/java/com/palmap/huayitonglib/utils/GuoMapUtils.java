@@ -41,11 +41,19 @@ public class GuoMapUtils {
         mMapboxMap.getUiSettings().setAttributionEnabled(false);
         // 指南针位置
         // 设置指南针
-        mMapboxMap.getUiSettings().setCompassMargins(30, 150, DisplayUtil.getScreenWith(context) - 100, 20);
+        mMapboxMap.getUiSettings().setCompassMargins(30, DisplayUtil.dip2px(64), DisplayUtil.getScreenWith(context) - 100, 20);
         // getActivity容易有空指针bug 切换指南针的图片
         mMapboxMap.getUiSettings().setCompassImage(context.getResources().getDrawable(R.mipmap.ic_map_compass));
         mMapboxMap.setMaxZoomPreference(20);
         mMapboxMap.setMinZoomPreference(15);
+    }
+
+    /**
+     *  设置指南针距离顶部的距离
+     * @param marginTop 单位dp
+     */
+    public static void setCampassMarTop(Context context, MapboxMap mMapboxMap,float marginTop){
+        mMapboxMap.getUiSettings().setCompassMargins(30, DisplayUtil.dip2px(marginTop), DisplayUtil.getScreenWith(context) - 100, 20);
     }
 
     public static void addBackgroudLayer(Context context, MapboxMap mMapboxMap) {
@@ -180,7 +188,8 @@ public class GuoMapUtils {
                 PropertyFactory.iconSize(.5f),
                 PropertyFactory.textAnchor(Property.TEXT_JUSTIFY_LEFT),
                 PropertyFactory.iconOffset(new Float[]{-10.f, 0.f}),
-                PropertyFactory.iconImage(Function.property("logo", Stops.<String>identity()))
+                PropertyFactory.iconImage(Function.property("logo", Stops.<String>identity())),
+                PropertyFactory.textPadding(8f)
 
         );
         areaTextLayer.setFilter(Filter.has("display"));
@@ -298,10 +307,10 @@ public class GuoMapUtils {
                 .tilt(0) // 倾斜角度
                 .build();
         // 设置area层对应2D高度，此高度对应style中的2DHeight
-        Layer layer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA);
-        layer.setProperties(
-                fillExtrusionHeight(Function.property("3DHeight", new IdentityStops<Float>()))
-        );
+//        Layer layer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA);
+//        layer.setProperties(
+//                fillExtrusionHeight(Function.property("3DHeight", new IdentityStops<Float>()))
+//        );
         // 添加线 areaLine
         Layer lineLayer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA_LINE);
         if (lineLayer != null) {
@@ -322,16 +331,16 @@ public class GuoMapUtils {
                 .tilt(50) // 倾斜角度
                 .build();
         // 设置area层对应3D高度，此高度对应style中的3DHeight
-        Layer layer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA);
-        layer.setProperties(
-                fillExtrusionHeight(Function.property("3DHeight", new IdentityStops<Float>()))
-        );
-        // 去掉线条，3D添加线条后太难看了,此处对线条进行了隐藏
-        Layer lineLayer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA_LINE);
-        if (lineLayer != null) {
-            lineLayer.setProperties(PropertyFactory.visibility
-                    (Property.NONE));
-        }
+//        Layer layer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA);
+//        layer.setProperties(
+//                fillExtrusionHeight(Function.property("3DHeight", new IdentityStops<Float>()))
+//        );
+//        // 去掉线条，3D添加线条后太难看了,此处对线条进行了隐藏
+//        Layer lineLayer = mapboxMap.getLayer(MapConfig2.LAYERID_AREA_LINE);
+//        if (lineLayer != null) {
+//            lineLayer.setProperties(PropertyFactory.visibility
+//                    (Property.NONE));
+//        }
         // 使用一个动画来调整地图
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
     }

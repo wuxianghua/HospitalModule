@@ -83,9 +83,12 @@ public class MapActivity extends AppCompatActivity {
     ImageView xishoujian_image, yinhang_image, dianti_image, futi_image, jian_image, jia_image;
     LoopView loopView;
     RelativeLayout loading_rel;
+    ImageView view_2D_3D; // 2D.3D切换按钮
+    TextView bilichi_Tv; // 比例尺显示的距离
 
     private void initView() {
-
+        view_2D_3D = (ImageView) findViewById(R.id.view_2D_3D);
+        bilichi_Tv = (TextView) findViewById(R.id.bilichi_Tv);
         jian_image = (ImageView) findViewById(R.id.jian_image);
         jia_image = (ImageView) findViewById(R.id.jia_image);
         jia_image.setImageResource(R.mipmap.ngr_ic_map_zoomin);
@@ -239,6 +242,18 @@ public class MapActivity extends AppCompatActivity {
             MapUtils.setMapSmall(mMapboxMap);
         } else if (i == R.id.yuyin_rr) {
             centerToast("正在建设中，敬请期待");
+        } else if (i == R.id.view_2D_3D){
+            // TODO 2D 3D
+            String str = (String) view_2D_3D.getContentDescription();
+            if (str.equals("2D")){
+                GuoMapUtils.setUp3DMap(mMapboxMap);
+                view_2D_3D.setImageResource(R.mipmap.ic_map_3d);
+                view_2D_3D.setContentDescription("3D");
+            } else {
+                GuoMapUtils.setUp2DMap(mMapboxMap);
+                view_2D_3D.setImageResource(R.mipmap.ic_map_2d);
+                view_2D_3D.setContentDescription("2D");
+            }
         }
     }
 
@@ -381,6 +396,21 @@ public class MapActivity extends AppCompatActivity {
                         jia_image.setImageResource(R.mipmap.ic_map_jia);
                         jian_image.setImageResource(R.mipmap.ngr_ic_map_zoomout);
                     }
+
+                    // 比例尺显示（根据方法级别设置比例尺显示距离）
+                    if (position.zoom >= 15 && position.zoom <= 16) {
+                        bilichi_Tv.setText("500 m");
+                    } else if (position.zoom >= 16 && position.zoom < 17) {
+                        bilichi_Tv.setText("200 m");
+                    } else if (position.zoom >= 17 && position.zoom < 18) {
+                        bilichi_Tv.setText("100 m");
+                    } else if (position.zoom >= 18 && position.zoom < 19) {
+                        bilichi_Tv.setText("50 m");
+                    } else if (position.zoom >= 19 && position.zoom < 20) {
+                        bilichi_Tv.setText("20 m");
+                    } else if (position.zoom == 20) {
+                        bilichi_Tv.setText("5 m");
+                    }
                 }
             });
             //设置路线管理器
@@ -405,7 +435,6 @@ public class MapActivity extends AppCompatActivity {
 //
 //                }
 //            }).start();
-
 
         }
     }

@@ -236,6 +236,7 @@
         android:layout_marginBottom="10dp">
 
         <RelativeLayout
+            android:id="@+id/changefloor_rel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
@@ -460,6 +461,7 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/zoom_Lin"
             android:layout_width="40dp"
             android:layout_height="80dp"
             android:layout_alignParentBottom="true"
@@ -494,6 +496,40 @@
                     android:gravity="center" />
             </RelativeLayout>
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/view_2D_3D"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@mipmap/ic_map_2d"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:onClick="onClick"
+            android:contentDescription="2D"
+            android:layout_alignParentRight="true"
+            android:layout_above="@+id/zoom_Lin"/>
+
+        <TextView
+            android:id="@+id/bilichi_Tv"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bilichi"
+            android:layout_toRightOf="@+id/changefloor_rel"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_horizontal"
+            android:text="5米"
+            android:textColor="@color/text_666"
+            android:textSize="12sp"/>
+
+        <ImageView
+            android:id="@+id/bilichi"
+            android:layout_width="60dp"
+            android:layout_height="5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/changefloor_rel"
+            android:src="@mipmap/ic_map_bilichi"/>
+        
     </RelativeLayout>
     //地图加载显示布局
     // 地图加载中
@@ -504,7 +540,8 @@
         android:layout_marginTop="48dp"
         android:background="#3F000000"
         android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:focusableInTouchMode="true"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/loading_img"

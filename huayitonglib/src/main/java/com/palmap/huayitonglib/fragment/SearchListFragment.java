@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class SearchListFragment extends Fragment{
     private RecyclerView mRecycleView;
     private List<MapPointInfoBean> mList = new ArrayList<>();
     private int searchType = 0;
+    private LinearLayout emptyView;
 
     public SearchListFragment() {
     }
@@ -119,11 +121,18 @@ public class SearchListFragment extends Fragment{
             mRecycleView.setAdapter(mAdapter);
             mAdapter.setOnItemClickListener(new ListOnItemClickListener());
         }
-
-
+        mRecycleView.scrollToPosition(0);
+        if (list.size() == 0){
+            emptyView.setVisibility(View.VISIBLE);
+            mRecycleView.setVisibility(View.GONE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+            mRecycleView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initView() {
+        emptyView = view.findViewById(R.id.emptyView);
         mRecycleView = view.findViewById(R.id.search_recycleView);
         mRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         mList = self.getList();
@@ -136,6 +145,13 @@ public class SearchListFragment extends Fragment{
             SearchStartPointListAdapter mAdapter = new SearchStartPointListAdapter(R.layout.fragment_search_startlist_item, mList,getContext());
             mRecycleView.setAdapter(mAdapter);
             mAdapter.setOnItemClickListener(new ListOnItemClickListener());
+        }
+        if (mList.size() == 0){
+            emptyView.setVisibility(View.VISIBLE);
+            mRecycleView.setVisibility(View.GONE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+            mRecycleView.setVisibility(View.VISIBLE);
         }
 
     }

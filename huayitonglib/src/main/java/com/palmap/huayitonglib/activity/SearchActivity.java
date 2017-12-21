@@ -10,9 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.palmap.huayitonglib.R;
@@ -66,9 +69,23 @@ public class SearchActivity extends AppCompatActivity {
         }
     };
 
+    // 点击键盘中的搜索图标或按钮
+    private TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                Log.i("ghw", "onEditorAction: 点击搜索按钮");
+                search(mSearch_Ed.getText().toString());
+                return true;
+            }
+            return false;
+        }
+    };
+
     private void initView() {
         mSearch_Ed = (EditText) findViewById(R.id.search_Ed);
         mSearch_Ed.addTextChangedListener(mTextWatcher);
+        mSearch_Ed.setOnEditorActionListener(mOnEditorActionListener);
 
         mSearchShowFragment = new SearchShowFragment();
         mSearchListFragment = new SearchListFragment(searchType);
@@ -78,6 +95,19 @@ public class SearchActivity extends AppCompatActivity {
     // 点击返回
     public void back(View view){
 //        if (!TextUtils.isEmpty(mSearch_Ed.getText())){
+        if (type == TYPE_SEARCH) {
+            closeSoftKeyBoard(this);
+            replaceFragment(mSearchShowFragment);
+            mSearch_Ed.setText("");
+        } else {
+            finish();
+            closeSoftKeyBoard(this);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
         if (type == TYPE_SEARCH) {
             closeSoftKeyBoard(this);
             replaceFragment(mSearchShowFragment);
