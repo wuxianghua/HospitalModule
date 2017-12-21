@@ -1,4 +1,4 @@
-package com.palmap.huayitonglib.activity;
+package com.palmap.huayitonglib;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -32,6 +32,8 @@ import com.mapbox.services.commons.geojson.BaseFeatureCollection;
 import com.mapbox.services.commons.geojson.Feature;
 import com.mapbox.services.commons.geojson.FeatureCollection;
 import com.palmap.huayitonglib.R;
+import com.palmap.huayitonglib.activity.SearchActivity;
+import com.palmap.huayitonglib.activity.VoiceListenActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
 import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
@@ -390,10 +392,12 @@ public class MapActivity extends VoiceListenActivity {
 
 
         } else if (i == R.id.selectstart_star_01) {
-            // 选择起点时，点击起点搜索框跳转到搜索页面
+
             if (isJumpStartPoint) {
                 searchStartPoi("");
             }
+        }else if (i == R.id.selectstart_yuyin_rr){
+            // 选择起点时，点击起点搜索框跳转到搜索页面
         }
     }
 
@@ -1082,8 +1086,6 @@ public class MapActivity extends VoiceListenActivity {
         Log.e("zyy", "removeEndMarker: ");
         mMarkerUtils.removeEndMark();
     }
-
-
     //居中toast
     public void centerToast(String str) {
         Toast toast = Toast.makeText(getBaseContext(),
