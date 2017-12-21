@@ -136,7 +136,7 @@ public class GuoMapUtils {
 //                PropertyFactory.fillOpacity(Function.property("opacity", new IdentityStops<Float>())), // 透明度
 //                PropertyFactory.fillExtrusionOpacity(0.5f), // 透明度
 //                fillExtrusionHeight(Function.property(MapConfig2.NAME_AREA_HEIGHT, new IdentityStops<Float>()))
-                fillExtrusionHeight(Function.property("height", new IdentityStops<Float>()))
+                fillExtrusionHeight(Function.property("height", new IdentityStops<Float>())),
 //                        fillExtrusionHeight() // 高度拉伸
 //                        fillExtrusionBase() // 阴影
 //                        fillExtrusionColor() // 颜色
@@ -144,7 +144,7 @@ public class GuoMapUtils {
 //                        fillExtrusionPattern() //模式;   花样，样品;   图案;   榜样，典范;
 //                        fillExtrusionTranslate() //转化
 //                        fillExtrusionTranslateAnchor()
-//                PropertyFactory.fillExtrusionBase(0.0f) // 阴影大小
+                PropertyFactory.fillExtrusionBase(0.0f) // 阴影大小
         );
         mapboxMap.addLayer(arealayer);
 
@@ -162,10 +162,9 @@ public class GuoMapUtils {
         );
         //-----3D-----(3D的时候线要放在面上面才能显示出来)
         // TODO 现在不要线了
-        mapboxMap.addLayerAbove(areaLineLayer, MapConfig2.LAYERID_AREA);
+//        mapboxMap.addLayerAbove(areaLineLayer, MapConfig2.LAYERID_AREA);
 
-
-//       mMapboxMap.addLayer(areaLineLayer);
+        mapboxMap.addLayer(areaLineLayer);
         if (mapboxMap.getLayer(MapConfig2.LAYERID_AREA_TEXT) != null) {
             mapboxMap.removeLayer(MapConfig2.LAYERID_AREA_TEXT);
         }

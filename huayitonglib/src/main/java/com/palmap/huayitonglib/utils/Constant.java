@@ -15,4 +15,12 @@ public class Constant {
             2697289, 2698503, 2699176, 2697091, 2453409, 2696949, 2699174, 2699417};
     public static final Integer[] poiId17 = {2571212, 2699564, 2700391};
 
+    // 以下是地图界面和搜索界面交互相关参数
+    public static final String SEATCHTYPE_KEY = "search_tyle";
+    public static final int END_REQUESTCODE = 1000;
+    public static final int START_REQUESTCODE = 2000;
+    public static final int GOWITHME_RESULTCODE = 3000;
+    public static final int LOOKMAP_RESULTCODE = 4000;
+    public static final int START_RESULTCODE = 5000;
+
 }

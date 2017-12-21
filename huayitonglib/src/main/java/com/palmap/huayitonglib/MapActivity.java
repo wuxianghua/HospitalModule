@@ -34,6 +34,7 @@ import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
 import com.palmap.huayitonglib.navi.shownaviroute.PlanRouteListener;
 import com.palmap.huayitonglib.navi.shownaviroute.RouteBean;
 import com.palmap.huayitonglib.navi.shownaviroute.RouteManager;
+import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.FileUtils;
@@ -46,6 +47,9 @@ import com.weigan.loopview.LoopView;
 import com.weigan.loopview.OnItemSelectedListener;
 
 import java.util.ArrayList;
+
+import static com.palmap.huayitonglib.activity.SearchActivity.SEARCH_END;
+import static com.palmap.huayitonglib.activity.SearchActivity.SEARCH_START;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -167,7 +171,8 @@ public class MapActivity extends AppCompatActivity {
         } else if (i == R.id.changefloor_text) {
             changeFloorScroll();
         } else if (i == R.id.search_rr) {
-            startActivity(new Intent(this, SearchActivity.class));
+//            startActivity(new Intent(this, SearchActivity.class));
+            searchEndPoi();
             initUiView();
         } else if (i == R.id.xishoujian_image) {
             if (xishoujian) {
@@ -634,4 +639,44 @@ public class MapActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         mMapView.onSaveInstanceState(outState);
     }
+
+    // 跳转到搜索界面 搜索终点
+    private void searchEndPoi(){
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra(Constant.SEATCHTYPE_KEY, SEARCH_END); // 选择终点
+        startActivityForResult(intent, Constant.END_REQUESTCODE);
+    }
+
+    // 搜索起点
+    private void searchStartPoi(){
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra(Constant.SEATCHTYPE_KEY, SEARCH_START); // 选择起点
+        startActivityForResult(intent, Constant.START_REQUESTCODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(data != null){
+            if (requestCode == Constant.END_REQUESTCODE) { // 终点
+                if (resultCode == Constant.GOWITHME_RESULTCODE){
+                    // 带我去
+                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra("MapPointInfoBean");
+                    Log.i("map", "onActivityResult: 带我去" + mapPointInfoBean.getName());
+
+                } else if(resultCode == Constant.LOOKMAP_RESULTCODE){
+                    // 看地图
+                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra("MapPointInfoBean");
+                    Log.i("map", "onActivityResult: 看地图" + mapPointInfoBean.getName());
+                }
+            } else if(requestCode == Constant.START_REQUESTCODE) { // 起点
+                if (resultCode == Constant.START_RESULTCODE){
+                    // 设为起点
+                    MapPointInfoBean mapPointInfoBean = (MapPointInfoBean) data.getSerializableExtra("MapPointInfoBean");
+                    Log.i("map", "onActivityResult: 设为起点" + mapPointInfoBean.getName());
+                }
+            }
+        }
+    }
+
 }

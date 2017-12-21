@@ -1,6 +1,7 @@
 package com.palmap.huayitonglib.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,6 +20,7 @@ import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
 import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
 import com.palmap.huayitonglib.fragment.SearchListFragment;
 import com.palmap.huayitonglib.fragment.SearchShowFragment;
+import com.palmap.huayitonglib.utils.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +34,16 @@ public class SearchActivity extends AppCompatActivity {
     private static int TYPE_SHOW = 0;
     private static int TYPE_SEARCH = 1;
     private int type = TYPE_SHOW;
+    public static int SEARCH_END = 0;
+    public static int SEARCH_START = 1;
+    private int searchType = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        Intent intent = getIntent();
+        searchType = intent.getIntExtra(Constant.SEATCHTYPE_KEY,0);
         initView();
     }
 
@@ -62,17 +69,19 @@ public class SearchActivity extends AppCompatActivity {
         mSearch_Ed.addTextChangedListener(mTextWatcher);
 
         mSearchShowFragment = new SearchShowFragment();
-        mSearchListFragment = new SearchListFragment();
+        mSearchListFragment = new SearchListFragment(searchType);
         replaceFragment(mSearchShowFragment);
     }
 
     // 点击返回
     public void back(View view){
         if (!TextUtils.isEmpty(mSearch_Ed.getText())){
+            closeSoftKeyBoard(this);
             replaceFragment(mSearchShowFragment);
             mSearch_Ed.setText("");
         } else {
             finish();
+            closeSoftKeyBoard(this);
         }
     }
 
@@ -84,8 +93,9 @@ public class SearchActivity extends AppCompatActivity {
     private void search(String str){
         Log.e("db", "search: " + MapPointInfoDbManager.get().getAll().size());
         if (str.length()>0){
+            mList.clear();
             mList = MapPointInfoDbManager.get().query(str);
-            if (mList != null && mList.size() !=0){
+            if (mList != null){
                 Log.e("db", "search: type " +  type );
                 if (type == TYPE_SEARCH) {
                     mSearchListFragment.setData(mList);
