@@ -699,7 +699,7 @@ public class MapActivity extends VoiceListenActivity {
                 mRouteManager.showNaviRoute(mCurrentFloorId);
                 return false;
             }
-            
+
             @Override
             public void onError() {
                 Log.d("lybb", "路线规划失败了: ");
