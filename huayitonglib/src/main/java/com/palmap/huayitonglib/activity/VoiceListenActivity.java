@@ -1,9 +1,11 @@
 package com.palmap.huayitonglib.activity;
 
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.iflytek.cloud.ErrorCode;
@@ -59,6 +61,19 @@ public abstract class VoiceListenActivity extends AppCompatActivity {
                 initVoiceListen();
             }
             if (mIatDialog != null) {
+                mIatDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        try {
+                            ViewGroup viewGroup = ((ViewGroup) ((ViewGroup) ((ViewGroup)
+                                    ((ViewGroup) ((ViewGroup) (mIatDialog.getWindow().getDecorView())).
+                                            getChildAt(0)).getChildAt(0)).getChildAt(0)).getChildAt(0));
+                            viewGroup.removeViewAt(4);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 mIatResults.clear();
                 mIatDialog.show();
             }

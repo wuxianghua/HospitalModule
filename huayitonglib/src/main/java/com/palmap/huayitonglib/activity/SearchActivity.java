@@ -52,7 +52,6 @@ public class SearchActivity extends VoiceListenActivity {
         searchType = intent.getIntExtra(Constant.SEATCHTYPE_KEY, 0);
         mDefaultKeyWord = intent.getStringExtra(Constant.SEATCH_KEYWORD);
         initView();
-        initVoiceListen();
     }
 
     // 搜索监听
