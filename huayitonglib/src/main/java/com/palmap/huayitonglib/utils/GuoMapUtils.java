@@ -254,11 +254,11 @@ public class GuoMapUtils {
 //            FileUtils.writeToFile("F1_area.geojson", geojson);
 
             //------json——style的方式
-            String styleJson = FileUtils.loadFromAssets(context, "HxH5Style.json");
-            MapStyleManagerHXForH5 styleManager = new MapStyleManagerHXForH5(styleJson);
-            FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);
-            styleManager.attachStyle(featureCollection, mSouceId);
-            geojson = featureCollection.toJson();//处理好的featurecollection转换成json
+//            String styleJson = FileUtils.loadFromAssets(context, "HxH5Style.json");
+//            MapStyleManagerHXForH5 styleManager = new MapStyleManagerHXForH5(styleJson);
+//            FeatureCollection featureCollection = BaseFeatureCollection.fromJson(geojson);
+//            styleManager.attachStyle(featureCollection, mSouceId);
+//            geojson = featureCollection.toJson();//处理好的featurecollection转换成json
 //            styleManager.attachStyle(featureCollection, mSouceId);
         }
 //        GeoJsonSource geoJsonSource = new GeoJsonSource(mSouceId, featureCollection);
