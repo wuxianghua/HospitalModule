@@ -94,9 +94,11 @@ public class NavigateManager {
         naviInfo.setRemainLength(targetPart.getDistanceFromEndNode(adsorbPoint[0], adsorbPoint[1]));
         naviInfo.setTotalRemainLength(naviInfo.getRemainLength() + targetPart.getDistance());
         naviInfo.setAdsorbPart(targetPart);
+        naviInfo.setNextAction(targetPart.getNextAction());
         StringBuilder tipBuilder = new StringBuilder();
         tipBuilder.append("直行").append((int) naviInfo.getRemainLength()).append("米后").append
                 (targetPart.getNextAction().toString());
+        naviInfo.setNaviTip(tipBuilder.toString());
         if (mNavigateUpdateListener != null) {
             mNavigateUpdateListener.onNavigateUpdate(naviInfo);
         }

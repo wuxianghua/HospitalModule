@@ -15,6 +15,8 @@ public class NaviInfo {
     private double mRemainLength;       //所属段剩余距离
     private double mTotalRemainLength;  //距离导航终点距离
     private PartInfo mAdsorbPart;       //所属段
+//    private float mAngle;               //下一段方位角
+    private ActionState mNextAction;    //下一步操作状态
     private String mNaviTip;            //导航提示
 
     public NaviInfo() {
@@ -102,6 +104,14 @@ public class NaviInfo {
 
     public void setAdsorbPart(PartInfo adsorbPart) {
         this.mAdsorbPart = adsorbPart;
+    }
+
+    public ActionState getNextAction() {
+        return mNextAction;
+    }
+
+    public void setNextAction(ActionState nextAction) {
+        this.mNextAction = nextAction;
     }
 
     public String getNaviTip() {
