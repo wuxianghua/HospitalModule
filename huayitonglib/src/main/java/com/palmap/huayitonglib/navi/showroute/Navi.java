@@ -31,7 +31,7 @@ import java.util.List;
 
 public class Navi {
     public static final String TAG = Navi.class.getSimpleName();
-    
+
     public static final String SOURCEID_LOCATION = "source-id-location";
     public static final String LAYERID_LOCATION = "layerid-location";
     public static final String IMAGENAE_LOCATION = "imagename-location";
@@ -98,7 +98,9 @@ public class Navi {
     private NavigateUpdateListener mNavigateUpdateListener = new NavigateUpdateListener() {
         @Override
         public void onNavigateUpdate(NaviInfo naviInfo) {
-
+            if (mSimulateNaviStateListener != null) {
+                mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip());
+            }
         }
     };
 

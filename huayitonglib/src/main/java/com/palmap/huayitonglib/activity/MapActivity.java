@@ -555,7 +555,8 @@ public class MapActivity extends VoiceListenActivity {
 //            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
 //                @Override
 //                public void onMapClick(@NonNull LatLng point) {
-//                    mRouteManager.planRoute(104.0632504, 30.6420972, 2452754, point.getLongitude(), point.getLatitude(),
+//                    mRouteManager.planRoute(104.0632504, 30.6420972, 2452754, point.getLongitude(), point
+// .getLatitude(),
 //                            mCurrentFloorId);
 //                }
 //            });
@@ -757,6 +758,11 @@ public class MapActivity extends VoiceListenActivity {
             @Override
             public void onError() {
 
+            }
+
+            @Override
+            public void onInfo(String info) {
+                Log.d("lybb", "onInfo: " + info);
             }
         });
 

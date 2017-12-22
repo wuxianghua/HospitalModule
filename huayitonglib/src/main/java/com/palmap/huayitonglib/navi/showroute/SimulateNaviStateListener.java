@@ -17,5 +17,5 @@ public interface SimulateNaviStateListener {
 
     void onError();
 
-//    void onInfo();
+    void onInfo(String info);
 }
