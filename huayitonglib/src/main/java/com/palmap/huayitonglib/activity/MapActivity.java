@@ -387,9 +387,11 @@ public class MapActivity extends VoiceListenActivity {
         } else if (i == R.id.set_qidian) {
             //设置起点
             //进入路线规划
-            changeNavigaView(ROUTE_SHOW_05);
+
+            mRouteManager.planRoute(mStartLongtitude, mStartLatitude, mStartFloorId, mEndLongtitude, mEndLatitude, mEndFloorId);
         } else if (i == R.id.moni_naviga_btn) {
             changeNavigaView(NAVIGA_SHOW_06);
+            navi.startSimulateNavi(mRouteBean);
         } else if (i == R.id.nagv_back_01) {
             changeNavigaView(ROUTE_SHOW_05);
         } else if (i == R.id.nagv_yuyin_rr) {
@@ -426,7 +428,10 @@ public class MapActivity extends VoiceListenActivity {
             } else {
                 iconCommon_image.setImageResource(R.mipmap.btn_map_sheshi_nor);
                 linearLayout.setVisibility(View.GONE);
+                initCommonIcon();
             }
+        }else if ( i == R.id.stop_nagv_btn){
+            navi.stopSimulateNavi();
         }
     }
 
@@ -504,7 +509,7 @@ public class MapActivity extends VoiceListenActivity {
     class onMapReadyCallback implements OnMapReadyCallback {
 
         @Override
-        public void onMapReady(MapboxMap mapboxMap) {
+        public void onMapReady(final MapboxMap mapboxMap) {
             mMapboxMap = mapboxMap;
             GuoMapUtils.initMapSetting(self, mMapboxMap);
             //删除图层后加载自己的地图
@@ -549,8 +554,8 @@ public class MapActivity extends VoiceListenActivity {
                     }
                 }
             });
-            //设置路线管理器
-//            setRouteManager();
+//            设置路线管理器
+            setRouteManager();
 
 //            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
 //                @Override
@@ -608,7 +613,7 @@ public class MapActivity extends VoiceListenActivity {
                                         mStartLongtitude = point.getLongitude();
                                         mStartLatitude = point.getLatitude();
                                         changeNavigaView(STARTSELEE_SHOW_04);
-//                                        Log.e("zyy", "onMapClick:-------------"+MapUtils.getc);
+                                        Log.e("zyy", "onMapClick:-------------" + MapUtils.getCombineName(mapboxMap, point, "F1"));
                                     }
                                 }
 
@@ -693,14 +698,15 @@ public class MapActivity extends VoiceListenActivity {
             // 加载地图
             loadSelfMap();
 
-            // TODO (记得处理) 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
-            if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
-                handler.sendEmptyMessageDelayed(1, 3000);
-            }
+//            // TODO (记得处理) 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
+//            if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
+//                handler.sendEmptyMessageDelayed(1, 3000);
+//            }
         }
     }
 
     Navi navi;
+    private RouteBean mRouteBean;
 
     /**
      * 设置导航路线管理器
@@ -713,13 +719,17 @@ public class MapActivity extends VoiceListenActivity {
             @Override
             public boolean onSuccess(RouteBean bean) {
                 Log.d("lybb", "路线规划成功了: ");
+
+                mRouteBean = bean;
                 mRouteManager.showNaviRoute(mCurrentFloorId);
+                changeNavigaView(ROUTE_SHOW_05);
                 return false;
             }
 
             @Override
             public void onError() {
                 Log.d("lybb", "路线规划失败了: ");
+                centerToast("路网准备中");
             }
         });
 
@@ -751,7 +761,8 @@ public class MapActivity extends VoiceListenActivity {
 
             @Override
             public void onFinish() {
-
+                Log.e("zyy", "onFinish:-------------- ");
+                changeNavigaView(STOPNAVIGA_SHOW_07);
             }
 
             @Override
@@ -832,7 +843,7 @@ public class MapActivity extends VoiceListenActivity {
     //导航中(有起点，进行路线规划)
     public static final int NAVIGA_SHOW_06 = 6;
     //导航结束
-    public static final int STOPNAVIGA_SHOW_07 = 6;
+    public static final int STOPNAVIGA_SHOW_07 = 7;
     // 此变量只用于判断是否允许点击起点框跳转到搜索界面
     private boolean isJumpStartPoint = true;
 
@@ -1107,7 +1118,8 @@ public class MapActivity extends VoiceListenActivity {
 //            default:
 //                break;
 //        }
-//        RouteManager.get().showNaviRoute(mCurrentFloorId);
+
+        RouteManager.get().showNaviRoute(mCurrentFloorId);
     }
 
     /**
@@ -1186,16 +1198,16 @@ public class MapActivity extends VoiceListenActivity {
 //        }
     }
 
-    Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            if (msg.what == 1) {
-                Toast.makeText(self, "首次安装，正在准备数据，请耐心等待", Toast.LENGTH_LONG).show();
-                MapPointInfoDbManager.get().insertAllData(self);
-            }
-            super.handleMessage(msg);
-        }
-
-    };
+//    Handler handler = new Handler() {
+//        public void handleMessage(Message msg) {
+//            if (msg.what == 1) {
+//                Toast.makeText(self, "首次安装，正在准备数据，请耐心等待", Toast.LENGTH_LONG).show();
+//                MapPointInfoDbManager.get().insertAllData(self);
+//            }
+//            super.handleMessage(msg);
+//        }
+//
+//    };
 
 
     @Override

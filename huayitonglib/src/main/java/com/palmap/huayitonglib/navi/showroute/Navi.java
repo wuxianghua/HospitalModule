@@ -31,7 +31,7 @@ import java.util.List;
 
 public class Navi {
     public static final String TAG = Navi.class.getSimpleName();
-    
+
     public static final String SOURCEID_LOCATION = "source-id-location";
     public static final String LAYERID_LOCATION = "layerid-location";
     public static final String IMAGENAE_LOCATION = "imagename-location";
@@ -129,7 +129,9 @@ public class Navi {
      */
     public void startSimulateNavi(RouteBean bean) {
         mRouteBean = bean;
-
+        if (mRouteBean == null) {
+            return;
+        }
         if (mSimulateNaviStateListener != null) {
             mSimulateNaviStateListener.onPre(bean.getFromFloorId());
         }
