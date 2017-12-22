@@ -919,8 +919,6 @@ public class MapActivity extends VoiceListenActivity {
             selectstart_rr_01.setVisibility(View.GONE);
             //顶部导航提示01
             nagv_top01.setVisibility(View.GONE);
-
-<<<<<<< HEAD
             // 终点信息赋值
             //底部选择终点的对应信息
             if (mEndInfo != null) {
@@ -932,8 +930,6 @@ public class MapActivity extends VoiceListenActivity {
                 park_zhongdian_text03.setText(mEndInfo.getFloorName());
             }
 
-=======
->>>>>>> 7f2cd747bbab0204a28d47278f55e1489b3e5cfe
             isHaveSetEnd = false;
             removeStartMarker();
             mStartFloorId = 0;
@@ -963,7 +959,6 @@ public class MapActivity extends VoiceListenActivity {
             //顶部导航提示01
             nagv_top01.setVisibility(View.GONE);
 
-<<<<<<< HEAD
             // 顶部起点、终点信息展示，因此时无起点，所以只设置终点信息
             //顶部终点name信息
             if (mEndInfo != null) {
@@ -974,8 +969,6 @@ public class MapActivity extends VoiceListenActivity {
                 endaddress_top_text.setText(mEndInfo.getAddress());
             }
 
-=======
->>>>>>> 7f2cd747bbab0204a28d47278f55e1489b3e5cfe
             isHaveSetEnd = true;
             removeStartMarker();
             mStartFloorId = 0;
@@ -1005,7 +998,6 @@ public class MapActivity extends VoiceListenActivity {
             //顶部导航提示01
             nagv_top01.setVisibility(View.GONE);
 
-<<<<<<< HEAD
             // 顶部起点、终点信息展示，此时有起点，设置终点信息+起点信息
             if (mStartInfo != null) {
                 start_top_text.setText(mStartInfo.getName());
@@ -1019,8 +1011,6 @@ public class MapActivity extends VoiceListenActivity {
                 endaddress_top_text.setText(mEndInfo.getAddress());
             }
 
-=======
->>>>>>> 7f2cd747bbab0204a28d47278f55e1489b3e5cfe
             isHaveSetEnd = true;
             type = 4;
             mapStatus = true;
@@ -1046,7 +1036,6 @@ public class MapActivity extends VoiceListenActivity {
             //顶部导航提示01
             nagv_top01.setVisibility(View.GONE);
 
-<<<<<<< HEAD
             // 顶部起点、终点信息展示，此时有起点，设置终点信息+起点信息
             if (mStartInfo != null) {
                 start_top_text.setText(mStartInfo.getName());
@@ -1060,8 +1049,6 @@ public class MapActivity extends VoiceListenActivity {
                 endaddress_top_text.setText(mEndInfo.getAddress());
             }
 
-=======
->>>>>>> 7f2cd747bbab0204a28d47278f55e1489b3e5cfe
             isHaveSetEnd = true;
             type = 5;
             mapStatus = false;
