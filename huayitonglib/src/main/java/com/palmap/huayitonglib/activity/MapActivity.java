@@ -1080,7 +1080,7 @@ public class MapActivity extends VoiceListenActivity {
 //            default:
 //                break;
 //        }
-//        RouteManager.get().showNaviRoute(mCurrentFloorId);
+        RouteManager.get().showNaviRoute(mCurrentFloorId);
     }
 
     /**
