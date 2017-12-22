@@ -275,8 +275,8 @@ public class MapActivity extends VoiceListenActivity {
             changeFloorScroll();
         } else if (i == R.id.search_rr) {
 //            startActivity(new Intent(this, SearchActivity.class));
-            searchEndPoi("");
             initUiView();
+            searchEndPoi("");
         } else if (i == R.id.xishoujian_image) {
             if (xishoujian) {
                 xishoujian_image.setBackgroundResource(R.mipmap.ic_map_xishoujian_dianji);

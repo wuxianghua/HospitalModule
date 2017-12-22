@@ -6,6 +6,4 @@ package com.palmap.huayitonglib.speech;
 
 public interface IListenManger extends IBaseManger{
 
-
-
 }
