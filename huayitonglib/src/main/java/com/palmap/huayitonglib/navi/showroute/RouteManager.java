@@ -180,11 +180,14 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
      */
     @Override
     public void showNaviRoute(long currentFloorId) {
-        if (currentFloorId == mRouteBean.getFromFloorId() && mRouteBean.getFromFeatureCollection() != null) {
-            showStartRoute();
-        } else if (currentFloorId == mRouteBean.getToFloorId() && mRouteBean.getToFeatureCollection() != null) {
-            showEndRoute();
+        if (mRouteBean != null ){
+            if (currentFloorId == mRouteBean.getFromFloorId() && mRouteBean.getFromFeatureCollection() != null) {
+                showStartRoute();
+            } else if (currentFloorId == mRouteBean.getToFloorId() && mRouteBean.getToFeatureCollection() != null) {
+                showEndRoute();
+            }
         }
+
     }
 
     private void showStartRoute() {

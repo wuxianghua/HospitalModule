@@ -294,20 +294,31 @@ public class MapActivity extends VoiceListenActivity {
                 initCommonIcon();
             }
         } else if (i == R.id.yinhang_image) {
-//            if (yinhang) {
-//                yinhang_image.setBackgroundResource(R.mipmap.ic_map_yinhang_dianji);
-//                xishoujian_image.setBackgroundResource(R.mipmap.ic_map_xishoujian);
-//                dianti_image.setBackgroundResource(R.mipmap.ic_map_dianti);
-//                futi_image.setBackgroundResource(R.mipmap.ic_map_futi);
-//                yinhang = false;
-//                xishoujian = true;
-//                dianti = true;
-//                futi = true;
-//                addFacilityLayer(TYPE_BRAND);
-//            } else {
-//                initCommonIcon();
-//            }
-            centerToast("地图数据完善中，暂无银行数据");
+            if (yinhang) {
+                yinhang_image.setBackgroundResource(R.mipmap.ic_map_yinhang_dianji);
+                xishoujian_image.setBackgroundResource(R.mipmap.ic_map_xishoujian);
+                dianti_image.setBackgroundResource(R.mipmap.ic_map_dianti);
+                futi_image.setBackgroundResource(R.mipmap.ic_map_futi);
+                yinhang = false;
+                xishoujian = true;
+                dianti = true;
+                futi = true;
+                if (mCurrentFloorId !=  Config.FLOORID_F1_CH){
+                    loading_rel.setVisibility(View.VISIBLE);
+                    shiftFloors("F1",false);
+                   LatLng latLng = new LatLng(30.6419111,104.0606371);
+//        设为起点 只设置中心点
+                    mMapboxMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+//        设为终点 设置中心点并放大
+                    mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19));
+
+                }else {
+                    addFacilityLayer(TYPE_BRAND);
+                }
+            } else {
+                initCommonIcon();
+            }
+//            centerToast("地图数据完善中，暂无银行数据");
         } else if (i == R.id.dianti_image) {
             if (dianti) {
                 dianti_image.setBackgroundResource(R.mipmap.ic_map_dianti_dianji);
@@ -694,7 +705,6 @@ public class MapActivity extends VoiceListenActivity {
         GuoMapUtils.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
         addFacilityLayer(TYPE_NOICON);
         loading_rel.setVisibility(View.GONE);
-
     }
 
     //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
@@ -1105,11 +1115,11 @@ public class MapActivity extends VoiceListenActivity {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
-        // TODO (记得处理) 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
-        if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
-            handler.sendEmptyMessageDelayed(1, 50);
-            loading_rel.setVisibility(View.VISIBLE);
-        }
+//        // TODO (记得处理) 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
+//        if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
+//            handler.sendEmptyMessageDelayed(1, 50);
+//            loading_rel.setVisibility(View.VISIBLE);
+//        }
     }
 
     Handler handler = new Handler() {

@@ -303,7 +303,8 @@ public class MapUtils {
         if (feature != null && feature.hasProperty("category")) {
             category = feature.getNumberProperty("category").intValue();
         }
-        if (category == 15001000) {
+        if (category == 24112000) {
+            Log.e("zyy", "setBankIcon: -----------------------");
             addLocalIcon(context, feature.getStringProperty("logo"), R.mipmap.ic_map_marker_yinhang, mapboxMap);
         }
     }
