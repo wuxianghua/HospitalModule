@@ -122,6 +122,8 @@ public class MapActivity extends VoiceListenActivity {
     ImageView nagv_jiantou_imgae;
     //顶部方向提示语
     TextView nagv_fangxiang_text, dangqianweizhi_text;
+    LinearLayout linearLayout;
+    ImageView iconCommon_image;
 
     private void initView() {
         view_2D_3D = (ImageView) findViewById(R.id.view_2D_3D);
@@ -205,6 +207,12 @@ public class MapActivity extends VoiceListenActivity {
         nagv_fangxiang_text = (TextView) findViewById(R.id.nagv_fangxiang_text);
         //顶部当前楼层位置  F1
         dangqianweizhi_text = (TextView) findViewById(R.id.dangqianweizhi_text);
+
+        //过滤公共设施
+        linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+        iconCommon_image = (ImageView) findViewById(R.id.iconCommon_image);
+        iconCommon_image.setImageResource(R.mipmap.btn_map_sheshi_nor);
+        linearLayout.setVisibility(View.GONE);
     }
 
     private void initLoopView() {
@@ -303,16 +311,16 @@ public class MapActivity extends VoiceListenActivity {
                 xishoujian = true;
                 dianti = true;
                 futi = true;
-                if (mCurrentFloorId !=  Config.FLOORID_F1_CH){
+                if (mCurrentFloorId != Config.FLOORID_F1_CH) {
                     loading_rel.setVisibility(View.VISIBLE);
-                    shiftFloors("F1",false);
-                   LatLng latLng = new LatLng(30.6419111,104.0606371);
+                    shiftFloors("F1", false);
+                    LatLng latLng = new LatLng(30.6419111, 104.0606371);
 //        设为起点 只设置中心点
                     mMapboxMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 //        设为终点 设置中心点并放大
                     mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 19));
 
-                }else {
+                } else {
                     addFacilityLayer(TYPE_BRAND);
                 }
             } else {
@@ -411,6 +419,14 @@ public class MapActivity extends VoiceListenActivity {
             // 选择起点时，点击起点搜索框语音搜索按钮
             mIsSearchEndPoi = false;
             showListenDialog();
+        } else if (i == R.id.iconCommon_image) {
+            if (linearLayout.getVisibility() == View.GONE) {
+                linearLayout.setVisibility(View.VISIBLE);
+                iconCommon_image.setImageResource(R.mipmap.btn_map_sheshi_zhankai);
+            } else {
+                iconCommon_image.setImageResource(R.mipmap.btn_map_sheshi_nor);
+                linearLayout.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -582,8 +598,8 @@ public class MapActivity extends VoiceListenActivity {
                                 if (feature != null && feature.hasProperty("category")) {
                                     int category = feature.getNumberProperty("category").intValue();
                                     if (category == 23999000 || category == 23062000 || category == 35002000 ||
- category
-                                            == 37000000) {
+                                            category
+                                                    == 37000000) {
                                         //用户点击不可点击区域的时候------进行查找的mark的删除
                                         changeNavigaView(STARTSELEE_UNSHOW_03);
                                     } else {
@@ -592,6 +608,7 @@ public class MapActivity extends VoiceListenActivity {
                                         mStartLongtitude = point.getLongitude();
                                         mStartLatitude = point.getLatitude();
                                         changeNavigaView(STARTSELEE_SHOW_04);
+//                                        Log.e("zyy", "onMapClick:-------------"+MapUtils.getc);
                                     }
                                 }
 
@@ -605,8 +622,8 @@ public class MapActivity extends VoiceListenActivity {
                                 if (feature != null && feature.hasProperty("category")) {
                                     int category = feature.getNumberProperty("category").intValue();
                                     if (category == 23999000 || category == 23062000 || category == 35002000 ||
- category
-                                            == 37000000) {
+                                            category
+                                                    == 37000000) {
                                         //用户点击不可点击区域的时候------进行查找的mark的删除
                                         changeNavigaView(SHOUYE_SHOW_01);
                                     } else {
