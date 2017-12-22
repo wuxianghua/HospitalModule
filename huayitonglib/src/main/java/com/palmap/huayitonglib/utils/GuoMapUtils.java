@@ -41,7 +41,7 @@ public class GuoMapUtils {
         mMapboxMap.getUiSettings().setAttributionEnabled(false);
         // 指南针位置
         // 设置指南针
-        mMapboxMap.getUiSettings().setCompassMargins(30, DisplayUtil.dip2px(64), DisplayUtil.getScreenWith(context) - 100, 20);
+        mMapboxMap.getUiSettings().setCompassMargins(30, DisplayUtil.dip2px(110), DisplayUtil.getScreenWith(context) - 100, 20);
         // getActivity容易有空指针bug 切换指南针的图片
         mMapboxMap.getUiSettings().setCompassImage(context.getResources().getDrawable(R.mipmap.ic_map_compass));
         mMapboxMap.setMaxZoomPreference(20);
@@ -282,8 +282,8 @@ public class GuoMapUtils {
     // 设置本界面展示或切换楼层camera(现有数据只针对于华西医院)
     public static void setUpCamera(MapboxMap mMapboxMap, double latitude, double longitude) {
         LatLngBounds bounds = new LatLngBounds.Builder()
-                .include(new LatLng(latitude - 0.002, longitude + 0.002))
-                .include(new LatLng(latitude + 0.002, longitude - 0.002))
+                .include(new LatLng(latitude - 0.0035, longitude + 0.0035))
+                .include(new LatLng(latitude + 0.0035, longitude - 0.0035))
                 .build();
         // TODO 中心点
         mMapboxMap.setLatLngBoundsForCameraTarget(bounds);
@@ -345,5 +345,19 @@ public class GuoMapUtils {
 //        }
         // 使用一个动画来调整地图
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+    }
+
+    // 设置地图边界bounds
+    public static void setMapBounds(MapboxMap mapboxMap, double bound){
+        LatLng latLng = mapboxMap.getCameraPosition().target;
+        double lat = latLng.getLatitude();
+        double log = latLng.getLongitude();
+
+        LatLngBounds bounds = new LatLngBounds.Builder()
+                .include(new LatLng(lat - bound, log + bound))
+                .include(new LatLng(lat + bound, log - bound))
+                .build();
+        // TODO 设置边界
+        mapboxMap.setLatLngBoundsForCameraTarget(bounds);
     }
 }

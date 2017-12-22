@@ -332,8 +332,8 @@ public class MapInitUtils {
     // 设置本界面展示或切换楼层camera(现有数据只针对于华西医院)
     public static void setUpCamera(MapboxMap mMapboxMap, String floorParameter, double latitude, double longitude) {
         LatLngBounds bounds = new LatLngBounds.Builder()
-                .include(new LatLng(latitude - 0.002, longitude + 0.002))
-                .include(new LatLng(latitude + 0.002, longitude - 0.002))
+                .include(new LatLng(latitude - 0.0035, longitude + 0.0035))
+                .include(new LatLng(latitude + 0.0035, longitude - 0.0035))
                 .build();
         // TODO 设置边界
         mMapboxMap.setLatLngBoundsForCameraTarget(bounds);

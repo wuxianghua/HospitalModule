@@ -98,7 +98,9 @@ public class Navi {
     private NavigateUpdateListener mNavigateUpdateListener = new NavigateUpdateListener() {
         @Override
         public void onNavigateUpdate(NaviInfo naviInfo) {
-
+            if (mSimulateNaviStateListener != null) {
+                mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip());
+            }
         }
     };
 

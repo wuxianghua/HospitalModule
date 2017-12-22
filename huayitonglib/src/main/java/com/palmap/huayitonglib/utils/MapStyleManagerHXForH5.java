@@ -83,12 +83,12 @@ public class MapStyleManagerHXForH5 {
                     }
                 }
                 int category2 = feature.getNumberProperty("category").intValue();
-                if (category2 >= 21000000 && category2 <= 21051000) {
+//                if (category2 >= 21000000 && category2 <= 21051000) {
 //                    feature.addProperty(NAME_COLOR, new JsonPrimitive(MapConfig2.COLOR_DEPARTMENT));
 //                    feature.addProperty(NAME_BORDER_COLOR, new JsonPrimitive(MapConfig2.COLOR_DEPARTMENT_BORDER));
-                    feature.addProperty(MapConfig2.NAME_TEXT_SIZE, new JsonPrimitive(MapConfig2.DEFAULT_TEXTSIZE));
-                    feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2.DEFAULT_COLOR_TEXT));
-                }
+//                    feature.addProperty(MapConfig2.NAME_TEXT_SIZE, new JsonPrimitive(MapConfig2.DEFAULT_TEXTSIZE));
+//                    feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2.DEFAULT_COLOR_TEXT));
+//                }
 
 
 
@@ -108,28 +108,38 @@ public class MapStyleManagerHXForH5 {
                         feature.addProperty("outLineColor", new JsonPrimitive("#80211d"));
                     }
                     // 子图配个色
-                    else  if (display.contains("住院")) {
-//                        feature.addProperty("color", new JsonPrimitive(MapConfig2.COLOR_INPATIENTBUILDING));
-//                        feature.addProperty("outLineColor", new JsonPrimitive(MapConfig2
-//                                .COLOR_INPATIENTBUILDING_BORDER));
-                        feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2
-                                .COLOR_INPATIENTBUILDING_TEXT));
-                        feature.addProperty(MapConfig2.NAME_TEXT_SIZE, new JsonPrimitive(MapConfig2
-                                .TEXTSIZE_INPATIENTBUILDING));
-                    }else if (display.contains("门诊") || display.contains("急诊科") || display.contains("信息楼") || display
-                            .contains("感染性疾病中心") || display.contains("健康检查中心")) {
-//                        feature.addProperty("color", new JsonPrimitive(MapConfig2.COLOR_DEPARTMENT));
-                        feature.addProperty("outLineColor", new JsonPrimitive(MapConfig2
-                                .COLOR_DEPARTMENT_BORDER));
+                    else if(display.contains("门诊楼") || display.contains("第二门诊")  || display.contains("第三住院")
+                            || display.contains("第四住院")  || display.contains("第五住院") || display.contains("第六住院")
+                            || display.contains("医技楼")  || display.contains("临床营养科")  || display.contains("信息楼")
+                            || display.contains("入园服务中心")  || display.contains("监控检查中心")  || display.contains("感染性疾病中心")
+                            || display.contains("急诊科")  || display.contains("胸痛中心")  || display.contains("卒中中心") ){
                         feature.addProperty(MapConfig2.NAME_TEXT_SIZE, new JsonPrimitive(MapConfig2.TEXTSIZE_DEPARTMENT));
                         feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2.COLOR_DEPARTMENT_TEXT));
-                    }  else if (display.contains("教学楼") || display.contains("水塔楼")) {
-//                        feature.addProperty("color", new JsonPrimitive(MapConfig2.COLOR_OTHERS));
-                        feature.addProperty("outLineColor", new JsonPrimitive(MapConfig2
-                                .COLOR_OTHERS_BORDER));
-                        feature.addProperty(MapConfig2.NAME_TEXT_SIZE, new JsonPrimitive(MapConfig2.TEXTSIZE_OTHERS));
-                        feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2.COLOR_OTHERS_TEXT));
                     }
+//                    else  if (display.contains("住院")) {
+////                        feature.addProperty("color", new JsonPrimitive(MapConfig2.COLOR_INPATIENTBUILDING));
+////                        feature.addProperty("outLineColor", new JsonPrimitive(MapConfig2
+////                                .COLOR_INPATIENTBUILDING_BORDER));
+//                        feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2
+//                                .COLOR_INPATIENTBUILDING_TEXT));
+//                        feature.addProperty(MapConfig2.NAME_TEXT_SIZE, new JsonPrimitive(MapConfig2
+//                                .TEXTSIZE_INPATIENTBUILDING));
+//                    }else if (display.contains("门诊") || display.contains("急诊科") || display.contains("信息楼") || display
+//                            .contains("感染性疾病中心") || display.contains("健康检查中心")) {
+////                        feature.addProperty("color", new JsonPrimitive(MapConfig2.COLOR_DEPARTMENT));
+//                        feature.addProperty("outLineColor", new JsonPrimitive(MapConfig2
+//                                .COLOR_DEPARTMENT_BORDER));
+//                        feature.addProperty(MapConfig2.NAME_TEXT_SIZE, new JsonPrimitive(MapConfig2.TEXTSIZE_DEPARTMENT));
+//                        feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2.COLOR_DEPARTMENT_TEXT));
+//                    }  else if (display.contains("教学楼") || display.contains("水塔楼")) {
+////                        feature.addProperty("color", new JsonPrimitive(MapConfig2.COLOR_OTHERS));
+//                        feature.addProperty("outLineColor", new JsonPrimitive(MapConfig2
+//                                .COLOR_OTHERS_BORDER));
+//                        feature.addProperty(MapConfig2.NAME_TEXT_SIZE, new JsonPrimitive(MapConfig2.TEXTSIZE_OTHERS));
+//                        feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2.COLOR_OTHERS_TEXT));
+//                    }
+
+
                 }
 
 

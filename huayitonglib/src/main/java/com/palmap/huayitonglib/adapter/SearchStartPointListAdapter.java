@@ -1,13 +1,18 @@
 package com.palmap.huayitonglib.adapter;
 
-import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.palmap.huayitonglib.R;
+import com.palmap.huayitonglib.activity.SearchActivity;
 import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
+import com.palmap.huayitonglib.utils.Constant;
 
 import java.util.List;
 
@@ -17,11 +22,11 @@ import java.util.List;
 
 public class SearchStartPointListAdapter extends BaseQuickAdapter<MapPointInfoBean, BaseViewHolder> {
 
-    private Context mContext;
+    private SearchActivity self;
 
-    public SearchStartPointListAdapter(@LayoutRes int layoutResId, @Nullable List<MapPointInfoBean> data, Context context) {
+    public SearchStartPointListAdapter(@LayoutRes int layoutResId, @Nullable List<MapPointInfoBean> data, SearchActivity self) {
         super(layoutResId, data);
-        mContext = context;
+        this.self = self;
     }
 
     @Override
@@ -29,5 +34,19 @@ public class SearchStartPointListAdapter extends BaseQuickAdapter<MapPointInfoBe
         helper.setText(R.id.poiNameTv, item.getName())
                 .setText(R.id.poiAreaTv, item.getAddress())
                 .setText(R.id.floorTv, item.getFloorName());
+        TextView setStartPointTv = helper.getView(R.id.setStartPointTv);
+        setStartPointTv.setFocusable(true);
+        setStartPointTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 点击设为起点
+                Log.i(TAG, "onItemClick: 设为起点");
+                Intent intent = new Intent();
+                intent.putExtra("MapPointInfoBean", item);
+                self.setResult(Constant.START_RESULTCODE, intent);
+                self.finish();
+            }
+        });
+
     }
 }
