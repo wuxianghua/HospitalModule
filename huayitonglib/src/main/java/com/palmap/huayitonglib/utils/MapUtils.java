@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Size;
 
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -347,6 +348,7 @@ public class MapUtils {
     /**
      * 根据经纬度获取名字
      * 当点击的时候才有效
+     * 获取到的是shapelevel最高的名字
      *
      * @param mapboxMap
      * @param latLng
@@ -364,6 +366,38 @@ public class MapUtils {
     }
 
     /**
+     * @param mapboxMap
+     * @param latLng
+     * @return
+     */
+    public static String getCombineName(MapboxMap mapboxMap, LatLng latLng, String floorAlias) {
+
+        PointF pointF = mapboxMap.getProjection().toScreenLocation(latLng);
+        List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, Config.LAYERID_AREA);
+
+        StringBuilder info = new StringBuilder();
+
+        for (Feature feature : features) {
+            if (feature.hasProperty("shape_level")) {
+                int level = feature.getNumberProperty("shape_level").intValue();
+                Log.d(TAG, "getCombineName: level " + level);
+
+                if (level == 3) {
+                    info.append(getName(feature)).append("  ").append(floorAlias).append(" ");
+                }
+
+                if (level == 2) {
+                    info.append(getName(feature));
+                }
+            }
+        }
+
+        Log.d(TAG, "getCombineName: " + info.toString());
+
+        return info.toString();
+    }
+
+    /**
      * 根据feature获取名字
      *
      * @param feature
@@ -378,4 +412,6 @@ public class MapUtils {
         Log.d(TAG, "getName: 获取不到名字 ");
         return "";
     }
+
+
 }
