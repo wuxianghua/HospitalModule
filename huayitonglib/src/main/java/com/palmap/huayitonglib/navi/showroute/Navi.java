@@ -1,7 +1,5 @@
 package com.palmap.huayitonglib.navi.showroute;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,7 +13,6 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.style.layers.Property;
-import com.mapbox.services.commons.geojson.Point;
 import com.mapbox.services.commons.models.Position;
 import com.palmap.huayitonglib.navi.NavigateFactory;
 import com.palmap.huayitonglib.navi.NavigateManager;
@@ -34,24 +31,56 @@ import java.util.List;
 
 public class Navi {
     public static final String TAG = Navi.class.getSimpleName();
+    
+    public static final String SOURCEID_LOCATION = "source-id-location";
+    public static final String LAYERID_LOCATION = "layerid-location";
+    public static final String IMAGENAE_LOCATION = "imagename-location";
+
+    public static final int MSG_SIMULATE_NAVI = 1000;
+    public static final int MSG_SIMULATE_NAVI_FINISH_ONE_FLOOR = 1001;
+
+    private static final int ZOOM_NAVI = 18;
+    public static final int TIMES = 300;
 
     private MapBoxImp mMapBoxImp;
     private MapboxMap mMapboxMap;
+
     private NavigateManager mNavigateManager;
+
     private ValueAnimator mValueAnimator;
+    private long mCurrentFloorId;
+    private int mIndex = 0;
+    private double mPreBearing = 0;
+    private RouteBean mRouteBean;
+    private LatlngEvaluator mLatlngEvaluator = new LatlngEvaluator();
 
-    public void init(Context context, MapboxMap mapboxMap, int resId) {
-        mMapBoxImp = new MapBoxImp();
-        mMapBoxImp.setMapEngine(mapboxMap);
-        mMapboxMap = mapboxMap;
-        Bitmap bitmap = BitmapUtils.decodeSampledBitmapFromResource(context.getResources(), resId, 100, 100);
-        mMapBoxImp.addImageSource(IMAGENAE_LOCATION, bitmap);
+    private List<LatLng> mPoints = new ArrayList<>();
+    private List<NodeInfo> mUsedNoInfos = new ArrayList<>();
+    private List<NodeInfo> mFromNodeInfos = new ArrayList<>();
+    private List<NodeInfo> mToNodeInfos = new ArrayList<>();
 
-        RouteManager.get().registerPlanRouteListener(mPlanRouteListener);
+    private SimulateNaviStateListener mSimulateNaviStateListener;
 
-        mNavigateManager = new NavigateManager();
-        mNavigateManager.setNavigateUpdateListener(mNavigateUpdateListener);
-    }
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_SIMULATE_NAVI:
+                    repeat();
+                    break;
+                case MSG_SIMULATE_NAVI_FINISH_ONE_FLOOR:
+                    if (mSimulateNaviStateListener != null) {
+                        if (mCurrentFloorId != mRouteBean.getToFloorId()) {
+                            mSimulateNaviStateListener.onSwitchFloor(mRouteBean.getToFloorId());
+                            startInner(mRouteBean.getToFloorId(), mToNodeInfos);
+                        } else {
+                            mSimulateNaviStateListener.onFinish();
+                        }
+                    }
+                    break;
+            }
+        }
+    };
 
     private PlanRouteListener mPlanRouteListener = new PlanRouteListener() {
 
@@ -73,17 +102,41 @@ public class Navi {
         }
     };
 
-    private List<LatLng> mPoints = new ArrayList<>();
+    public void init(Context context, MapboxMap mapboxMap, int resId) {
+        mMapBoxImp = new MapBoxImp();
+        mMapBoxImp.setMapEngine(mapboxMap);
+        mMapboxMap = mapboxMap;
+        Bitmap bitmap = BitmapUtils.decodeSampledBitmapFromResource(context.getResources(), resId, 100, 100);
+        mMapBoxImp.addImageSource(IMAGENAE_LOCATION, bitmap);
+
+        RouteManager.get().registerPlanRouteListener(mPlanRouteListener);
+
+        mNavigateManager = new NavigateManager();
+        mNavigateManager.setNavigateUpdateListener(mNavigateUpdateListener);
+    }
+
+    /**
+     * 添加监听器
+     *
+     * @param listener
+     */
+    public void setSimulateStateListener(SimulateNaviStateListener listener) {
+        mSimulateNaviStateListener = listener;
+    }
 
     /**
      * 开始模拟导航
      */
     public void startSimulateNavi(RouteBean bean) {
-        stopSimulateNavi();
+        mRouteBean = bean;
+
+        if (mSimulateNaviStateListener != null) {
+            mSimulateNaviStateListener.onPre(bean.getFromFloorId());
+        }
 
         mNavigateManager.setAStarPath(bean.getRoutes());
         List<PartInfo> partInfos = mNavigateManager.getPartInfos();
-        handleNodeInfo(partInfos);
+        handleNodeInfo(partInfos, bean.getFromFloorId(), bean.getToFloorId());
 
         if (mPoints.isEmpty()) {
             addOrUpdateLocationMark(null);
@@ -91,30 +144,35 @@ public class Navi {
             addOrUpdateLocationMark(mPoints.get(0));
         }
 
+        if (mSimulateNaviStateListener != null) {
+            mSimulateNaviStateListener.onStart(bean.getFromFloorId());
+        }
+
+        startInner(mRouteBean.getFromFloorId(), mFromNodeInfos);
+    }
+
+    /**
+     * 内部开始调用的方法
+     *
+     * @param floorId
+     * @param nodeInfos
+     */
+    private void startInner(long floorId, List<NodeInfo> nodeInfos) {
+
+        clearSimulateNaviInfo();
+
+        mCurrentFloorId = floorId;
+        mUsedNoInfos.addAll(nodeInfos);
         mHandler.sendEmptyMessage(MSG_SIMULATE_NAVI);
     }
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == MSG_SIMULATE_NAVI) {
-                start();
-            }
-        }
-    };
+    private void repeat() {
+        Log.d(TAG, "repeat: mIndex " + mIndex + " mUsedNoInfos.size() " + mUsedNoInfos.size());
 
-    public static final int MSG_SIMULATE_NAVI = 1000;
+        if (mIndex < (mUsedNoInfos.size() - 1)) {
 
-    private int mIndex = 0;
-    private double mPreBearing = 0;
-    private static final int ZOOM_NAVI = 18;
-
-    private void start() {
-
-        if (mIndex < (mNodeInfos.size() - 1)) {
-
-            NodeInfo nodeInfo = mNodeInfos.get(mIndex);
-            NodeInfo nextNodeInfo = mNodeInfos.get(mIndex + 1);
+            NodeInfo nodeInfo = mUsedNoInfos.get(mIndex);
+            NodeInfo nextNodeInfo = mUsedNoInfos.get(mIndex + 1);
 
             LatLng from = new LatLng(nodeInfo.getLngLat().getLat(), nodeInfo.getLngLat().getLng());
             LatLng to = new LatLng(nextNodeInfo.getLngLat().getLat(), nextNodeInfo.getLngLat().getLng());
@@ -126,6 +184,7 @@ public class Navi {
                     " " + Math.abs(bearing - mPreBearing));
 
             if (Math.abs(bearing - mPreBearing) > 10) {
+                Log.d(TAG, "repeat: 转");
                 if (mValueAnimator != null) {
                     mValueAnimator.cancel();
                     mValueAnimator.end();
@@ -136,33 +195,47 @@ public class Navi {
                 mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), TIMES);
                 mPreBearing = bearing;
             } else {
+                Log.d(TAG, "repeat: 不转");
                 animateLocation(from, to);
                 mIndex++;
             }
-
             mHandler.sendEmptyMessageDelayed(MSG_SIMULATE_NAVI, TIMES);
+        } else {
+            mHandler.sendEmptyMessageDelayed(MSG_SIMULATE_NAVI_FINISH_ONE_FLOOR, TIMES);
         }
     }
 
-    private List<NodeInfo> mNodeInfos;
+    private void handleNodeInfo(List<PartInfo> partInfos, long fromFloorId, long toFloorId) {
 
-    private void handleNodeInfo(List<PartInfo> partInfos) {
+        List<NodeInfo> nodeInfos = NavigateFactory.makeMockPointArray(5, partInfos);
 
-        mNodeInfos = NavigateFactory.makeMockPointArray(5, partInfos);
+        if (!mFromNodeInfos.isEmpty()) {
+            mFromNodeInfos.clear();
+        }
+        if (!mToNodeInfos.isEmpty()) {
+            mToNodeInfos.clear();
+        }
+
+        for (NodeInfo nodeInfo : nodeInfos) {
+            if (nodeInfo.getZ() == fromFloorId) {
+                mFromNodeInfos.add(nodeInfo);
+            } else if (nodeInfo.getZ() == toFloorId) {
+                mToNodeInfos.add(nodeInfo);
+            }
+        }
+
         if (!mPoints.isEmpty()) {
             mPoints.clear();
         }
 
-        for (NodeInfo nodeInfo : mNodeInfos) {
+        for (NodeInfo nodeInfo : nodeInfos) {
             LatLng latLng = new LatLng(nodeInfo.getLngLat().getLat(), nodeInfo.getLngLat().getLng());
             mPoints.add(latLng);
         }
     }
 
-    private LatlngEvaluator mLatlngEvaluator = new LatlngEvaluator();
-
     /**
-     * 直线移动图标
+     * 直线移动图标 动画
      *
      * @param startLatLng
      * @param endLatLng
@@ -182,7 +255,8 @@ public class Navi {
                 LatLng evaluatelatlng = mLatlngEvaluator.evaluate(valueAnimator.getAnimatedFraction(), startLatLng,
                         endLatLng);
                 addOrUpdateLocationMark(evaluatelatlng);
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(evaluatelatlng).build();
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(evaluatelatlng).zoom(ZOOM_NAVI)
+                        .build();
                 mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), TIMES);
             }
         });
@@ -191,25 +265,33 @@ public class Navi {
         mValueAnimator.start();
     }
 
-    public static final int TIMES = 1000;
-
-    public static final String SOURCEID_LOCATION = "source-id-location";
-    public static final String LAYERID_LOCATION = "layerid-location";
-    public static final String IMAGENAE_LOCATION = "imagename-location";
-
     private void addOrUpdateLocationMark(LatLng latLng) {
         mMapBoxImp.drawImage(latLng, SOURCEID_LOCATION, LAYERID_LOCATION, RouteManager.LAYERID__ROUTE,
                 IMAGENAE_LOCATION, Property.ICON_ANCHOR_CENTER);
     }
 
-    private void stopSimulateNavi() {
+    private void clearLocationMark() {
+        mMapBoxImp.drawImage(null, SOURCEID_LOCATION, LAYERID_LOCATION, RouteManager.LAYERID__ROUTE,
+                IMAGENAE_LOCATION, Property.ICON_ANCHOR_CENTER);
+    }
+
+    private void clearSimulateNaviInfo() {
+        if (!mUsedNoInfos.isEmpty()) {
+            mUsedNoInfos.clear();
+        }
         mIndex = 0;
         mHandler.removeCallbacksAndMessages(null);
         if (mValueAnimator != null) {
             mValueAnimator.cancel();
         }
+        mPreBearing = 0;
     }
 
-
-
+    /**
+     * 停止模拟导航
+     */
+    public void stopSimulateNavi() {
+        clearSimulateNaviInfo();
+        clearLocationMark();
+    }
 }

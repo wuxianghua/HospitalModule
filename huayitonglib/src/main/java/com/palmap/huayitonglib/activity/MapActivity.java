@@ -1,4 +1,4 @@
-package com.palmap.huayitonglib;
+package com.palmap.huayitonglib.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -32,8 +32,6 @@ import com.mapbox.services.commons.geojson.BaseFeatureCollection;
 import com.mapbox.services.commons.geojson.Feature;
 import com.mapbox.services.commons.geojson.FeatureCollection;
 import com.palmap.huayitonglib.R;
-import com.palmap.huayitonglib.activity.SearchActivity;
-import com.palmap.huayitonglib.activity.VoiceListenActivity;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
 import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
@@ -41,6 +39,7 @@ import com.palmap.huayitonglib.navi.showroute.Navi;
 import com.palmap.huayitonglib.navi.showroute.PlanRouteListener;
 import com.palmap.huayitonglib.navi.showroute.RouteBean;
 import com.palmap.huayitonglib.navi.showroute.RouteManager;
+import com.palmap.huayitonglib.navi.showroute.SimulateNaviStateListener;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.CoordinateUtil;
@@ -68,7 +67,7 @@ public class MapActivity extends VoiceListenActivity {
     private FloorBean mFloorBean;
     //当前FloorId为平面层楼层
     private int mCurrentFloorId = Config.FLOORID_F1_CH;
-
+    private boolean mIsSearchEndPoi = true;//是否为搜索终点（语音搜索使用）
 
     //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
 
@@ -97,6 +96,7 @@ public class MapActivity extends VoiceListenActivity {
     LinearLayout setstar_bttom_ll01;
     Button stop_nagv_btn;
     TextView endname_top_text, start_top_text, endfloorname_top_text, endaddress_top_text;
+
 
     ImageView view_2D_3D; // 2D.3D切换按钮
     TextView bilichi_Tv; // 比例尺显示的距离
@@ -277,8 +277,8 @@ public class MapActivity extends VoiceListenActivity {
             changeFloorScroll();
         } else if (i == R.id.search_rr) {
 //            startActivity(new Intent(this, SearchActivity.class));
-            searchEndPoi("");
             initUiView();
+            searchEndPoi("");
         } else if (i == R.id.xishoujian_image) {
             if (xishoujian) {
                 xishoujian_image.setBackgroundResource(R.mipmap.ic_map_xishoujian_dianji);
@@ -354,6 +354,7 @@ public class MapActivity extends VoiceListenActivity {
             //地图缩小
             MapUtils.setMapSmall(mMapboxMap);
         } else if (i == R.id.yuyin_rr) {
+            mIsSearchEndPoi = true;
             showListenDialog();
         } else if (i == R.id.share_rr) {
             centerToast("正在建设中，敬请期待");
@@ -406,8 +407,10 @@ public class MapActivity extends VoiceListenActivity {
             if (isJumpStartPoint) {
                 searchStartPoi("");
             }
-        }else if (i == R.id.selectstart_yuyin_rr){
-            // 选择起点时，点击起点搜索框跳转到搜索页面
+        } else if (i == R.id.selectstart_yuyin_rr) {
+            // 选择起点时，点击起点搜索框语音搜索按钮
+            mIsSearchEndPoi = false;
+            showListenDialog();
         }
     }
 
@@ -495,7 +498,8 @@ public class MapActivity extends VoiceListenActivity {
 
             //删除图层后加载自己的地图
 
-            mMarkerUtils = new MarkerUtils(mMapboxMap, getBaseContext(), R.mipmap.ic_map_qidian, R.mipmap.ic_map_zhongdian);
+            mMarkerUtils = new MarkerUtils(mMapboxMap, getBaseContext(), R.mipmap.ic_map_qidian, R.mipmap
+                    .ic_map_zhongdian);
             mMapboxMap.setOnCameraChangeListener(new MapboxMap
                     .OnCameraChangeListener() {
                 @Override
@@ -531,7 +535,7 @@ public class MapActivity extends VoiceListenActivity {
             });
             //设置路线管理器
 //            setRouteManager();
-//
+
 //            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
 //                @Override
 //                public void onMapClick(@NonNull LatLng point) {
@@ -544,6 +548,7 @@ public class MapActivity extends VoiceListenActivity {
             mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(@NonNull LatLng point) {
+
                     PointF pointF2 = mMapboxMap.getProjection().toScreenLocation(point);
                     List<Feature> features = mMapboxMap.queryRenderedFeatures(pointF2);
                     try {
@@ -576,7 +581,8 @@ public class MapActivity extends VoiceListenActivity {
                                 Feature feature = MapUtils.queryMaxFeature(area_features);
                                 if (feature != null && feature.hasProperty("category")) {
                                     int category = feature.getNumberProperty("category").intValue();
-                                    if (category == 23999000 || category == 23062000 || category == 35002000 || category
+                                    if (category == 23999000 || category == 23062000 || category == 35002000 ||
+ category
                                             == 37000000) {
                                         //用户点击不可点击区域的时候------进行查找的mark的删除
                                         changeNavigaView(STARTSELEE_UNSHOW_03);
@@ -598,7 +604,8 @@ public class MapActivity extends VoiceListenActivity {
                                 Feature feature = MapUtils.queryMaxFeature(area_features);
                                 if (feature != null && feature.hasProperty("category")) {
                                     int category = feature.getNumberProperty("category").intValue();
-                                    if (category == 23999000 || category == 23062000 || category == 35002000 || category
+                                    if (category == 23999000 || category == 23062000 || category == 35002000 ||
+ category
                                             == 37000000) {
                                         //用户点击不可点击区域的时候------进行查找的mark的删除
                                         changeNavigaView(SHOUYE_SHOW_01);
@@ -668,6 +675,11 @@ public class MapActivity extends VoiceListenActivity {
 
             // 加载地图
             loadSelfMap();
+
+            // TODO (记得处理) 此处检测是否已导入搜索对应数据，如未导入，则在此开启子线程进行数据导入
+            if (MapPointInfoDbManager.get().getAll() == null || MapPointInfoDbManager.get().getAll().size() == 0) {
+                handler.sendEmptyMessageDelayed(1, 3000);
+            }
         }
     }
 
@@ -685,7 +697,6 @@ public class MapActivity extends VoiceListenActivity {
             public boolean onSuccess(RouteBean bean) {
                 Log.d("lybb", "路线规划成功了: ");
                 mRouteManager.showNaviRoute(mCurrentFloorId);
-                navi.startSimulateNavi(bean);
                 return false;
             }
 
@@ -697,13 +708,48 @@ public class MapActivity extends VoiceListenActivity {
 
         navi = new Navi();
         navi.init(this, mMapboxMap, R.mipmap.ic_wodeweizi);
+
+        navi.setSimulateStateListener(new SimulateNaviStateListener() {
+            @Override
+            public void onPre(long fromFloorId) {
+                if (fromFloorId != mCurrentFloorId) {
+                    String floorAlias = FileUtils.getFloorAlias(MapActivity.this, (int) fromFloorId);
+                    shiftFloors(floorAlias, false);
+                }
+            }
+
+            @Override
+            public void onStart(long floorId) {
+
+            }
+
+            @Override
+            public boolean onSwitchFloor(long floorId) {
+                if (mCurrentFloorId != floorId) {
+                    String floorAlias = FileUtils.getFloorAlias(MapActivity.this, (int) floorId);
+                    shiftFloors(floorAlias, false);
+                }
+                return true;
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+
     }
 
     private void loadSelfMap() {
         GuoMapUtils.addBackgroudLayer(getApplicationContext(), mMapboxMap);
         GuoMapUtils.addFrameLayer(getBaseContext(), mMapboxMap, mFloorBean, 1);
         GuoMapUtils.addAreaLayer(getBaseContext(), mMapboxMap, mFloorBean);
-        addFacilityLayer(TYPE_NOICON);
+//        addFacilityLayer(TYPE_NOICON);
         loading_rel.setVisibility(View.GONE);
     }
 
@@ -1044,7 +1090,7 @@ public class MapActivity extends VoiceListenActivity {
 //            default:
 //                break;
 //        }
-        RouteManager.get().showNaviRoute(mCurrentFloorId);
+//        RouteManager.get().showNaviRoute(mCurrentFloorId);
     }
 
     /**
@@ -1095,6 +1141,7 @@ public class MapActivity extends VoiceListenActivity {
         Log.e("zyy", "removeEndMarker: ");
         mMarkerUtils.removeEndMark();
     }
+
     //居中toast
     public void centerToast(String str) {
         Toast toast = Toast.makeText(getBaseContext(),
@@ -1127,7 +1174,6 @@ public class MapActivity extends VoiceListenActivity {
             if (msg.what == 1) {
                 Toast.makeText(self, "首次安装，正在准备数据，请耐心等待", Toast.LENGTH_LONG).show();
                 MapPointInfoDbManager.get().insertAllData(self);
-                loading_rel.setVisibility(View.GONE);
             }
             super.handleMessage(msg);
         }
@@ -1162,9 +1208,19 @@ public class MapActivity extends VoiceListenActivity {
             if (results.isEmpty()) {
                 Toast.makeText(this, String.format("没有找到 %s，请重新搜索", value), Toast.LENGTH_SHORT).show();
             } else {
-                // TODO: 2017/12/21 跳转界面
+                if (mIsSearchEndPoi) {
+                    searchEndPoi(value);
+                } else {
+                    searchStartPoi(value);
+                }
             }
         }
+        mIsSearchEndPoi = true;
+    }
+
+    @Override
+    public void onListenError() {
+        mIsSearchEndPoi = true;
     }
 
     @Override
@@ -1207,10 +1263,12 @@ public class MapActivity extends VoiceListenActivity {
                     Log.i("map", "onActivityResult: 带我去" + mapPointInfoBean.getName());
                     // 判断是否是当前楼层
                     if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId) {
-                        String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId()));
+                        String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId
+                                ()));
                         shiftFloors(floorAlias, true);
                     }
-                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()), Double.valueOf(mapPointInfoBean.getLatitude()));
+                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()),
+                            Double.valueOf(mapPointInfoBean.getLatitude()));
                     addEndMarker(point);
                     mEndFloorId = mCurrentFloorId = Integer.valueOf(mapPointInfoBean.getFloorId());
                     mEndLongtitude = point.getLongitude();
@@ -1226,10 +1284,12 @@ public class MapActivity extends VoiceListenActivity {
                     Log.i("map", "onActivityResult: 看地图" + mapPointInfoBean.getName());
                     // 判断是否是当前楼层
                     if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId) {
-                        String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId()));
+                        String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId
+                                ()));
                         shiftFloors(floorAlias, true);
                     }
-                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()), Double.valueOf(mapPointInfoBean.getLatitude()));
+                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()),
+                            Double.valueOf(mapPointInfoBean.getLatitude()));
                     addEndMarker(point);
                     mEndFloorId = mCurrentFloorId = Integer.valueOf(mapPointInfoBean.getFloorId());
                     mEndLongtitude = point.getLongitude();
@@ -1245,10 +1305,12 @@ public class MapActivity extends VoiceListenActivity {
                     Log.i("map", "onActivityResult: 设为起点" + mapPointInfoBean.getName());
                     // 判断是否是当前楼层
                     if (Integer.valueOf(mapPointInfoBean.getFloorId()) != mCurrentFloorId) {
-                        String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId()));
+                        String floorAlias = FileUtils.getFloorAlias(self, Integer.valueOf(mapPointInfoBean.getFloorId
+                                ()));
                         shiftFloors(floorAlias, true);
                     }
-                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()), Double.valueOf(mapPointInfoBean.getLatitude()));
+                    LatLng point = CoordinateUtil.webMercator2LatLng(Double.valueOf(mapPointInfoBean.getLongitude()),
+                            Double.valueOf(mapPointInfoBean.getLatitude()));
                     addStartMarker(point);
                     mStartFloorId = mCurrentFloorId = Integer.valueOf(mapPointInfoBean.getFloorId());
                     mStartLongtitude = point.getLongitude();

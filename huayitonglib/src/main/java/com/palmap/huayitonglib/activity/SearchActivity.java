@@ -1,7 +1,6 @@
 package com.palmap.huayitonglib.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,14 +42,15 @@ public class SearchActivity extends VoiceListenActivity {
     public static int SEARCH_END = 0;
     public static int SEARCH_START = 1;
     private int searchType = 0;
+    private String mDefaultKeyWord;
 
-
-  @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         Intent intent = getIntent();
         searchType = intent.getIntExtra(Constant.SEATCHTYPE_KEY, 0);
+        mDefaultKeyWord = intent.getStringExtra(Constant.SEATCH_KEYWORD);
         initView();
         initVoiceListen();
     }
@@ -94,7 +94,11 @@ public class SearchActivity extends VoiceListenActivity {
 
         mSearchShowFragment = new SearchShowFragment();
         mSearchListFragment = new SearchListFragment(searchType);
-        replaceFragment(mSearchShowFragment);
+        if (TextUtils.isEmpty(mDefaultKeyWord)) {
+            replaceFragment(mSearchShowFragment);
+        } else {
+            setEditText(mDefaultKeyWord);
+        }
     }
 
     // 点击返回
@@ -133,6 +137,11 @@ public class SearchActivity extends VoiceListenActivity {
                 setEditText(value);
             }
         }
+    }
+
+    @Override
+    public void onListenError() {
+
     }
 
     @Override

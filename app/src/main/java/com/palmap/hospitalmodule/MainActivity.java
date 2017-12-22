@@ -5,8 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.palmap.huayitonglib.MapActivity;
-
+import com.palmap.huayitonglib.activity.MapActivity;
 
 
 public class MainActivity extends AppCompatActivity {

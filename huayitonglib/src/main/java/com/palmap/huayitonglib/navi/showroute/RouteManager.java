@@ -43,7 +43,6 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     private List<String> mLayerIds;
     private String mAboveId;
 
-    //    private PlanRouteListener mPlanRouteListener;
     private List<PlanRouteListener> mPlanRouteListeners;
 
     private RouteManager() {
@@ -180,12 +179,14 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
      */
     @Override
     public void showNaviRoute(long currentFloorId) {
-        if (mRouteBean != null ){
-            if (currentFloorId == mRouteBean.getFromFloorId() && mRouteBean.getFromFeatureCollection() != null) {
-                showStartRoute();
-            } else if (currentFloorId == mRouteBean.getToFloorId() && mRouteBean.getToFeatureCollection() != null) {
-                showEndRoute();
-            }
+
+        if (mRouteBean == null) {
+            return;
+        }
+        if (currentFloorId == mRouteBean.getFromFloorId() && mRouteBean.getFromFeatureCollection() != null) {
+            showStartRoute();
+        } else if (currentFloorId == mRouteBean.getToFloorId() && mRouteBean.getToFeatureCollection() != null) {
+            showEndRoute();
         }
 
     }
