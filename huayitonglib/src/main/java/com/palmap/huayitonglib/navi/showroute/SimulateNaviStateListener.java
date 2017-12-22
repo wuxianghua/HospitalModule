@@ -11,7 +11,9 @@ public interface SimulateNaviStateListener {
 
     void onStart(long floorId);
 
-    void onFinish(long finishFloorId,long fromFloorId,long toFloorId);
+    boolean onSwitchFloor(long floorId);
+
+    void onFinish();
 
     void onError();
 }

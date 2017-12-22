@@ -43,7 +43,6 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     private List<String> mLayerIds;
     private String mAboveId;
 
-    //    private PlanRouteListener mPlanRouteListener;
     private List<PlanRouteListener> mPlanRouteListeners;
 
     private RouteManager() {
@@ -135,7 +134,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
 
         mNavigateManager = new MapBoxNavigateManager(context, routeDataPath);
         mNavigateManager.setNavigateListener(mListener);
-        mRouteBean = null;
+        mRouteBean = new RouteBean();
         mLayerIds = new ArrayList<>();
         mAboveId = aboveId;
 
@@ -230,7 +229,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
      */
     @Override
     public void clearRouteRecord() {
-        mRouteBean = null;
+        mRouteBean = new RouteBean();
     }
 
     /**
