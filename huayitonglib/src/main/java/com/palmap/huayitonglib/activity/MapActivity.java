@@ -868,25 +868,6 @@ public class MapActivity extends VoiceListenActivity {
     private boolean isJumpStartPoint = true;
 
     public void changeNavigaView(int types) {
-        isJumpStartPoint = true;
-        // TODO 每次改变显示View之前，先统一清空起点、终点信息显示
-        //顶部起点信息
-        start_top_text.setText("");
-        //顶部终点name信息
-        endname_top_text.setText("");
-        //顶部终点楼层名字endfloorname信息
-        endfloorname_top_text.setText("");
-        //顶部终点地址endaddress信息
-        endaddress_top_text.setText("");
-
-        //底部选择终点的对应信息
-        //endname
-        park_zhongdian_text01.setText("");
-        //endadress
-        park_zhongdian_text02.setText("");
-        //终点floorname
-        park_zhongdian_text03.setText("");
-
         if (types == SHOUYE_SHOW_01) {
             //标题栏
             title_rr.setVisibility(View.VISIBLE);
@@ -937,17 +918,6 @@ public class MapActivity extends VoiceListenActivity {
             //顶部导航提示01
             nagv_top01.setVisibility(View.GONE);
 
-            // 终点信息赋值
-            //底部选择终点的对应信息
-            if (mEndInfo != null){
-                //endname
-                park_zhongdian_text01.setText(mEndInfo.getName());
-                //endadress
-                park_zhongdian_text02.setText(mEndInfo.getAddress());
-                //endfloorname
-                park_zhongdian_text03.setText(mEndInfo.getFloorName());
-            }
-
             isHaveSetEnd = false;
             removeStartMarker();
             mStartFloorId = 0;
@@ -976,16 +946,6 @@ public class MapActivity extends VoiceListenActivity {
             selectstart_rr_01.setVisibility(View.VISIBLE);
             //顶部导航提示01
             nagv_top01.setVisibility(View.GONE);
-
-            // 顶部起点、终点信息展示，因此时无起点，所以只设置终点信息
-            //顶部终点name信息
-            if (mEndInfo != null){
-                endname_top_text.setText(mEndInfo.getName());
-                //顶部终点楼层名字endfloorname信息
-                endfloorname_top_text.setText(mEndInfo.getFloorName());
-                //顶部终点地址endaddress信息
-                endaddress_top_text.setText(mEndInfo.getAddress());
-            }
 
             isHaveSetEnd = true;
             removeStartMarker();
@@ -1016,19 +976,6 @@ public class MapActivity extends VoiceListenActivity {
             //顶部导航提示01
             nagv_top01.setVisibility(View.GONE);
 
-            // 顶部起点、终点信息展示，此时有起点，设置终点信息+起点信息
-            if (mStartInfo != null){
-                start_top_text.setText(mStartInfo.getName());
-            }
-            if (mEndInfo != null){
-                //顶部终点name信息
-                endname_top_text.setText(mEndInfo.getName());
-                //顶部终点楼层名字endfloorname信息
-                endfloorname_top_text.setText(mEndInfo.getFloorName());
-                //顶部终点地址endaddress信息
-                endaddress_top_text.setText(mEndInfo.getAddress());
-            }
-
             isHaveSetEnd = true;
             type = 4;
             mapStatus = true;
@@ -1053,19 +1000,6 @@ public class MapActivity extends VoiceListenActivity {
             selectstart_rr_01.setVisibility(View.VISIBLE);
             //顶部导航提示01
             nagv_top01.setVisibility(View.GONE);
-
-            // 顶部起点、终点信息展示，此时有起点，设置终点信息+起点信息
-            if (mStartInfo != null){
-                start_top_text.setText(mStartInfo.getName());
-            }
-            if (mEndInfo != null){
-                //顶部终点name信息
-                endname_top_text.setText(mEndInfo.getName());
-                //顶部终点楼层名字endfloorname信息
-                endfloorname_top_text.setText(mEndInfo.getFloorName());
-                //顶部终点地址endaddress信息
-                endaddress_top_text.setText(mEndInfo.getAddress());
-            }
 
             isHaveSetEnd = true;
             type = 5;
@@ -1121,10 +1055,88 @@ public class MapActivity extends VoiceListenActivity {
             type = 7;
             mapStatus = false;
         }
-
+        changeStartEndInfo(types);
     }
 
-    ;
+    // 设置起点、终点信息
+    private void changeStartEndInfo(int types){
+        isJumpStartPoint = true;
+        cleanPointInfo();
+        if (types == SHOUYE_SHOW_01) {
+
+        } else if(types == ENDSELEE_SHOW_02){
+            // 终点信息赋值
+            //底部选择终点的对应信息
+            if (mEndInfo != null){
+                //endname
+                park_zhongdian_text01.setText(mEndInfo.getName());
+                //endadress
+                park_zhongdian_text02.setText(mEndInfo.getAddress());
+                //endfloorname
+                park_zhongdian_text03.setText(mEndInfo.getFloorName());
+            }
+        } else if(types == STARTSELEE_UNSHOW_03){
+            // 顶部起点、终点信息展示，因此时无起点，所以只设置终点信息
+            //顶部终点name信息
+            if (mEndInfo != null){
+                endname_top_text.setText(mEndInfo.getName() +"    "+ mEndInfo.getFloorName() +"    "+ mEndInfo.getAddress());
+//                //顶部终点楼层名字endfloorname信息
+//                endfloorname_top_text.setText(mEndInfo.getFloorName());
+//                //顶部终点地址endaddress信息
+//                endaddress_top_text.setText(mEndInfo.getAddress());
+            }
+        } else if(types == STARTSELEE_SHOW_04){
+            // 顶部起点、终点信息展示，此时有起点，设置终点信息+起点信息
+            if (mStartInfo != null){
+                start_top_text.setText(mStartInfo.getName());
+            }
+            if (mEndInfo != null){
+                //顶部终点name信息
+                endname_top_text.setText(mEndInfo.getName());
+                //顶部终点楼层名字endfloorname信息
+                endfloorname_top_text.setText(mEndInfo.getFloorName());
+                //顶部终点地址endaddress信息
+                endaddress_top_text.setText(mEndInfo.getAddress());
+            }
+        } else if(types == ROUTE_SHOW_05){
+            // 顶部起点、终点信息展示，此时有起点，设置终点信息+起点信息
+            if (mStartInfo != null){
+                start_top_text.setText(mStartInfo.getName());
+            }
+            if (mEndInfo != null){
+                //顶部终点name信息
+                endname_top_text.setText(mEndInfo.getName());
+                //顶部终点楼层名字endfloorname信息
+                endfloorname_top_text.setText(mEndInfo.getFloorName());
+                //顶部终点地址endaddress信息
+                endaddress_top_text.setText(mEndInfo.getAddress());
+            }
+        } else if(types == NAVIGA_SHOW_06){
+
+        } else if(types == STOPNAVIGA_SHOW_07){
+
+        }
+    }
+
+    // 清空起点、终点信息显示
+    private void cleanPointInfo(){
+        //顶部起点信息
+        start_top_text.setText("");
+        //顶部终点name信息
+        endname_top_text.setText("");
+        //顶部终点楼层名字endfloorname信息
+        endfloorname_top_text.setText("");
+        //顶部终点地址endaddress信息
+        endaddress_top_text.setText("");
+
+        //底部选择终点的对应信息
+        //endname
+        park_zhongdian_text01.setText("");
+        //endadress
+        park_zhongdian_text02.setText("");
+        //终点floorname
+        park_zhongdian_text03.setText("");
+    }
 
     //楼层的标识符
     private String mAlias = "F1";
