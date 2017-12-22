@@ -84,7 +84,6 @@ public class MapActivity extends VoiceListenActivity {
         self = this;
         initMapData();
         initMapView(savedInstanceState);
-
     }
 
     ScrollView map_scrollview;
