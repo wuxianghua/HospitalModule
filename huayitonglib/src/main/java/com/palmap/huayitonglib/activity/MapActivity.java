@@ -523,7 +523,7 @@ public class MapActivity extends VoiceListenActivity {
                 }
             });
             //设置路线管理器
-            setRouteManager();
+//            setRouteManager();
 
 //            mMapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
 //                @Override
@@ -1080,7 +1080,7 @@ public class MapActivity extends VoiceListenActivity {
 //            default:
 //                break;
 //        }
-        RouteManager.get().showNaviRoute(mCurrentFloorId);
+//        RouteManager.get().showNaviRoute(mCurrentFloorId);
     }
 
     /**
