@@ -66,13 +66,18 @@ public class MapPointInfoDbManager {
     public List<MapPointInfoBean> query(String value){
         List<MapPointInfoBean> mList = mDao.queryBuilder().where(MapPointInfoBeanDao.Properties.Name.like("%" + value + "%")).build().list();
         if (mList == null || mList.size() == 0){
-            Log.d(TAG, "query: 查询结果为空");
+            Log.i(TAG, "query: 查询结果为空");
             return new ArrayList<>();
+        } else {
+            if (mList.size() > 10){
+                mList = mList.subList(0,10);
+            }
         }
+        Log.i(TAG, "query: 查询结果size = " + mList.size());
         return mList;
     }
 
-    // 导入全部数据（入库）
+    // 导入全部数据（入库）.
     public void insertAllData(Context context){
         double startTime = System.currentTimeMillis();
         String serachPoiData = FileUtils.loadFromAssets(context,"SearchPoiInfo.json");

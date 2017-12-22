@@ -974,7 +974,8 @@
             android:layout_marginRight="10dp"
             android:contentDescription="2D"
             android:onClick="onClick"
-            android:src="@mipmap/ic_map_2d" />
+            android:src="@mipmap/ic_map_2d"
+            android:background="@color/white"/>
 
         <TextView
             android:id="@+id/bilichi_Tv"
