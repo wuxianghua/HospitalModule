@@ -40,7 +40,7 @@ public class Navi {
     public static final int MSG_SIMULATE_NAVI_FINISH_ONE_FLOOR = 1001;
 
     private static final int ZOOM_NAVI = 18;
-    public static final int TIMES = 300;
+    public static final int TIMES = 600;
 
     private MapBoxImp mMapBoxImp;
     private MapboxMap mMapboxMap;
