@@ -98,6 +98,7 @@ public class Navi {
     private NavigateUpdateListener mNavigateUpdateListener = new NavigateUpdateListener() {
         @Override
         public void onNavigateUpdate(NaviInfo naviInfo) {
+            Log.d(TAG, "onNavigateUpdate:  info " + naviInfo.getNaviTip() + "\t" + (int)naviInfo.getTotalRemainLength());
             if (mSimulateNaviStateListener != null) {
                 mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip());
             }
@@ -201,6 +202,7 @@ public class Navi {
             } else {
                 Log.d(TAG, "repeat: 不转");
                 animateLocation(from, to);
+                mNavigateManager.updatePosition(mCurrentFloorId,nodeInfo.getX(),nodeInfo.getY(),0);
                 mIndex++;
             }
             mHandler.sendEmptyMessageDelayed(MSG_SIMULATE_NAVI, TIMES);

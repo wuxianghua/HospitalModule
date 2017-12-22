@@ -8,6 +8,7 @@ import com.palmap.huayitonglib.navi.entity.ActionState;
 import com.palmap.huayitonglib.navi.entity.NaviInfo;
 import com.palmap.huayitonglib.navi.entity.NodeInfo;
 import com.palmap.huayitonglib.navi.entity.PartInfo;
+import com.palmap.huayitonglib.navi.route.INavigateManager;
 import com.vividsolutions.jts.geom.Point;
 
 import java.util.ArrayList;
@@ -79,8 +80,10 @@ public class NavigateManager {
             if (partInfo == null || floorId != partInfo.getFloorId()) {
                 continue;
             }
-            if (partInfo.getDistanceByPoint(x, y) < minDistance) {
+            double distance = partInfo.getDistanceByPoint(x, y);
+            if (distance < minDistance) {
                 index = partInfo.getIndex();
+                minDistance = distance;
             }
         }
         PartInfo targetPart = mPartInfos.get(index);
@@ -170,13 +173,15 @@ public class NavigateManager {
                         partInfo.setNextAction(ActionState.ACTION_FRONT_LEFT);
                     }
                 } else {
-                    if (nextPart.getFloorHeight() > partInfo.getFloorHeight()) {
-                        partInfo.setNextAction(ActionState.ACTION_UPSTAIRS);
-                    } else {
-                        partInfo.setNextAction(ActionState.ACTION_DOWNSTAIRS);
-                    }
+                    partInfo.setNextAction(ActionState.CHANGE_FLOOR);
+//                    if (nextPart.getFloorHeight() > partInfo.getFloorHeight()) {
+//                        partInfo.setNextAction(ActionState.ACTION_UPSTAIRS);
+//                    } else {
+//                        partInfo.setNextAction(ActionState.ACTION_DOWNSTAIRS);
+//                    }
                 }
             }
+            Log.e("***", partInfo.getIndex() + " , " +partInfo.getNextAction().toString());
         }
     }
 

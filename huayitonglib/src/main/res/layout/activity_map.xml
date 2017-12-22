@@ -184,16 +184,22 @@
                         android:textColor="#FFFFFF"
                         android:textSize="14sp" />
 
-                    <TextView
+                    <com.palmap.huayitonglib.view.MarqueeTextView
                         android:id="@+id/endname_top_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="242dp"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="40dp"
-                        android:maxLines="10"
                         android:text="便民门诊"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:singleLine="true"/>
+                        <!--android:ellipsize="marquee"-->
+                        <!--android:focusable="true"-->
+                        <!--android:focusableInTouchMode="true"-->
+                        <!--android:scrollHorizontally="true"-->
+                        <!--android:marqueeRepeatLimit="marquee_forever"-->
+                        <!--android:singleLine="true"/>-->
 
                     <TextView
                         android:id="@+id/endfloorname_top_text"
@@ -346,7 +352,8 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:onClick="onClick"
-        android:background="@mipmap/btn_map_sheshi_nor" />
+        android:src="@mipmap/btn_map_sheshi_nor"
+        android:background="@mipmap/bg_gonggongsheshi"/>
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -976,7 +983,8 @@
             android:contentDescription="2D"
             android:onClick="onClick"
             android:src="@mipmap/ic_map_2d"
-            android:background="@color/white"/>
+            android:background="@mipmap/bg_gonggongsheshi"
+            />
 
         <TextView
             android:id="@+id/bilichi_Tv"

@@ -154,8 +154,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     }
 
     @Override
-    public void planRoute(double fromlong, double fromlat, long fromPlanargraph, double tolong, double tolat, long
-            toPlanargraph) {
+    public void planRoute(double fromlong, double fromlat, long fromPlanargraph, double tolong, double tolat, long toPlanargraph) {
 
         Position fromPosition = CoordinateUtils.latlng2WebMercator(fromlat, fromlong);
         Position toPosition = CoordinateUtils.latlng2WebMercator(tolat, tolong);

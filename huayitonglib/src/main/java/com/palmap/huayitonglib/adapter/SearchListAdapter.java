@@ -41,7 +41,6 @@ public class SearchListAdapter extends BaseQuickAdapter<MapPointInfoBean, BaseVi
         goWithMeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 点击带我去
                 Log.i(TAG, "onItemClick: 带我去");
                 Intent intent = new Intent();
                 intent.putExtra("MapPointInfoBean", item);
