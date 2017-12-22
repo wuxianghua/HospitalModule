@@ -429,8 +429,11 @@ public class MapActivity extends VoiceListenActivity {
                 linearLayout.setVisibility(View.GONE);
                 initCommonIcon();
             }
-        }else if ( i == R.id.stop_nagv_btn){
+        } else if (i == R.id.stop_nagv_btn) {
+            //导航结束
             navi.stopSimulateNavi();
+            changeNavigaView(SHOUYE_SHOW_01);
+
         }
     }
 
@@ -940,7 +943,7 @@ public class MapActivity extends VoiceListenActivity {
 
             // 终点信息赋值
             //底部选择终点的对应信息
-            if (mEndInfo != null){
+            if (mEndInfo != null) {
                 //endname
                 park_zhongdian_text01.setText(mEndInfo.getName());
                 //endadress
@@ -980,7 +983,7 @@ public class MapActivity extends VoiceListenActivity {
 
             // 顶部起点、终点信息展示，因此时无起点，所以只设置终点信息
             //顶部终点name信息
-            if (mEndInfo != null){
+            if (mEndInfo != null) {
                 endname_top_text.setText(mEndInfo.getName());
                 //顶部终点楼层名字endfloorname信息
                 endfloorname_top_text.setText(mEndInfo.getFloorName());
@@ -1018,10 +1021,10 @@ public class MapActivity extends VoiceListenActivity {
             nagv_top01.setVisibility(View.GONE);
 
             // 顶部起点、终点信息展示，此时有起点，设置终点信息+起点信息
-            if (mStartInfo != null){
+            if (mStartInfo != null) {
                 start_top_text.setText(mStartInfo.getName());
             }
-            if (mEndInfo != null){
+            if (mEndInfo != null) {
                 //顶部终点name信息
                 endname_top_text.setText(mEndInfo.getName());
                 //顶部终点楼层名字endfloorname信息
@@ -1056,10 +1059,10 @@ public class MapActivity extends VoiceListenActivity {
             nagv_top01.setVisibility(View.GONE);
 
             // 顶部起点、终点信息展示，此时有起点，设置终点信息+起点信息
-            if (mStartInfo != null){
+            if (mStartInfo != null) {
                 start_top_text.setText(mStartInfo.getName());
             }
-            if (mEndInfo != null){
+            if (mEndInfo != null) {
                 //顶部终点name信息
                 endname_top_text.setText(mEndInfo.getName());
                 //顶部终点楼层名字endfloorname信息

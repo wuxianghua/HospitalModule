@@ -68,7 +68,6 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                                        double fromY, long fromPlanargraph, FeatureCollection from, double fromConX,
                                        double fromConY, double toX, double toY, long toPlanargraph, FeatureCollection
                                                to, double toConX, double toConY) {
-
             if (state == INavigateManager.NavigateState.OK) {
                 mRouteBean.setRoutes(routes);
                 mRouteBean.setFromFloorId(fromPlanargraph);
@@ -80,7 +79,6 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                 mRouteBean.setFromFeatureCollection(from);
                 LatLng fromLatlng = CoordinateUtils.webMercator2LatLng(fromX, fromY);
                 mRouteBean.setFromLatlng(fromLatlng);
-
                 mRouteBean.setToFloorId(toPlanargraph);
                 LatLng toConlatLng = null;
                 if (toConX != 0) {
