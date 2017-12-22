@@ -119,8 +119,7 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
     }
 
     @Override
-    public void navigation(double fromX, double fromY, long fromPlanargraph, double toX, double toY, long
-            toPlanargraph) {
+    public void navigation(double fromX, double fromY, long fromPlanargraph, double toX, double toY, long toPlanargraph) {
         if (!precondition()) {
             return;
         }
