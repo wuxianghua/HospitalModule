@@ -190,8 +190,11 @@ public class GuoMapUtils {
                 PropertyFactory.iconOffset(new Float[]{-10.f, 0.f}),
                 PropertyFactory.iconImage(Function.property("logo", Stops.<String>identity())),
                 PropertyFactory.textPadding(8f)
+//                ,PropertyFactory.textAllowOverlap(Function.property("allowShow", new IdentityStops<String>()))
+//                ,PropertyFactory.textAllowOverlap(CameraFunction.property("allowShow",new SourceFunction<>()))
 
         );
+
         areaTextLayer.setFilter(Filter.has("display"));
         mapboxMap.addLayer(areaTextLayer);
     }

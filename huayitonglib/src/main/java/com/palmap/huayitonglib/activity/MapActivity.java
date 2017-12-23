@@ -246,7 +246,7 @@ public class MapActivity extends VoiceListenActivity {
                         Log.i("onItemSelected", "onItemSelected:------------- " + floor);
 
                         loading_rel.setVisibility(View.VISIBLE);
-                        if (floor.equals("平面图")) {
+                        if (floor.equals("平面层")) {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -1117,6 +1117,26 @@ public class MapActivity extends VoiceListenActivity {
             mapStatus = false;
         }
         changeStartEndInfo(types);
+        setCampassPosition(types);
+    }
+
+    // 设置指南针位置
+    public void setCampassPosition(int types) {
+        if (types == SHOUYE_SHOW_01) {
+            GuoMapUtils.setCampassMarTop(this,mMapboxMap,110);
+        } else if (types == ENDSELEE_SHOW_02) {
+            GuoMapUtils.setCampassMarTop(this,mMapboxMap,110);
+        } else if (types == STARTSELEE_UNSHOW_03) {
+            GuoMapUtils.setCampassMarTop(this,mMapboxMap,110);
+        } else if (types == STARTSELEE_SHOW_04) {
+            GuoMapUtils.setCampassMarTop(this,mMapboxMap,110);
+        } else if (types == ROUTE_SHOW_05) {
+            GuoMapUtils.setCampassMarTop(this,mMapboxMap,110);
+        } else if (types == NAVIGA_SHOW_06) {
+            GuoMapUtils.setCampassMarTop(this,mMapboxMap,140);
+        } else if (types == STOPNAVIGA_SHOW_07) {
+            GuoMapUtils.setCampassMarTop(this,mMapboxMap,140);
+        }
     }
 
     // 设置起点、终点信息
