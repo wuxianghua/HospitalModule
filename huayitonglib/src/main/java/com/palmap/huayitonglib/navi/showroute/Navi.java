@@ -164,11 +164,6 @@ public class Navi implements INavi {
         startInner(mRouteBean.getFromFloorId(), mFromNodeInfos);
     }
 
-    @Override
-    public void pauseSimulateNavi() {
-
-    }
-
     /**
      * 内部开始调用的方法
      *
@@ -270,7 +265,6 @@ public class Navi implements INavi {
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                Log.d(TAG, "onAnimationUpdate: ");
                 LatLng evaluatelatlng = mLatlngEvaluator.evaluate(valueAnimator.getAnimatedFraction(), startLatLng,
                         endLatLng);
                 addOrUpdateLocationMark(evaluatelatlng);
@@ -311,6 +305,13 @@ public class Navi implements INavi {
      */
     @Override
     public void stopSimulateNavi() {
+
+        if (mHandler.hasMessages(MSG_SIMULATE_NAVI)) {
+            if (mSimulateNaviStateListener != null) {
+                mSimulateNaviStateListener.onInterrupted();
+            }
+        }
+
         clearSimulateNaviInfo();
         clearLocationMark();
     }

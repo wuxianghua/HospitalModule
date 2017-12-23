@@ -16,7 +16,5 @@ public interface INavi {
 
     void startSimulateNavi(RouteBean bean);
 
-    void pauseSimulateNavi();
-
     void stopSimulateNavi();
 }

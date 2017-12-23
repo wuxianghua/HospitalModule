@@ -781,10 +781,21 @@ public class MapActivity extends VoiceListenActivity {
                 return true;
             }
 
+            /**
+             *导航完成
+             */
             @Override
             public void onFinish() {
                 Log.e("zyy", "onFinish:-------------- ");
                 changeNavigaView(STOPNAVIGA_SHOW_07);
+            }
+
+            /**
+             * 导航被取消
+             */
+            @Override
+            public void onInterrupted() {
+
             }
 
             @Override
