@@ -41,7 +41,7 @@ public class Navi implements INavi {
 
     private static final int ZOOM_NAVI = 18;
     private static final int TIMES = 600;
-    private static final int SPLIT_DISTANCE = 5;
+    private static final double SPLIT_DISTANCE = RouteConfig.VELOCITY_SIMULATE * TIMES / 1000;
 
     private MapBoxImp mMapBoxImp;
     private MapboxMap mMapboxMap;

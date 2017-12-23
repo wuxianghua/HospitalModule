@@ -418,7 +418,8 @@ public class MapActivity extends VoiceListenActivity {
         } else if (i == R.id.set_qidian) {
             //设置起点-----
             //进入路线规划-----
-            mRouteManager.planRoute(mStartLongtitude, mStartLatitude, mStartFloorId, mEndLongtitude, mEndLatitude, mEndFloorId);
+            mRouteManager.planRoute(mStartLongtitude, mStartLatitude, mStartFloorId, mEndLongtitude, mEndLatitude,
+                    mEndFloorId);
 
         } else if (i == R.id.moni_naviga_btn) {
             changeNavigaView(NAVIGA_SHOW_06);
@@ -755,8 +756,10 @@ public class MapActivity extends VoiceListenActivity {
         mRouteManager.registerPlanRouteListener(new PlanRouteListener() {
             @Override
             public boolean onSuccess(RouteBean bean) {
-                Log.d("lybb", "路线规划成功了: ");
                 mRouteBean = bean;
+                int totalDistance = (int) mRouteBean.getTotalDistance();
+                int time = mRouteBean.getTime();
+                Log.d("lybb", "路线规划成功了:  时间 " + time + " 距离 " + totalDistance);
                 Log.e("zyy", "onSuccess: --------------" + mRouteBean.toString());
                 mRouteManager.showNaviRoute(mCurrentFloorId);
                 changeNavigaView(ROUTE_SHOW_05);
