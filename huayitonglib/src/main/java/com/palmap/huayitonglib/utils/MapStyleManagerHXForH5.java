@@ -115,6 +115,37 @@ public class MapStyleManagerHXForH5 {
                             || display.contains("急诊科")  || display.contains("胸痛中心")  || display.contains("卒中中心") ){
                         feature.addProperty(MapConfig2.NAME_TEXT_SIZE, new JsonPrimitive(MapConfig2.TEXTSIZE_DEPARTMENT));
                         feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2.COLOR_DEPARTMENT_TEXT));
+                        feature.addProperty("allowShow",new JsonPrimitive(true));
+                    }
+
+                    // 路上面的字全部显示
+                    String id = feature.getId();
+                    if (TextUtils.equals(id, "2571255") || TextUtils.equals(id, "2571254") || TextUtils.equals(id, "2571253")
+                            || TextUtils.equals(id, "2571252") || TextUtils.equals(id, "2571235") || TextUtils.equals(id,
+                            "2571234")
+                            || TextUtils.equals(id, "2571233") || TextUtils.equals(id, "2571229") || TextUtils.equals(id,
+                            "2571228")
+                            || TextUtils.equals(id, "2571227") || TextUtils.equals(id, "2571226") || TextUtils.equals(id,
+                            "2571219")
+                            || TextUtils.equals(id, "2571218") || TextUtils.equals(id, "2571216") || TextUtils.equals(id,
+                            "2571213")
+                            || TextUtils.equals(id, "2571214") || TextUtils.equals(id, "2571215") || TextUtils.equals(id,
+                            "2571220")
+                            || TextUtils.equals(id, "2571210") || TextUtils.equals(id, "2571262") || TextUtils.equals(id,
+                            "2571263")
+                            || TextUtils.equals(id, "2571264") || TextUtils.equals(id, "2571223") || TextUtils.equals(id,
+                            "2571224")
+                            || TextUtils.equals(id, "2571225") || TextUtils.equals(id, "2571256") || TextUtils.equals(id,
+                            "2571257")
+                            || TextUtils.equals(id, "2571257") || TextUtils.equals(id, "2571258") || TextUtils.equals(id,
+                            "2571260")
+                            || TextUtils.equals(id, "2571217") || TextUtils.equals(id, "2571211") || TextUtils.equals(id,
+                            "2571261")
+                            || TextUtils.equals(id, "2571259")
+                            ) {
+//                        feature.addProperty(NAME_BORDER_COLOR, new JsonPrimitive(MapConfig2
+//                                .COLOR_ROAD_CONTAINS_TEXT_BORDER));
+                        feature.addProperty("allowShow",new JsonPrimitive(true));
                     }
 //                    else  if (display.contains("住院")) {
 ////                        feature.addProperty("color", new JsonPrimitive(MapConfig2.COLOR_INPATIENTBUILDING));
