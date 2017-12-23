@@ -90,8 +90,6 @@ public class MapStyleManagerHXForH5 {
 //                    feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2.DEFAULT_COLOR_TEXT));
 //                }
 
-
-
                 if (feature.hasProperty("display")) {
                     String display = feature.getStringProperty("display");
                     if (display.contains("护士站")) {
@@ -108,17 +106,49 @@ public class MapStyleManagerHXForH5 {
                         feature.addProperty("outLineColor", new JsonPrimitive("#80211d"));
                     }
                     // 子图配个色
-                    else if(display.contains("门诊楼") || display.contains("第二门诊")  || display.contains("第三住院")
-                            || display.contains("第四住院")  || display.contains("第五住院") || display.contains("第六住院")
-                            || display.contains("医技楼")  || display.contains("临床营养科")  || display.contains("信息楼")
-                            || display.contains("入园服务中心")  || display.contains("监控检查中心")  || display.contains("感染性疾病中心")
-                            || display.contains("急诊科")  || display.contains("胸痛中心")  || display.contains("卒中中心") ){
+                    else if(display.equals("门诊楼") || display.equals("第二门诊|第六住院大楼") || display.equals("第三住院大楼")
+                            || display.equals("第四住院大楼|健康检查中心") || display.equals("第五住院大楼") || display.equals("第一住院大楼")
+                            || display.equals("医技楼")  || display.equals("临床营养科")  || display.equals("信息楼") || display.equals("第二住院大楼")
+                            || display.equals("第四住院大楼|健康检查中心")  || display.equals("感染性疾病中心")
+                            || display.equals("急诊科|胸痛中心|卒中中心") ){
                         feature.addProperty(MapConfig2.NAME_TEXT_SIZE, new JsonPrimitive(MapConfig2.TEXTSIZE_DEPARTMENT));
                         feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2.COLOR_DEPARTMENT_TEXT));
-                        feature.addProperty("allowShow",new JsonPrimitive(true));
+
+                        // 下面这些事需要永远显示的内容
+                        String allowShowName = feature.getStringProperty("display");
+                        feature.addProperty("allowShowName",new JsonPrimitive(allowShowName));
+
+                    }
+                    // 入院服务中心
+                    if (feature.getId().equals("2697167")){
+                        feature.addProperty(MapConfig2.NAME_TEXT_SIZE, new JsonPrimitive(MapConfig2.TEXTSIZE_DEPARTMENT));
+                        feature.addProperty(MapConfig2.NAME_TEXT_COLOR, new JsonPrimitive(MapConfig2.COLOR_DEPARTMENT_TEXT));
+
+                        // 下面这些事需要永远显示的内容
+                        String allowShowName = feature.getStringProperty("display");
+                        feature.addProperty("allowShowName",new JsonPrimitive(allowShowName));
                     }
 
                     // 路上面的字全部显示
+                    String roadName = "电信南街" +
+                            "小学路" +
+                            "中学路" +
+                            "利民巷" +
+                            "恒侯巷" +
+                            "簧门后街" +
+                            "电信路" +
+                            "校西路" +
+                            "公行道" +
+                            "规划道路";
+                    if (feature.hasProperty("display")) {
+                        String allowShowName = feature.getStringProperty("display");
+                        if (allowShowName.length() == 1){
+                            if (roadName.contains(allowShowName)){
+                                feature.addProperty("allowShowName",new JsonPrimitive(allowShowName));
+                            }
+                        }
+                    }
+
                     String id = feature.getId();
                     if (TextUtils.equals(id, "2571255") || TextUtils.equals(id, "2571254") || TextUtils.equals(id, "2571253")
                             || TextUtils.equals(id, "2571252") || TextUtils.equals(id, "2571235") || TextUtils.equals(id,
@@ -141,11 +171,13 @@ public class MapStyleManagerHXForH5 {
                             "2571260")
                             || TextUtils.equals(id, "2571217") || TextUtils.equals(id, "2571211") || TextUtils.equals(id,
                             "2571261")
-                            || TextUtils.equals(id, "2571259")
+                            || TextUtils.equals(id, "2571259") || TextUtils.equals(id, "2697099")
                             ) {
 //                        feature.addProperty(NAME_BORDER_COLOR, new JsonPrimitive(MapConfig2
 //                                .COLOR_ROAD_CONTAINS_TEXT_BORDER));
-                        feature.addProperty("allowShow",new JsonPrimitive(true));
+//                        feature.addProperty("allowShow",new JsonPrimitive(true));
+                        String allowShowName = feature.getStringProperty("display");
+                        feature.addProperty("allowShowName",new JsonPrimitive(allowShowName));
                     }
 //                    else  if (display.contains("住院")) {
 ////                        feature.addProperty("color", new JsonPrimitive(MapConfig2.COLOR_INPATIENTBUILDING));
