@@ -40,7 +40,8 @@ public class Navi implements INavi {
     public static final int MSG_SIMULATE_NAVI_FINISH_ONE_FLOOR = 1001;
 
     private static final int ZOOM_NAVI = 18;
-    public static final int TIMES = 1000;
+    private static final int TIMES = 600;
+    private static final int SPLIT_DISTANCE = 5;
 
     private MapBoxImp mMapBoxImp;
     private MapboxMap mMapboxMap;
@@ -58,6 +59,8 @@ public class Navi implements INavi {
     private List<NodeInfo> mUsedNoInfos = new ArrayList<>();
     private List<NodeInfo> mFromNodeInfos = new ArrayList<>();
     private List<NodeInfo> mToNodeInfos = new ArrayList<>();
+    private NaviInfo mCurrentNaviInfo;
+    private int mFrontPartIndex = -1;
 
     private SimulateNaviStateListener mSimulateNaviStateListener;
 
@@ -95,17 +98,18 @@ public class Navi implements INavi {
         }
     };
 
-    private int frontPartIndex = -1;
     private NavigateUpdateListener mNavigateUpdateListener = new NavigateUpdateListener() {
         @Override
         public void onNavigateUpdate(NaviInfo naviInfo) {
             Log.d(TAG, "onNavigateUpdate:  info " + naviInfo.getNaviTip() + "\t" + (int) naviInfo
                     .getTotalRemainLength());
+            mCurrentNaviInfo = naviInfo;
             if (mSimulateNaviStateListener != null) {
-                if (frontPartIndex != naviInfo.getAdsorbPart().getIndex()) {
+                if (mFrontPartIndex != naviInfo.getAdsorbPart().getIndex() && naviInfo.getAdsorbPart().getLength() >
+                        8d) {
                     mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip());
                 }
-                frontPartIndex = naviInfo.getAdsorbPart().getIndex();
+                mFrontPartIndex = naviInfo.getAdsorbPart().getIndex();
             }
         }
     };
@@ -122,6 +126,12 @@ public class Navi implements INavi {
 
         mNavigateManager = new NavigateManager();
         mNavigateManager.setNavigateUpdateListener(mNavigateUpdateListener);
+
+        drawRule();
+    }
+
+    private void drawRule() {
+
     }
 
     /**
@@ -221,7 +231,7 @@ public class Navi implements INavi {
 
     private void handleNodeInfo(List<PartInfo> partInfos, long fromFloorId, long toFloorId) {
 
-        List<NodeInfo> nodeInfos = NavigateFactory.makeMockPointArray(5, partInfos);
+        List<NodeInfo> nodeInfos = NavigateFactory.makeMockPointArray(SPLIT_DISTANCE, partInfos);
 
         if (!mFromNodeInfos.isEmpty()) {
             mFromNodeInfos.clear();
@@ -267,15 +277,30 @@ public class Navi implements INavi {
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 LatLng evaluatelatlng = mLatlngEvaluator.evaluate(valueAnimator.getAnimatedFraction(), startLatLng,
                         endLatLng);
-                addOrUpdateLocationMark(evaluatelatlng);
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(evaluatelatlng).zoom(ZOOM_NAVI)
-                        .build();
-                mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), TIMES);
+                updateAnimationLatlng(evaluatelatlng);
             }
         });
         mValueAnimator.setInterpolator(new LinearInterpolator());
         mValueAnimator.setDuration(TIMES);
         mValueAnimator.start();
+    }
+
+    private void updateAnimationLatlng(LatLng evaluatelatlng) {
+        addOrUpdateLocationMark(evaluatelatlng);
+        updateCamera(evaluatelatlng);
+        updatePassedLine(evaluatelatlng);
+    }
+
+    private void updatePassedLine(LatLng evaluatelatlng) {
+        if (mCurrentNaviInfo == null) {
+            return;
+        }
+    }
+
+    private void updateCamera(LatLng evaluatelatlng) {
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(evaluatelatlng).zoom(ZOOM_NAVI)
+                .build();
+        mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), TIMES);
     }
 
     private void addOrUpdateLocationMark(LatLng latLng) {
@@ -298,6 +323,7 @@ public class Navi implements INavi {
             mValueAnimator.cancel();
         }
         mPreBearing = 0;
+        mCurrentNaviInfo = null;
     }
 
     /**
@@ -305,10 +331,8 @@ public class Navi implements INavi {
      */
     @Override
     public void stopSimulateNavi() {
-        if (mHandler.hasMessages(MSG_SIMULATE_NAVI)) {
-            if (mSimulateNaviStateListener != null) {
-                mSimulateNaviStateListener.onInterrupted();
-            }
+        if (mHandler.hasMessages(MSG_SIMULATE_NAVI) && mSimulateNaviStateListener != null) {
+            mSimulateNaviStateListener.onInterrupted();
         }
         clearSimulateNaviInfo();
         clearLocationMark();
