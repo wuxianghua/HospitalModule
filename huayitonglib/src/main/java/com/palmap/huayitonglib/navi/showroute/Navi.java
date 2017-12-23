@@ -40,7 +40,7 @@ public class Navi {
     public static final int MSG_SIMULATE_NAVI_FINISH_ONE_FLOOR = 1001;
 
     private static final int ZOOM_NAVI = 18;
-    public static final int TIMES = 300;
+    public static final int TIMES = 600;
 
     private MapBoxImp mMapBoxImp;
     private MapboxMap mMapboxMap;
@@ -95,11 +95,16 @@ public class Navi {
         }
     };
 
+    private int frontPartIndex = -1;
     private NavigateUpdateListener mNavigateUpdateListener = new NavigateUpdateListener() {
         @Override
         public void onNavigateUpdate(NaviInfo naviInfo) {
+            Log.d(TAG, "onNavigateUpdate:  info " + naviInfo.getNaviTip() + "\t" + (int)naviInfo.getTotalRemainLength());
             if (mSimulateNaviStateListener != null) {
-                mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip());
+                if(frontPartIndex != naviInfo.getAdsorbPart().getIndex()) {
+                    mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip());
+                }
+                frontPartIndex = naviInfo.getAdsorbPart().getIndex();
             }
         }
     };
@@ -201,6 +206,7 @@ public class Navi {
             } else {
                 Log.d(TAG, "repeat: 不转");
                 animateLocation(from, to);
+                mNavigateManager.updatePosition(mCurrentFloorId,nodeInfo.getX(),nodeInfo.getY(),0);
                 mIndex++;
             }
             mHandler.sendEmptyMessageDelayed(MSG_SIMULATE_NAVI, TIMES);

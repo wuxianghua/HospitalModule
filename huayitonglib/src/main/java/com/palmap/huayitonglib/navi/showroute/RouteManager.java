@@ -164,8 +164,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     }
 
     @Override
-    public void planRoute(double fromlong, double fromlat, long fromPlanargraph, double tolong, double tolat, long
-            toPlanargraph) {
+    public void planRoute(double fromlong, double fromlat, long fromPlanargraph, double tolong, double tolat, long toPlanargraph) {
 
         Position fromPosition = CoordinateUtils.latlng2WebMercator(fromlat, fromlong);
         Position toPosition = CoordinateUtils.latlng2WebMercator(tolat, tolong);
@@ -268,8 +267,8 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                 }
                 mMapboxMap.addSource(jsonSource);
 
-                LineLayer startLayer = new LineLayer(layerId, sourceId);
-                startLayer.setProperties(
+                LineLayer lineLayer = new LineLayer(layerId, sourceId);
+                lineLayer.setProperties(
                         //加虚线- - - - - - - - - - - -
                         PropertyFactory.lineDasharray(new Float[]{3f, 1f}),
                         PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
@@ -290,9 +289,9 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
 
                 mLayerIds.add(layerId);
                 if (mMapboxMap.getLayer(aboveId) != null) {
-                    mMapboxMap.addLayerAbove(startLayer, aboveId);
+                    mMapboxMap.addLayerAbove(lineLayer, aboveId);
                 } else {
-                    mMapboxMap.addLayer(startLayer);
+                    mMapboxMap.addLayer(lineLayer);
                 }
 
             } else {

@@ -398,6 +398,24 @@ public class MapUtils {
     }
 
     /**
+     * 点击时候 获取adress字段
+     *
+     * @param mapboxMap
+     * @param latLng
+     * @return
+     */
+    public static String getAdress(MapboxMap mapboxMap, LatLng latLng) {
+        PointF pointF = mapboxMap.getProjection().toScreenLocation(latLng);
+        List<Feature> features = mapboxMap.queryRenderedFeatures(pointF, Config.LAYERID_AREA);
+        Feature feature = queryMaxFeature(features);
+        if (feature.hasProperty("address")) {
+            String address = feature.getStringProperty("address");
+            return address;
+        }
+        return "";
+    }
+
+    /**
      * 根据feature获取名字
      *
      * @param feature
@@ -412,6 +430,4 @@ public class MapUtils {
         Log.d(TAG, "getName: 获取不到名字 ");
         return "";
     }
-
-
 }
