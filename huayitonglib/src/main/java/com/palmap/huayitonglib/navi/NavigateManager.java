@@ -8,7 +8,6 @@ import com.palmap.huayitonglib.navi.entity.ActionState;
 import com.palmap.huayitonglib.navi.entity.NaviInfo;
 import com.palmap.huayitonglib.navi.entity.NodeInfo;
 import com.palmap.huayitonglib.navi.entity.PartInfo;
-import com.palmap.huayitonglib.navi.route.INavigateManager;
 import com.vividsolutions.jts.geom.Point;
 
 import java.util.ArrayList;
@@ -102,6 +101,17 @@ public class NavigateManager {
         tipBuilder.append("直行").append((int) naviInfo.getRemainLength()).append("米后").append
                 (targetPart.getNextAction().toString());
         naviInfo.setNaviTip(tipBuilder.toString());
+        for (int i = 0; i < mPartInfos.size(); i++) {
+            PartInfo temp = mPartInfos.get(i);
+            if (temp == null) {
+                continue;
+            }
+            if (i <= index) {
+                naviInfo.addPassedNode(temp.getStartNode());
+            } else {
+                naviInfo.addUnPassedNode(temp.getEndNode());
+            }
+        }
         if (mNavigateUpdateListener != null) {
             mNavigateUpdateListener.onNavigateUpdate(naviInfo);
         }
@@ -181,7 +191,7 @@ public class NavigateManager {
 //                    }
                 }
             }
-            Log.e("***", partInfo.getIndex() + " , " +partInfo.getNextAction().toString());
+            Log.e("***", partInfo.getIndex() + " , " + partInfo.getNextAction().toString());
         }
     }
 

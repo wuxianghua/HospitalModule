@@ -1,5 +1,8 @@
 package com.palmap.huayitonglib.navi.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by yangjinhuang on 2017/12/20
  */
@@ -15,9 +18,11 @@ public class NaviInfo {
     private double mRemainLength;       //所属段剩余距离
     private double mTotalRemainLength;  //距离导航终点距离
     private PartInfo mAdsorbPart;       //所属段
-//    private float mAngle;               //下一段方位角
+    //    private float mAngle;               //下一段方位角
     private ActionState mNextAction;    //下一步操作状态
     private String mNaviTip;            //导航提示
+    private List<NodeInfo> mPassedNodeArray;    //已走过的点集合
+    private List<NodeInfo> mUnPassedNodeArray;  //未走过的点集合
 
     public NaviInfo() {
         init();
@@ -31,7 +36,10 @@ public class NaviInfo {
         mOnLineY = 0d;
         mDistance = 0d;
         mAdsorbPart = null;
+        mNextAction = ActionState.UNDEFINED;
         mNaviTip = "";
+        mPassedNodeArray = new ArrayList<>();
+        mUnPassedNodeArray = new ArrayList<>();
     }
 
     public long getFloorId() {
@@ -121,4 +129,35 @@ public class NaviInfo {
     public void setNaviTip(String naviTip) {
         this.mNaviTip = naviTip;
     }
+
+    public List<NodeInfo> getPassedNodeArray() {
+        return mPassedNodeArray;
+    }
+
+    public void setPassedNodeArray(List<NodeInfo> passedNodeArray) {
+        this.mPassedNodeArray = passedNodeArray;
+    }
+
+    public void addPassedNode(NodeInfo nodeInfo) {
+        if (mPassedNodeArray == null) {
+            mPassedNodeArray = new ArrayList<>();
+        }
+        mPassedNodeArray.add(nodeInfo);
+    }
+
+    public List<NodeInfo> getUnPassedNodeArray() {
+        return mUnPassedNodeArray;
+    }
+
+    public void setUnPassedNodeArray(List<NodeInfo> unPassedNodeArray) {
+        this.mUnPassedNodeArray = unPassedNodeArray;
+    }
+
+    public void addUnPassedNode(NodeInfo nodeInfo) {
+        if (mUnPassedNodeArray == null) {
+            mUnPassedNodeArray = new ArrayList<>();
+        }
+        mUnPassedNodeArray.add(nodeInfo);
+    }
+
 }

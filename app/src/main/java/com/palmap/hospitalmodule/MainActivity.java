@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.palmap.huayitonglib.activity.MapActivity;
+import com.palmap.huayitonglib.activity.SearchActivity;
+import com.palmap.huayitonglib.utils.Constant;
+
+import static com.palmap.huayitonglib.activity.SearchActivity.SEARCH_END;
 
 
 public class MainActivity extends AppCompatActivity {
