@@ -231,7 +231,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="131dp"
                 android:background="@color/colorAppSkin"
-                android:visibility="gone">
+       >
 
                 <RelativeLayout
                     android:id="@+id/nagv_back_01"
@@ -299,7 +299,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:text="当前位置:"
+                            android:text="起点:"
                             android:textColor="#ffffff" />
 
                         <TextView
@@ -309,7 +309,8 @@
                             android:layout_centerInParent="true"
                             android:layout_marginLeft="8dp"
                             android:layout_toRightOf="@+id/dangqianweizhi"
-                            android:text="F1"
+                            android:maxLines="10"
+                            android:text=""
                             android:textColor="#ffffff" />
                     </RelativeLayout>
 
@@ -323,7 +324,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:text="目的地:"
+                            android:text="终点:"
                             android:textColor="#ffffff" />
 
                         <TextView
@@ -333,7 +334,8 @@
                             android:layout_centerInParent="true"
                             android:layout_marginLeft="8dp"
                             android:layout_toRightOf="@+id/modidi"
-                            android:text="F1"
+                            android:text=""
+                            android:maxLines="10"
                             android:textColor="#ffffff" />
                     </RelativeLayout>
                 </LinearLayout>

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -40,6 +41,9 @@ import com.palmap.huayitonglib.navi.showroute.PlanRouteListener;
 import com.palmap.huayitonglib.navi.showroute.RouteBean;
 import com.palmap.huayitonglib.navi.showroute.RouteManager;
 import com.palmap.huayitonglib.navi.showroute.SimulateNaviStateListener;
+import com.palmap.huayitonglib.speech.IBaseManger;
+import com.palmap.huayitonglib.speech.ISpeechManager;
+import com.palmap.huayitonglib.speech.iflytek.IFlyTekSpeechManager;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.CoordinateUtil;
@@ -68,6 +72,7 @@ public class MapActivity extends VoiceListenActivity {
     //当前FloorId为平面层楼层
     private int mCurrentFloorId = Config.FLOORID_F1_CH;
     private boolean mIsSearchEndPoi = true;//是否为搜索终点（语音搜索使用）
+    private Handler mMainHandler = null;
 
     //设置应用图标：TYPE_RESTROOM---洗手间，TYPE_ESCALATOR-----扶梯，TYPE_ELEVATOR-----电梯，TYPE_ALL--所有图标，TYPE_NOICON----不设置图标
 
@@ -81,8 +86,9 @@ public class MapActivity extends VoiceListenActivity {
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(getApplicationContext(), Constant.APP_KEY);
         setContentView(R.layout.activity_map);
-        mStartInfo = new MapPointInfoBean ();
-        mEndInfo = new MapPointInfoBean ();
+        mStartInfo = new MapPointInfoBean();
+        mEndInfo = new MapPointInfoBean();
+        mMainHandler = new Handler(Looper.getMainLooper());
         initView();
         self = this;
         initMapData();
@@ -96,6 +102,7 @@ public class MapActivity extends VoiceListenActivity {
             public void onInitSuccess() {
                 try {
                     speechManager.setSpeechSpeaker(IFlyTekSpeechManager.Speaker.SICHUAN_F.toString());
+                    speechManager.setSpeechSpeed(60);
                     speechManager.startSpeaking("");
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -147,7 +154,7 @@ public class MapActivity extends VoiceListenActivity {
     TextView nagv_fangxiang_text, dangqianweizhi_text;
     LinearLayout linearLayout;
     ImageView iconCommon_image;
-
+    modidi_text
     private void initView() {
         view_2D_3D = (ImageView) findViewById(R.id.view_2D_3D);
         bilichi_Tv = (TextView) findViewById(R.id.bilichi_Tv);
@@ -228,8 +235,10 @@ public class MapActivity extends VoiceListenActivity {
         nagv_jiantou_imgae = (ImageView) findViewById(R.id.nagv_jiantou_imgae);
         //顶部方向提示语
         nagv_fangxiang_text = (TextView) findViewById(R.id.nagv_fangxiang_text);
-        //顶部当前楼层位置  F1
+        //起点信息  F1
         dangqianweizhi_text = (TextView) findViewById(R.id.dangqianweizhi_text);
+        //目的地
+        modidi_text= (TextView) findViewById(R.id.modidi_text);
 
         //过滤公共设施
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
@@ -411,8 +420,22 @@ public class MapActivity extends VoiceListenActivity {
 
         } else if (i == R.id.moni_naviga_btn) {
             changeNavigaView(NAVIGA_SHOW_06);
-            navi.startSimulateNavi(mRouteBean);
+            try {
+                speechManager.stopSpeaking();
+                speechManager.startSpeaking("开始导航");
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            if (mMainHandler != null) {
+                mMainHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        navi.startSimulateNavi(mRouteBean);
+                    }
+                }, 1500);
+            }
         } else if (i == R.id.nagv_back_01) {
+            speechManager.stopSpeaking();
             navi.stopSimulateNavi();
             changeNavigaView(ROUTE_SHOW_05);
         } else if (i == R.id.nagv_yuyin_rr) {
@@ -725,7 +748,7 @@ public class MapActivity extends VoiceListenActivity {
             public boolean onSuccess(RouteBean bean) {
                 Log.d("lybb", "路线规划成功了: ");
                 mRouteBean = bean;
-                Log.e("zyy", "onSuccess: --------------"+ mRouteBean.toString());
+                Log.e("zyy", "onSuccess: --------------" + mRouteBean.toString());
                 mRouteManager.showNaviRoute(mCurrentFloorId);
                 changeNavigaView(ROUTE_SHOW_05);
                 return false;
@@ -769,6 +792,11 @@ public class MapActivity extends VoiceListenActivity {
              */
             @Override
             public void onFinish() {
+                try {
+                    speechManager.startSpeaking("您已到达" + mEndInfo.getName());
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
                 Log.e("zyy", "onFinish:-------------- ");
                 changeNavigaView(STOPNAVIGA_SHOW_07);
             }
@@ -956,6 +984,8 @@ public class MapActivity extends VoiceListenActivity {
             type = 2;
             mapStatus = true;
         } else if (types == STARTSELEE_UNSHOW_03) {
+//            centerToast("请选择起点");
+            Toast.makeText(getBaseContext(), "请选择起点", Toast.LENGTH_SHORT).show();
             //标题栏
             title_rr.setVisibility(View.GONE);
             //搜索框
@@ -1078,6 +1108,12 @@ public class MapActivity extends VoiceListenActivity {
             //切换楼层滚轮
             loopView.setVisibility(View.GONE);
 
+//            //起点信息  F1
+//            dangqianweizhi_text
+//            //目的地
+//            modidi_text
+
+
             //顶部显示
             //选择起点
             selectstart_rr_01.setVisibility(View.VISIBLE);
@@ -1178,19 +1214,19 @@ public class MapActivity extends VoiceListenActivity {
     // 设置指南针位置
     public void setCampassPosition(int types) {
         if (types == SHOUYE_SHOW_01) {
-            GuoMapUtils.setCampassMarTop(this,mMapboxMap,110);
+            GuoMapUtils.setCampassMarTop(this, mMapboxMap, 110);
         } else if (types == ENDSELEE_SHOW_02) {
-            GuoMapUtils.setCampassMarTop(this,mMapboxMap,110);
+            GuoMapUtils.setCampassMarTop(this, mMapboxMap, 110);
         } else if (types == STARTSELEE_UNSHOW_03) {
-            GuoMapUtils.setCampassMarTop(this,mMapboxMap,110);
+            GuoMapUtils.setCampassMarTop(this, mMapboxMap, 110);
         } else if (types == STARTSELEE_SHOW_04) {
-            GuoMapUtils.setCampassMarTop(this,mMapboxMap,110);
+            GuoMapUtils.setCampassMarTop(this, mMapboxMap, 110);
         } else if (types == ROUTE_SHOW_05) {
-            GuoMapUtils.setCampassMarTop(this,mMapboxMap,110);
+            GuoMapUtils.setCampassMarTop(this, mMapboxMap, 110);
         } else if (types == NAVIGA_SHOW_06) {
-            GuoMapUtils.setCampassMarTop(this,mMapboxMap,140);
+            GuoMapUtils.setCampassMarTop(this, mMapboxMap, 140);
         } else if (types == STOPNAVIGA_SHOW_07) {
-            GuoMapUtils.setCampassMarTop(this,mMapboxMap,140);
+            GuoMapUtils.setCampassMarTop(this, mMapboxMap, 140);
         }
     }
 
@@ -1419,42 +1455,42 @@ public class MapActivity extends VoiceListenActivity {
 
         if (floorId == Config.FLOORID_B2_CH) {
             return "B2";
-        }else  if (floorId == Config.FLOORID_B1_CH) {
+        } else if (floorId == Config.FLOORID_B1_CH) {
             return "B1";
-        }else  if (floorId == Config.FLOORID_F0_CH) {
+        } else if (floorId == Config.FLOORID_F0_CH) {
             return "平面层";
-        }else  if (floorId == Config.FLOORID_F1_CH) {
+        } else if (floorId == Config.FLOORID_F1_CH) {
             return "F1";
-        }else  if (floorId == Config.FLOORID_F2_CH) {
+        } else if (floorId == Config.FLOORID_F2_CH) {
             return "F2";
-        }else  if (floorId == Config.FLOORID_F3_CH) {
+        } else if (floorId == Config.FLOORID_F3_CH) {
             return "F3";
-        }else  if (floorId == Config.FLOORID_F4_CH) {
+        } else if (floorId == Config.FLOORID_F4_CH) {
             return "F4";
-        }else  if (floorId == Config.FLOORID_F5_CH) {
+        } else if (floorId == Config.FLOORID_F5_CH) {
             return "F5";
-        }else  if (floorId == Config.FLOORID_F6_CH) {
+        } else if (floorId == Config.FLOORID_F6_CH) {
             return "F6";
-        }else  if (floorId == Config.FLOORID_F7_CH) {
+        } else if (floorId == Config.FLOORID_F7_CH) {
             return "F7";
-        }else  if (floorId == Config.FLOORID_F8_CH) {
+        } else if (floorId == Config.FLOORID_F8_CH) {
             return "F8";
-        }else  if (floorId == Config.FLOORID_F9_CH) {
+        } else if (floorId == Config.FLOORID_F9_CH) {
             return "F9";
-        }else  if (floorId == Config.FLOORID_F10_CH) {
+        } else if (floorId == Config.FLOORID_F10_CH) {
             return "F10";
-        }else  if (floorId == Config.FLOORID_F11_CH) {
+        } else if (floorId == Config.FLOORID_F11_CH) {
             return "F11";
-        }else  if (floorId == Config.FLOORID_F12_CH) {
+        } else if (floorId == Config.FLOORID_F12_CH) {
             return "F12";
-        }else  if (floorId == Config.FLOORID_F13_CH) {
+        } else if (floorId == Config.FLOORID_F13_CH) {
             return "F13";
-        }else  if (floorId == Config.FLOORID_F14_CH) {
+        } else if (floorId == Config.FLOORID_F14_CH) {
             return "F14";
-        }else  if (floorId == Config.FLOORID_F15_CH) {
+        } else if (floorId == Config.FLOORID_F15_CH) {
             return "F15";
         }
-            return "";
+        return "";
     }
 
 
