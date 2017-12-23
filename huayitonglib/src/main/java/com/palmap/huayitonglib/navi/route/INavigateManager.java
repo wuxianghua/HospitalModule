@@ -44,9 +44,10 @@ public interface INavigateManager<Route> {
     }
 
     interface Listener<T> {
-        void onNavigateComplete(NavigateState state, List<AStarPath> routes, double fromX, double fromY, long
-                fromPlanargraph, T from, double fromConX, double fromConY, double toX, double toY, long
-                toPlanargraph, T to, double toConX, double toConY);
+        void onNavigateComplete(NavigateState state, List<AStarPath> routes, double totalDistance, double fromDistance,
+                                double toDistance, double fromX, double fromY, long fromPlanargraph, T from, double
+                                        fromConX, double fromConY, double toX, double toY, long toPlanargraph, T to,
+                                double toConX, double toConY);
     }
 
     interface Listener1<T> {

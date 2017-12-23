@@ -19,6 +19,7 @@ import com.palmap.huayitonglib.navi.astar.navi.VertexLoader;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.operation.distance.DistanceOp;
 
 import org.json.JSONObject;
 
@@ -51,9 +52,10 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
     private static Listener<FeatureCollection> DEFAULT_LISTENER = new Listener<FeatureCollection>() {
 
         @Override
-        public void onNavigateComplete(NavigateState state, List<AStarPath> routes, double fromX, double fromY, long
-                fromPlanargraph, FeatureCollection from, double fromConX, double fromConY, double toX, double toY,
-                                       long toPlanargraph, FeatureCollection to, double toConX, double toConY) {
+        public void onNavigateComplete(NavigateState state, List<AStarPath> routes, double totalDistance, double
+                fromDistance, double toDistance, double fromX, double fromY, long fromPlanargraph, FeatureCollection
+                                               from, double fromConX, double fromConY, double toX, double toY, long
+                                               toPlanargraph, FeatureCollection to, double toConX, double toConY) {
 
         }
     };
@@ -131,7 +133,8 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
                 toPlanargraph, 0
         );
         if (routes == null || routes.size() == 0) {
-            this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, null, fromX, fromY, fromPlanargraph,
+            this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, null, 0, 0, 0, fromX, fromY,
+                    fromPlanargraph,
                     null, 0, 0, toX, toY, toPlanargraph, null, 0, 0);
             return;
         }
@@ -141,6 +144,11 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
 
         List<Feature> features = new ArrayList<>();
         List<Feature> otherFeatures = new ArrayList<>();
+
+        Double totalDistance = 0d;
+        Double fromDistance = 0d;
+        Double toDistance = 0d;
+
         for (AStarPath aStarPath : routes) {
             AStarVertex fromVertex = aStarPath.getFrom();
             AStarVertex toVertex = aStarPath.getTo();
@@ -157,6 +165,8 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
                 features.add(Feature.fromGeometry(lineString));
                 // TODO: 2017/12/12/012 这个点设置的是否准确  需要验证
                 shape = (Point) toVertex.getVertex().getShape();
+                totalDistance += DistanceOp.distance(startPoint, endPoint);
+                fromDistance += DistanceOp.distance(startPoint, endPoint);
             } else if (toPlanargraph == fromVertex.getVertex().getPlanarGraphId()) {
                 if (endShape == null) {
                     endShape = (Point) fromVertex.getVertex().getShape();
@@ -172,6 +182,8 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
                 positionList.add(Position.fromCoordinates(endPosition[1], endPosition[0]));
                 LineString lineString = LineString.fromCoordinates(positionList);
                 otherFeatures.add(Feature.fromGeometry(lineString));
+                totalDistance += DistanceOp.distance(startPoint, endPoint);
+                toDistance += DistanceOp.distance(startPoint, endPoint);
             }
         }
 
@@ -183,12 +195,14 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
         FeatureCollection otherRouteFeatureCollection = FeatureCollection.fromFeatures(otherFeatures);
 
         if (endShape != null && shape != null) {
-            this.listener.onNavigateComplete(NavigateState.OK, routes, fromX, fromY,
+            this.listener.onNavigateComplete(NavigateState.OK, routes, totalDistance, fromDistance, toDistance,
+                    fromX, fromY,
                     fromPlanargraph,
                     routeFeatureCollection, shape.getX(), shape.getY(), toX, toY, toPlanargraph,
                     otherRouteFeatureCollection, endShape.getX(), endShape.getY());
         } else {
-            this.listener.onNavigateComplete(NavigateState.OK, routes, fromX, fromY,
+            this.listener.onNavigateComplete(NavigateState.OK, routes, totalDistance, fromDistance, toDistance,
+                    fromX, fromY,
                     fromPlanargraph,
                     routeFeatureCollection, 0, 0, toX, toY, toPlanargraph,
                     otherRouteFeatureCollection, 0, 0);
@@ -215,7 +229,7 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
 
     private boolean precondition() {
         if (aStar == null) {
-            this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, null, 0, 0, 0,
+            this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, null, 0, 0, 0, 0, 0, 0,
                     null, 0, 0, 0, 0, 0, null, 0, 0);
             return false;
         }

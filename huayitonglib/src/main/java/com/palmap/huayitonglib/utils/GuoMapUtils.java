@@ -45,7 +45,7 @@ public class GuoMapUtils {
         // getActivity容易有空指针bug 切换指南针的图片
         mMapboxMap.getUiSettings().setCompassImage(context.getResources().getDrawable(R.mipmap.ic_map_compass));
         mMapboxMap.setMaxZoomPreference(20);
-        mMapboxMap.setMinZoomPreference(15);
+        mMapboxMap.setMinZoomPreference(16);
     }
 
     /**
@@ -67,7 +67,7 @@ public class GuoMapUtils {
     }
 
     //楼层概念----- floorParameter = 15代表平面层
-    public static void addFrameLayer(Context context, MapboxMap mMapboxMap, FloorBean mFloorBean, int floorParameter) {
+    public static void addFrameLayer(Context context, MapboxMap mMapboxMap, FloorBean mFloorBean, String floorParameter) {
         String sourceId = mFloorBean.getFrameFilename();
         String fileName = mFloorBean.getFrameFilename();
         addFrameMapSource(context, mMapboxMap, sourceId, fileName, floorParameter);
@@ -92,7 +92,7 @@ public class GuoMapUtils {
 
     }
 
-    public static void addFrameMapSource(Context context, MapboxMap mMapboxMap, String mSouceId, String fileName, int
+    public static void addFrameMapSource(Context context, MapboxMap mMapboxMap, String mSouceId, String fileName, String
             floorParameter) {
 
         String geojson = GuoMapUtilsTow.getGeoJson(context, fileName);
@@ -103,7 +103,7 @@ public class GuoMapUtils {
             //平均值获取中心点------
             LatLng latlng = GuoMapUtilsTow.getCenterPoint(featureCollection);
             if (latlng != null) {
-                setUpCamera(mMapboxMap, latlng.getLatitude(), latlng.getLongitude());
+                setUpCamera(mMapboxMap, floorParameter, latlng.getLatitude(), latlng.getLongitude());
             }
         }
 
@@ -190,10 +190,31 @@ public class GuoMapUtils {
                 PropertyFactory.iconOffset(new Float[]{-10.f, 0.f}),
                 PropertyFactory.iconImage(Function.property("logo", Stops.<String>identity())),
                 PropertyFactory.textPadding(8f)
+//                ,PropertyFactory.textAllowOverlap(allowShow)
 
         );
+
         areaTextLayer.setFilter(Filter.has("display"));
         mapboxMap.addLayer(areaTextLayer);
+
+        SymbolLayer areaHighlightTextLayer = new SymbolLayer("hightLightText", sourceId);
+        areaHighlightTextLayer.setProperties(
+                PropertyFactory.textField("{allowShowName}"),
+//                PropertyFactory.textColor("#475266"),
+//                PropertyFactory.textSize(10.f),
+                PropertyFactory.textColor(Function.property(MapConfig2.NAME_TEXT_COLOR, new IdentityStops<String>())),
+                PropertyFactory.textSize(Function.property(MapConfig2.NAME_TEXT_SIZE, new IdentityStops<Float>())),
+                PropertyFactory.iconSize(.5f),
+                PropertyFactory.textAnchor(Property.TEXT_JUSTIFY_LEFT),
+                PropertyFactory.iconOffset(new Float[]{-10.f, 0.f}),
+                PropertyFactory.iconImage(Function.property("logo", Stops.<String>identity())),
+                PropertyFactory.textPadding(8f)
+               ,PropertyFactory.textAllowOverlap(true)
+
+        );
+
+//        areaHighlightTextLayer.setFilter(Filter.has("display"));
+        mapboxMap.addLayer(areaHighlightTextLayer);
     }
 
     public static void addFacilityData(Context context, MapboxMap mMapboxMap, FloorBean mFloorBean){
@@ -280,7 +301,7 @@ public class GuoMapUtils {
     }
 
     // 设置本界面展示或切换楼层camera(现有数据只针对于华西医院)
-    public static void setUpCamera(MapboxMap mMapboxMap, double latitude, double longitude) {
+    public static void setUpCamera(MapboxMap mMapboxMap, String floorParameter, double latitude, double longitude) {
         LatLngBounds bounds = new LatLngBounds.Builder()
                 .include(new LatLng(latitude - 0.0035, longitude + 0.0035))
                 .include(new LatLng(latitude + 0.0035, longitude - 0.0035))
@@ -288,9 +309,23 @@ public class GuoMapUtils {
         // TODO 中心点
         mMapboxMap.setLatLngBoundsForCameraTarget(bounds);
 
+        double zoom = 16.5;
+        //当楼层的position是3  和4 的时候叫楼层的缩放小一点，别的楼层进行都放比例增大 F0  F1
+        if (floorParameter.equals("F3") || floorParameter.equals("F4")) {
+            zoom = 15;
+        } else if (floorParameter.equals("B1") || floorParameter.equals("B2") || floorParameter.equals("F15")) {  // B1  B2  F15
+            zoom = 16;
+        } else if (floorParameter.equals("F10") || floorParameter.equals("F11") || floorParameter.equals("F12") || floorParameter.equals("F13") ||
+                floorParameter.equals("F14")) { // F10 到 F14
+            zoom = 16;
+        } else {
+            zoom = 15;
+        }
+
+        latitude += 0.0008;
         CameraPosition position = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude))
-                .zoom(16)
+                .zoom(zoom)
                 .tilt(0) // 倾斜角度
                 .build();
         // 使用一个动画来调整地图

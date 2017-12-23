@@ -13,18 +13,22 @@ import java.util.List;
 public class RouteBean {
     //astart算法算出来的数据
     private List<AStarPath> routes;
+    private double totalDistance;
+    private int time;
 
     //起点信息
     private long fromFloorId;
     private LatLng fromLatlng;
     private FeatureCollection fromFeatureCollection;
     private LatLng fromConnection;
+    private double fromDistance;
 
     //终点信息
     private long toFloorId;
     private LatLng toLatLng;
     private FeatureCollection toFeatureCollection;
     private LatLng toConnection;
+    private double toDistance;
 
     public List<AStarPath> getRoutes() {
         return routes;
@@ -32,6 +36,14 @@ public class RouteBean {
 
     public void setRoutes(List<AStarPath> routes) {
         this.routes = routes;
+    }
+
+    public double getTotalDistance() {
+        return totalDistance;
+    }
+
+    public void setTotalDistance(double totalDistance) {
+        this.totalDistance = totalDistance;
     }
 
     public long getFromFloorId() {
@@ -66,6 +78,14 @@ public class RouteBean {
         this.fromConnection = fromConnection;
     }
 
+    public double getFromDistance() {
+        return fromDistance;
+    }
+
+    public void setFromDistance(double fromDistance) {
+        this.fromDistance = fromDistance;
+    }
+
     public long getToFloorId() {
         return toFloorId;
     }
@@ -96,5 +116,43 @@ public class RouteBean {
 
     public void setToConnection(LatLng toConnection) {
         this.toConnection = toConnection;
+    }
+
+    public double getToDistance() {
+        return toDistance;
+    }
+
+    public void setToDistance(double toDistance) {
+        this.toDistance = toDistance;
+    }
+
+    public int getTime() {
+        if (this.time == 0) {
+            double time = 0;
+            if (totalDistance != 0 && RouteConfig.VELOCITY_SIMULATE != 0) {
+                time = totalDistance / RouteConfig.VELOCITY_SIMULATE;
+            }
+            return ((int) time);
+        }
+        return time;
+    }
+
+    @Override
+    public String toString() {
+        return "RouteBean{" +
+                "routes=" + routes +
+                ", totalDistance=" + totalDistance +
+                ", time=" + time +
+                ", fromFloorId=" + fromFloorId +
+                ", fromLatlng=" + fromLatlng +
+                ", fromFeatureCollection=" + fromFeatureCollection +
+                ", fromConnection=" + fromConnection +
+                ", fromDistance=" + fromDistance +
+                ", toFloorId=" + toFloorId +
+                ", toLatLng=" + toLatLng +
+                ", toFeatureCollection=" + toFeatureCollection +
+                ", toConnection=" + toConnection +
+                ", toDistance=" + toDistance +
+                '}';
     }
 }

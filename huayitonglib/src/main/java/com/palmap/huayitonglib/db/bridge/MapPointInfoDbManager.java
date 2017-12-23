@@ -9,6 +9,8 @@ import com.palmap.huayitonglib.db.gen.MapPointInfoBeanDao;
 import com.palmap.huayitonglib.utils.FileUtils;
 import com.palmap.huayitonglib.utils.MapPointInfoUtils;
 
+import org.greenrobot.greendao.async.AsyncSession;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,11 +82,18 @@ public class MapPointInfoDbManager {
     // 导入全部数据（入库）.
     public void insertAllData(Context context){
         double startTime = System.currentTimeMillis();
+        AsyncSession mAsyncSession = mDao.getSession().startAsyncSession();
         String serachPoiData = FileUtils.loadFromAssets(context,"SearchPoiInfo.json");
-        List<MapPointInfoBean> mList = MapPointInfoUtils.getSearchPoiData(serachPoiData);
+        final List<MapPointInfoBean> mList = MapPointInfoUtils.getSearchPoiData(serachPoiData);
         if (mList.size()!=0){
             for (int i=0;i<mList.size();i++){
-                insert(mList.get(i));
+                final int finalI = i;
+                mAsyncSession.runInTx(new Runnable() {
+                    @Override
+                    public void run() {
+                        insert(mList.get(finalI));
+                    }
+                });
             }
         }
         Log.i(TAG, "insertData: 加载数据库数据一共耗时：" + (System.currentTimeMillis() - startTime));

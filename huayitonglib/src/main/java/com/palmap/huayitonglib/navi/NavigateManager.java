@@ -79,8 +79,10 @@ public class NavigateManager {
             if (partInfo == null || floorId != partInfo.getFloorId()) {
                 continue;
             }
-            if (partInfo.getDistanceByPoint(x, y) < minDistance) {
+            double distance = partInfo.getDistanceByPoint(x, y);
+            if (distance < minDistance) {
                 index = partInfo.getIndex();
+                minDistance = distance;
             }
         }
         PartInfo targetPart = mPartInfos.get(index);
@@ -99,6 +101,17 @@ public class NavigateManager {
         tipBuilder.append("直行").append((int) naviInfo.getRemainLength()).append("米后").append
                 (targetPart.getNextAction().toString());
         naviInfo.setNaviTip(tipBuilder.toString());
+        for (int i = 0; i < mPartInfos.size(); i++) {
+            PartInfo temp = mPartInfos.get(i);
+            if (temp == null) {
+                continue;
+            }
+            if (i <= index) {
+                naviInfo.addPassedNode(temp.getStartNode());
+            } else {
+                naviInfo.addUnPassedNode(temp.getEndNode());
+            }
+        }
         if (mNavigateUpdateListener != null) {
             mNavigateUpdateListener.onNavigateUpdate(naviInfo);
         }
@@ -170,13 +183,15 @@ public class NavigateManager {
                         partInfo.setNextAction(ActionState.ACTION_FRONT_LEFT);
                     }
                 } else {
-                    if (nextPart.getFloorHeight() > partInfo.getFloorHeight()) {
-                        partInfo.setNextAction(ActionState.ACTION_UPSTAIRS);
-                    } else {
-                        partInfo.setNextAction(ActionState.ACTION_DOWNSTAIRS);
-                    }
+                    partInfo.setNextAction(ActionState.CHANGE_FLOOR);
+//                    if (nextPart.getFloorHeight() > partInfo.getFloorHeight()) {
+//                        partInfo.setNextAction(ActionState.ACTION_UPSTAIRS);
+//                    } else {
+//                        partInfo.setNextAction(ActionState.ACTION_DOWNSTAIRS);
+//                    }
                 }
             }
+            Log.e("***", partInfo.getIndex() + " , " + partInfo.getNextAction().toString());
         }
     }
 

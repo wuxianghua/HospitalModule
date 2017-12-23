@@ -39,8 +39,7 @@ public class AStar {
         return astar(from, fromPlanarGraphId, null, to, toPlanarGraphId, null, floorHeightDiff);
     }
 
-    public List<AStarPath> astar(Point from, long fromPlanarGraphId, PoiInfo fromArea, Point to, long
-            toPlanarGraphId, PoiInfo toArea, double floorHeightDiff) {
+    public List<AStarPath> astar(Point from, long fromPlanarGraphId, PoiInfo fromArea, Point to, long toPlanarGraphId, PoiInfo toArea, double floorHeightDiff) {
         List<AStarPath> paths = new ArrayList<>();
         if (DistanceOp.distance(from, to) < NaviConstants.TOLERANCE) {
             return paths;

@@ -184,16 +184,22 @@
                         android:textColor="#FFFFFF"
                         android:textSize="14sp" />
 
-                    <TextView
+                    <com.palmap.huayitonglib.view.MarqueeTextView
                         android:id="@+id/endname_top_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="242dp"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="40dp"
-                        android:maxLines="10"
+                        android:singleLine="true"
                         android:text="便民门诊"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp" />
+                    <!--android:ellipsize="marquee"-->
+                    <!--android:focusable="true"-->
+                    <!--android:focusableInTouchMode="true"-->
+                    <!--android:scrollHorizontally="true"-->
+                    <!--android:marqueeRepeatLimit="marquee_forever"-->
+                    <!--android:singleLine="true"/>-->
 
                     <TextView
                         android:id="@+id/endfloorname_top_text"
@@ -224,8 +230,7 @@
                 android:id="@+id/nagv_top01"
                 android:layout_width="match_parent"
                 android:layout_height="131dp"
-                android:background="@color/colorAppSkin"
-                android:visibility="gone">
+                android:background="@color/colorAppSkin">
 
                 <RelativeLayout
                     android:id="@+id/nagv_back_01"
@@ -282,18 +287,18 @@
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
-                    <RelativeLayout
+                    <LinearLayout
 
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:gravity="center">
 
                         <TextView
                             android:id="@+id/dangqianweizhi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:text="当前位置:"
+                            android:text="起点:"
                             android:textColor="#ffffff" />
 
                         <TextView
@@ -303,21 +308,25 @@
                             android:layout_centerInParent="true"
                             android:layout_marginLeft="8dp"
                             android:layout_toRightOf="@+id/dangqianweizhi"
-                            android:text="F1"
+                            android:maxLength="10"
+                            android:singleLine="true"
+                            android:text=""
                             android:textColor="#ffffff" />
-                    </RelativeLayout>
+                    </LinearLayout>
 
-                    <RelativeLayout
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        >
 
                         <TextView
                             android:id="@+id/modidi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:text="目的地:"
+                            android:text="终点:"
                             android:textColor="#ffffff" />
 
                         <TextView
@@ -327,9 +336,11 @@
                             android:layout_centerInParent="true"
                             android:layout_marginLeft="8dp"
                             android:layout_toRightOf="@+id/modidi"
-                            android:text="F1"
+                            android:maxLength="10"
+                            android:singleLine="true"
+                            android:text=""
                             android:textColor="#ffffff" />
-                    </RelativeLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
         </RelativeLayout>
@@ -345,8 +356,9 @@
         android:layout_below="@+id/top_rr"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:background="@mipmap/bg_gonggongsheshi"
         android:onClick="onClick"
-        android:background="@mipmap/btn_map_sheshi_nor" />
+        android:src="@mipmap/btn_map_sheshi_nor" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -358,8 +370,7 @@
         android:layout_marginTop="5dp"
         android:background="@mipmap/bg_gonggongsheshi"
         android:orientation="vertical"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/xishoujian_image"
@@ -648,8 +659,7 @@
             android:id="@+id/nagv_01_rr"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@drawable/cardbg_touming"
-            android:visibility="gone">
+            android:background="@drawable/cardbg_touming">
 
             <TextView
                 android:id="@+id/nagv_01_text"
@@ -673,8 +683,7 @@
                     android:id="@+id/nagv_yuyin_image"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:layout_centerInParent="true"
-                    android:background="@mipmap/ic_card_yuyin_guan" />
+                    android:layout_centerInParent="true" />
             </RelativeLayout>
 
         </RelativeLayout>
@@ -686,6 +695,7 @@
             android:layout_height="44dp"
             android:layout_centerInParent="true"
             android:background="@drawable/bg_green"
+            android:onClick="onClick"
             android:text="导航结束"
             android:textColor="#ffffff"
             android:textSize="16sp"
@@ -972,10 +982,10 @@
             android:layout_alignParentRight="true"
             android:layout_marginBottom="20dp"
             android:layout_marginRight="10dp"
+            android:background="@mipmap/bg_gonggongsheshi"
             android:contentDescription="2D"
             android:onClick="onClick"
-            android:src="@mipmap/ic_map_2d"
-            android:background="@color/white"/>
+            android:src="@mipmap/ic_map_2d" />
 
         <TextView
             android:id="@+id/bilichi_Tv"

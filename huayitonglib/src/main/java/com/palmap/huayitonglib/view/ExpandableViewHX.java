@@ -188,10 +188,10 @@ public class ExpandableViewHX extends LinearLayout implements View.OnClickListen
         mTitleImage = typedArray.getDrawable(R.styleable.ExpandableView_viewTitleImage);
 
         if (mExpandDrawable == null) {
-            mExpandDrawable = getDrawable(getContext(), R.mipmap.zhedie_zhankai);
+            mExpandDrawable = getDrawable(getContext(), R.mipmap.zhedie_shouqi);
         }
         if (mCollapseDrawable == null) {
-            mCollapseDrawable = getDrawable(getContext(), R.mipmap.zhedie_shouqi);
+            mCollapseDrawable = getDrawable(getContext(), R.mipmap.zhedie_zhankai);
         }
 
         setOrientation(LinearLayout.VERTICAL);

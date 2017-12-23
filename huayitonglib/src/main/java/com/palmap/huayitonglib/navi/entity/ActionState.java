@@ -19,7 +19,8 @@ public enum ActionState {
     ACTION_DOWNSTAIRS,          //下楼
     ACTION_ARRIVE,              //到达
 //    ACTION_RESET,               //重新规划导航线
-    UNDEFINED                  //未定义类型
+    UNDEFINED,                 //未定义类型
+    CHANGE_FLOOR                  //切换楼层（以后不需要的）
     ;
 
 
@@ -32,7 +33,7 @@ public enum ActionState {
                 break;
             }
             case ACTION_TURN_LEFT:{
-                msg = "向左转";
+                msg = "左转";
                 break;
             }
             case ACTION_BACK_LEFT:{
@@ -44,7 +45,7 @@ public enum ActionState {
                 break;
             }
             case ACTION_TURN_RIGHT:{
-                msg = "向右转";
+                msg = "右转";
                 break;
             }
             case ACTION_BACK_RIGHT:{
@@ -61,6 +62,10 @@ public enum ActionState {
             }
             case ACTION_ARRIVE:{
                 msg = "到达目的地";
+                break;
+            }
+            case CHANGE_FLOOR:{
+                msg = "连通设施";
                 break;
             }
             default:

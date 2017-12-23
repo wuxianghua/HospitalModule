@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +41,7 @@ public class SearchShowFragment extends Fragment {
     private View view;
     private SearchActivity self;
     // F1到F4 出入口
-    private ExpandableView mExpandableView_F3,mExpandableView_F2,mExpandableView_F1,mExpandableView_F4,mExpandableView_Exit;
+    private ExpandableView mExpandableView_F3, mExpandableView_F2, mExpandableView_F1, mExpandableView_F4, mExpandableView_Exit;
     private NonScrollGridView mGridView;
     private SearchGridViewAdapter mAdapter;
     private List<OfficeItemBean> mList;
@@ -51,49 +50,51 @@ public class SearchShowFragment extends Fragment {
 
     private LinearLayout foldAllLin;
 
-    private String[] searchNames = {"急诊","缴费","取药","取报告","挂号","抽血","输液","洗手间"};
-    private int[] searchImg = {R.mipmap.ic_search_jizhen,R.mipmap.ic_search_jiaofei,R.mipmap.ic_search_quyao,
-            R.mipmap.ic_search_qubaogao,R.mipmap.ic_search_guahao,R.mipmap.ic_search_chouxue,
-            R.mipmap.ic_search_shuye,R.mipmap.ic_search_xishoujian};
-    private String[] F2_A1_Content = {"耳鼻咽喉","头颈外科"};
-    private String[] F2_A2_Content = {"皮肤性病科门诊","皮肤科相关的检查"};
-    private String[] F2_A3_Content = {"耳鼻喉科相关检查","财务收费窗口"};
-    private String[] F2_B_Content = {"藏区医疗服务部","激光科治疗室","遗传咨询门诊","普外科","财务收费窗口"};
-    private String[] F2_E_Content = {"骨科","美容整形-烧伤外科","康复医学科","财务收费窗口"};
-    private String[] F2_F_Content = {"综合服务窗口","114预约取号处"};
+    private String[] searchNames = {"急诊", "缴费", "取药", "取报告", "挂号", "抽血", "输液", "洗手间"};
+    private int[] searchImg = {R.mipmap.ic_search_jizhen, R.mipmap.ic_search_jiaofei, R.mipmap.ic_search_quyao,
+            R.mipmap.ic_search_qubaogao, R.mipmap.ic_search_guahao, R.mipmap.ic_search_chouxue,
+            R.mipmap.ic_search_shuye, R.mipmap.ic_search_xishoujian};
+    private String[] F2_A1_Content = {"耳鼻咽喉", "头颈外科"};
+    private String[] F2_A2_Content = {"皮肤性病科门诊", "皮肤科相关的检查"};
+    private String[] F2_A3_Content = {"耳鼻喉科相关检查", "财务收费窗口"};
+    private String[] F2_B_Content = {"藏区医疗服务部", "激光科治疗室", "遗传咨询门诊", "普外科", "财务收费窗口"};
+    private String[] F2_E_Content = {"骨科", "美容整形-烧伤外科", "康复医学科", "财务收费窗口"};
+    private String[] F2_F_Content = {"综合服务窗口", "114预约取号处"};
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_search_show,container,false);
+        view = inflater.inflate(R.layout.fragment_search_show, container, false);
         self = (SearchActivity) getActivity();
         initView();
         initData();
         return view;
     }
 
-    /** StreamLableLayout点击事件 */
-    class TextOnclickListener implements View.OnClickListener{
+    /**
+     * StreamLableLayout点击事件
+     */
+    class TextOnclickListener implements View.OnClickListener {
         private TextView mTextView;
         private String text;
         List<MapPointInfoBean> list = new ArrayList<>();
 
-        public TextOnclickListener(String secondary, List<MapPointInfoBean> list){
+        public TextOnclickListener(String secondary, List<MapPointInfoBean> list) {
             this.list = list;
             this.text = secondary;
         }
 
         @Override
         public void onClick(View view) {
-            if (list.size()!=0){
-                self.search(text,list);
+            if (list.size() != 0) {
+                self.search(text, list);
             } else {
-                Toast.makeText(getContext(),"该科室暂无数据",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "该科室暂无数据", Toast.LENGTH_SHORT).show();
             }
 
         }
     }
-    
+
     // gridview的点击事件
     class mOnItemClickListener implements AdapterView.OnItemClickListener {
 
@@ -106,13 +107,14 @@ public class SearchShowFragment extends Fragment {
     }
 
     private void initView() {
-        layoutParams = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewPager.LayoutParams.WRAP_CONTENT);
+        layoutParams = new ViewGroup.MarginLayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(DisplayUtil.dip2px(10), 0, 0, DisplayUtil.dip2px(12));// 设置边距
         layoutParams.height = DisplayUtil.dip2px((float) 28);
 
         mGridView = view.findViewById(R.id.gridView);
         mList = new ArrayList<>();
-        mAdapter = new SearchGridViewAdapter(getContext(),mList);
+        mAdapter = new SearchGridViewAdapter(getContext(), mList);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(new mOnItemClickListener());
 
@@ -126,22 +128,22 @@ public class SearchShowFragment extends Fragment {
     }
 
     private void initData() {
-        for (int i = 0; i < searchNames.length; i++){
-            OfficeItemBean itemBean = new OfficeItemBean(searchNames[i],searchImg[i] + "");
+        for (int i = 0; i < searchNames.length; i++) {
+            OfficeItemBean itemBean = new OfficeItemBean(searchNames[i], searchImg[i] + "");
             mList.add(itemBean);
         }
         mAdapter.refresh(mList);
 
         // 解析数据
-        String serachPoiData = FileUtils.loadFromAssets(getContext(),"HXSearchShow.json");
+        String serachPoiData = FileUtils.loadFromAssets(getContext(), "HXSearchShow.json");
         try {
             JSONArray jsonArray = new JSONArray(serachPoiData);
-            if (jsonArray!=null){
-                for (int i=0;i<jsonArray.length();i++){
+            if (jsonArray != null) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String elementary = jsonObject.getString("elementary");
                     JSONArray jsonArray1 = jsonObject.getJSONArray("data");
-                    foldAllLin.addView(creatExpandableView(getContext(),elementary, jsonArray1));
+                    foldAllLin.addView(creatExpandableView(getContext(), elementary, jsonArray1));
                 }
             }
         } catch (JSONException e) {
@@ -149,40 +151,40 @@ public class SearchShowFragment extends Fragment {
         }
     }
 
-    public ExpandableViewHX creatExpandableView(Context mContext, String title, JSONArray jsonArray){
+    public ExpandableViewHX creatExpandableView(Context mContext, String title, JSONArray jsonArray) {
         final ExpandableViewHX mExpandableView = new ExpandableViewHX(mContext);
         LinearLayout.LayoutParams params_lin = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params_lin.setMargins((int)DisplayUtil.dip2px(0),(int) DisplayUtil.dip2px(0),(int)DisplayUtil.dip2px(0),(int)DisplayUtil.dip2px(-5));
+        params_lin.setMargins(DisplayUtil.dip2px(0), DisplayUtil.dip2px(0), DisplayUtil.dip2px(0), DisplayUtil.dip2px(-5));
         mExpandableView.setLayoutParams(params_lin);
         mExpandableView.setmTitlt(title);
         mExpandableView.setmTitleImage(getResources().getDrawable(R.drawable.bg_rectangle_green));
         mExpandableView.setOrientation(LinearLayout.VERTICAL);
-        mExpandableView.addView(CreatLinearLayout(getContext(),jsonArray));
+        mExpandableView.addView(CreatLinearLayout(getContext(), jsonArray));
         return mExpandableView;
     }
 
-    public LinearLayout CreatLinearLayout(Context mContext, JSONArray jsonArray){
+    public LinearLayout CreatLinearLayout(Context mContext, JSONArray jsonArray) {
         final LinearLayout mLinearLayout = new LinearLayout(mContext);
         mLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams params_lin = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params_lin.setMargins((int)DisplayUtil.dip2px(0),(int) DisplayUtil.dip2px(0),(int)DisplayUtil.dip2px(0),(int)DisplayUtil.dip2px(-5));
+        params_lin.setMargins(DisplayUtil.dip2px(0), DisplayUtil.dip2px(0), DisplayUtil.dip2px(0), (int) DisplayUtil.dip2px(-5));
         mLinearLayout.setLayoutParams(params_lin);
-        mLinearLayout.addView(CreatStreamLableLayout(getContext(),jsonArray));
+        mLinearLayout.addView(CreatStreamLableLayout(getContext(), jsonArray));
         return mLinearLayout;
     }
 
-    private StreamLableLayout CreatStreamLableLayout(Context mContext, JSONArray jsonArray){
+    private StreamLableLayout CreatStreamLableLayout(Context mContext, JSONArray jsonArray) {
         final StreamLableLayout mStreamLableLayout = new StreamLableLayout(mContext);
         LinearLayout.LayoutParams params_lin = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params_lin.setMargins((int)DisplayUtil.dip2px(5),(int)DisplayUtil.dip2px(2),(int)DisplayUtil.dip2px(15),(int)DisplayUtil.dip2px(0));
+        params_lin.setMargins(DisplayUtil.dip2px(5), DisplayUtil.dip2px(2), DisplayUtil.dip2px(15), DisplayUtil.dip2px(0));
         mStreamLableLayout.setLayoutParams(params_lin);
-        try{
-            for (int j=0;j<jsonArray.length();j++){
+        try {
+            for (int j = 0; j < jsonArray.length(); j++) {
                 JSONObject jsonObject1 = jsonArray.getJSONObject(j);
                 String secondary = jsonObject1.getString("secondary");
                 JSONArray jsonArray2 = jsonObject1.getJSONArray("data");
                 List<MapPointInfoBean> list = new ArrayList<>();
-                for (int k=0;k<jsonArray2.length();k++){
+                for (int k = 0; k < jsonArray2.length(); k++) {
                     JSONObject jsonObject3 = jsonArray2.getJSONObject(k);
                     MapPointInfoBean mapBean = new MapPointInfoBean();
                     mapBean.setPoiId(jsonObject3.getString("poiId"));
@@ -195,23 +197,52 @@ public class SearchShowFragment extends Fragment {
                     mapBean.setAddress(jsonObject3.getString("address"));
                     list.add(mapBean);
                 }
-                mStreamLableLayout.addView(CreatTextView(secondary, list),layoutParams);
+                TextView textView = CreatTextView(secondary, list);
+//                ViewGroup.LayoutParams params = mStreamLableLayout.getLayoutParams();
+//                //获取view的margin设置参数
+//                if (params instanceof ViewGroup.MarginLayoutParams) {
+//                    layoutParams = (ViewGroup.MarginLayoutParams) params;
+//                } else {
+//                    //不存在时创建一个新的参数
+//                    //基于View本身原有的布局参数对象
+//                    layoutParams = new ViewGroup.MarginLayoutParams(params);
+//                }
+//                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+//                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+//                layoutParams.setMargins(DisplayUtil.dip2px(10), 0, 0, DisplayUtil.dip2px(12));// 设置边距
+//                layoutParams.height = DisplayUtil.dip2px((float) 28);
+                mStreamLableLayout.addView(textView, layoutParams);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return mStreamLableLayout;
     }
 
-    private TextView CreatTextView(String secondary, List<MapPointInfoBean> list){
+    private TextView CreatTextView(String secondary, List<MapPointInfoBean> list) {
         final TextView textView = new TextView(getContext());
         textView.setGravity(Gravity.CENTER);
-        textView.setPadding((int) DisplayUtil.dip2px(8), 0, (int) DisplayUtil.dip2px(8), 0);
+        textView.setPadding(DisplayUtil.dip2px(8), 0, DisplayUtil.dip2px(8), 0);
         textView.setTextSize(13);
         textView.setBackgroundResource(R.drawable.bg_history_radiu);
         textView.setText(secondary);
         textView.setTextColor(getResources().getColor(R.color.text_gray));
-        textView.setOnClickListener(new TextOnclickListener(secondary,list));
+        textView.setOnClickListener(new TextOnclickListener(secondary, list));
+//        ViewGroup.LayoutParams params = textView.getLayoutParams();
+//        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+//        params.height = DisplayUtil.dip2px((float) 28);
+//        textView.setLayoutParams(params);
+//        ViewGroup.MarginLayoutParams marginParams = null;
+//        if (params instanceof ViewGroup.MarginLayoutParams) {
+//            marginParams = (ViewGroup.MarginLayoutParams) params;
+//        } else {
+//            //不存在时创建一个新的参数
+//            //基于View本身原有的布局参数对象
+//            marginParams = new ViewGroup.MarginLayoutParams(params);
+//        }
+//        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+//        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+//        marginParams.setMargins(DisplayUtil.dip2px(10), 0, 0, DisplayUtil.dip2px(12));
         return textView;
     }
 

@@ -1,6 +1,7 @@
 package com.palmap.huayitonglib.navi.showroute;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -36,6 +37,8 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
 
     private static RouteManager sInstance;
 
+    private Context mContext;
+
     private MapboxMap mMapboxMap;
     private MapBoxNavigateManager mNavigateManager;
 
@@ -60,17 +63,28 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
         return sInstance;
     }
 
+    public void setLineIcon(int sourceId, int width, int height, String lineName) {
+        mMapboxMap.addImage(lineName, BitmapUtils.decodeSampledBitmapFromResource(mContext.getResources(),
+                sourceId,
+                width,
+                height));
+    }
+
     //astar算法计算路线的监听器
     private INavigateManager.Listener<FeatureCollection> mListener = new INavigateManager.Listener<FeatureCollection>
             () {
         @Override
-        public void onNavigateComplete(INavigateManager.NavigateState state, List<AStarPath> routes, double fromX,
+        public void onNavigateComplete(INavigateManager.NavigateState state, List<AStarPath> routes, double
+                totalDistance, double fromDistance, double toDistance, double fromX,
                                        double fromY, long fromPlanargraph, FeatureCollection from, double fromConX,
                                        double fromConY, double toX, double toY, long toPlanargraph, FeatureCollection
                                                to, double toConX, double toConY) {
 
             if (state == INavigateManager.NavigateState.OK) {
+
                 mRouteBean.setRoutes(routes);
+                mRouteBean.setTotalDistance(totalDistance);
+
                 mRouteBean.setFromFloorId(fromPlanargraph);
                 LatLng fromConlatLng = null;
                 if (fromConX != 0) {
@@ -80,6 +94,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                 mRouteBean.setFromFeatureCollection(from);
                 LatLng fromLatlng = CoordinateUtils.webMercator2LatLng(fromX, fromY);
                 mRouteBean.setFromLatlng(fromLatlng);
+                mRouteBean.setFromDistance(fromDistance);
 
                 mRouteBean.setToFloorId(toPlanargraph);
                 LatLng toConlatLng = null;
@@ -90,6 +105,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                 mRouteBean.setToFeatureCollection(to);
                 LatLng toLatLng = CoordinateUtils.webMercator2LatLng(toX, toY);
                 mRouteBean.setToLatLng(toLatLng);
+                mRouteBean.setToDistance(toDistance);
 
                 notifyPlanRouteSuccess();
 
@@ -125,9 +141,10 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
      * @param resId         连接点图标资源id
      * @param aboveId       导航线要在那个层之上
      */
+
     @Override
     public void init(Context context, MapboxMap mapboxMap, String routeDataPath, int resId, String aboveId) {
-
+        mContext = context;
         mMapboxMap = mapboxMap;
         mMapboxMap.addImage(CONNECTION_IMAGE_NAME, BitmapUtils.decodeSampledBitmapFromResource(context.getResources()
                 , resId, 100, 100));
@@ -258,8 +275,8 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                 }
                 mMapboxMap.addSource(jsonSource);
 
-                LineLayer startLayer = new LineLayer(layerId, sourceId);
-                startLayer.setProperties(
+                LineLayer lineLayer = new LineLayer(layerId, sourceId);
+                lineLayer.setProperties(
                         //加虚线- - - - - - - - - - - -
                         PropertyFactory.lineDasharray(new Float[]{3f, 1f}),
                         PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
@@ -267,11 +284,21 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                         PropertyFactory.lineWidth(2.5f),
                         PropertyFactory.lineColor(Color.parseColor("#ff3333")));
 
+//                startLayer.setProperties(
+//                        //PropertyFactory.lineDasharray(new Float[]{0.03f, 2f}),
+//                        //PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+//                        PropertyFactory.linePattern("line"),
+//                        PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+//                        PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+//                        PropertyFactory.lineWidth(6f)
+//                );
+
+
                 mLayerIds.add(layerId);
                 if (mMapboxMap.getLayer(aboveId) != null) {
-                    mMapboxMap.addLayerAbove(startLayer, aboveId);
+                    mMapboxMap.addLayerAbove(lineLayer, aboveId);
                 } else {
-                    mMapboxMap.addLayer(startLayer);
+                    mMapboxMap.addLayer(lineLayer);
                 }
 
             } else {

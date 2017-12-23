@@ -17,6 +17,7 @@ import com.mapbox.services.commons.models.Position;
 import com.palmap.huayitonglib.navi.NavigateFactory;
 import com.palmap.huayitonglib.navi.NavigateManager;
 import com.palmap.huayitonglib.navi.NavigateUpdateListener;
+import com.palmap.huayitonglib.navi.entity.ActionState;
 import com.palmap.huayitonglib.navi.entity.NaviInfo;
 import com.palmap.huayitonglib.navi.entity.NodeInfo;
 import com.palmap.huayitonglib.navi.entity.PartInfo;
@@ -29,7 +30,7 @@ import java.util.List;
  * Created by yibo.liu on 2017/12/21 15:35.
  */
 
-public class Navi {
+public class Navi implements INavi {
     public static final String TAG = Navi.class.getSimpleName();
 
     public static final String SOURCEID_LOCATION = "source-id-location";
@@ -40,7 +41,8 @@ public class Navi {
     public static final int MSG_SIMULATE_NAVI_FINISH_ONE_FLOOR = 1001;
 
     private static final int ZOOM_NAVI = 18;
-    public static final int TIMES = 300;
+    private static final int TIMES = 600;
+    private static final double SPLIT_DISTANCE = RouteConfig.VELOCITY_SIMULATE * TIMES / 1000;
 
     private MapBoxImp mMapBoxImp;
     private MapboxMap mMapboxMap;
@@ -58,6 +60,8 @@ public class Navi {
     private List<NodeInfo> mUsedNoInfos = new ArrayList<>();
     private List<NodeInfo> mFromNodeInfos = new ArrayList<>();
     private List<NodeInfo> mToNodeInfos = new ArrayList<>();
+    private NaviInfo mCurrentNaviInfo;
+    private int mFrontPartIndex = -1;
 
     private SimulateNaviStateListener mSimulateNaviStateListener;
 
@@ -98,12 +102,33 @@ public class Navi {
     private NavigateUpdateListener mNavigateUpdateListener = new NavigateUpdateListener() {
         @Override
         public void onNavigateUpdate(NaviInfo naviInfo) {
+            Log.d(TAG, "onNavigateUpdate:  info " + naviInfo.getNaviTip() + "\t" + (int) naviInfo
+                    .getTotalRemainLength());
+            mCurrentNaviInfo = naviInfo;
             if (mSimulateNaviStateListener != null) {
-                mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip());
+
+                if (mFrontPartIndex != naviInfo.getAdsorbPart().getIndex() && naviInfo.getAdsorbPart().getLength() >
+                        8d) {
+//                    mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip(), "");
+
+
+
+                }
+                mFrontPartIndex = naviInfo.getAdsorbPart().getIndex();
+
+                mSimulateNaviStateListener.onActionState(naviInfo.getNextAction());
+
+                String bottomInfo = "剩余约" + ((int) naviInfo.getTotalRemainLength()) + "米";
+                mSimulateNaviStateListener.onBottomInfo(bottomInfo);
+
+                String topInfo = "前行" + ((int) naviInfo.getRemainLength()) + "m," + naviInfo.getNextAction().toString();
+                mSimulateNaviStateListener.onTopInfo(topInfo);
+
             }
         }
     };
 
+    @Override
     public void init(Context context, MapboxMap mapboxMap, int resId) {
         mMapBoxImp = new MapBoxImp();
         mMapBoxImp.setMapEngine(mapboxMap);
@@ -115,6 +140,12 @@ public class Navi {
 
         mNavigateManager = new NavigateManager();
         mNavigateManager.setNavigateUpdateListener(mNavigateUpdateListener);
+
+        drawRule();
+    }
+
+    private void drawRule() {
+
     }
 
     /**
@@ -122,6 +153,7 @@ public class Navi {
      *
      * @param listener
      */
+    @Override
     public void setSimulateStateListener(SimulateNaviStateListener listener) {
         mSimulateNaviStateListener = listener;
     }
@@ -129,6 +161,7 @@ public class Navi {
     /**
      * 开始模拟导航
      */
+    @Override
     public void startSimulateNavi(RouteBean bean) {
         mRouteBean = bean;
         if (mRouteBean == null) {
@@ -201,6 +234,7 @@ public class Navi {
             } else {
                 Log.d(TAG, "repeat: 不转");
                 animateLocation(from, to);
+                mNavigateManager.updatePosition(mCurrentFloorId, nodeInfo.getX(), nodeInfo.getY(), 0);
                 mIndex++;
             }
             mHandler.sendEmptyMessageDelayed(MSG_SIMULATE_NAVI, TIMES);
@@ -211,7 +245,7 @@ public class Navi {
 
     private void handleNodeInfo(List<PartInfo> partInfos, long fromFloorId, long toFloorId) {
 
-        List<NodeInfo> nodeInfos = NavigateFactory.makeMockPointArray(5, partInfos);
+        List<NodeInfo> nodeInfos = NavigateFactory.makeMockPointArray(SPLIT_DISTANCE, partInfos);
 
         if (!mFromNodeInfos.isEmpty()) {
             mFromNodeInfos.clear();
@@ -255,18 +289,32 @@ public class Navi {
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                Log.d(TAG, "onAnimationUpdate: ");
                 LatLng evaluatelatlng = mLatlngEvaluator.evaluate(valueAnimator.getAnimatedFraction(), startLatLng,
                         endLatLng);
-                addOrUpdateLocationMark(evaluatelatlng);
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(evaluatelatlng).zoom(ZOOM_NAVI)
-                        .build();
-                mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), TIMES);
+                updateAnimationLatlng(evaluatelatlng);
             }
         });
         mValueAnimator.setInterpolator(new LinearInterpolator());
         mValueAnimator.setDuration(TIMES);
         mValueAnimator.start();
+    }
+
+    private void updateAnimationLatlng(LatLng evaluatelatlng) {
+        addOrUpdateLocationMark(evaluatelatlng);
+        updateCamera(evaluatelatlng);
+        updatePassedLine(evaluatelatlng);
+    }
+
+    private void updatePassedLine(LatLng evaluatelatlng) {
+        if (mCurrentNaviInfo == null) {
+            return;
+        }
+    }
+
+    private void updateCamera(LatLng evaluatelatlng) {
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(evaluatelatlng).zoom(ZOOM_NAVI)
+                .build();
+        mMapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), TIMES);
     }
 
     private void addOrUpdateLocationMark(LatLng latLng) {
@@ -289,12 +337,17 @@ public class Navi {
             mValueAnimator.cancel();
         }
         mPreBearing = 0;
+        mCurrentNaviInfo = null;
     }
 
     /**
      * 停止模拟导航
      */
+    @Override
     public void stopSimulateNavi() {
+        if (mHandler.hasMessages(MSG_SIMULATE_NAVI) && mSimulateNaviStateListener != null) {
+            mSimulateNaviStateListener.onInterrupted();
+        }
         clearSimulateNaviInfo();
         clearLocationMark();
     }
