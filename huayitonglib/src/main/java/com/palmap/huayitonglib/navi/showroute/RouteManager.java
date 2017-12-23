@@ -74,13 +74,17 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     private INavigateManager.Listener<FeatureCollection> mListener = new INavigateManager.Listener<FeatureCollection>
             () {
         @Override
-        public void onNavigateComplete(INavigateManager.NavigateState state, List<AStarPath> routes, double fromX,
+        public void onNavigateComplete(INavigateManager.NavigateState state, List<AStarPath> routes, double
+                totalDistance, double fromDistance, double toDistance, double fromX,
                                        double fromY, long fromPlanargraph, FeatureCollection from, double fromConX,
                                        double fromConY, double toX, double toY, long toPlanargraph, FeatureCollection
                                                to, double toConX, double toConY) {
 
             if (state == INavigateManager.NavigateState.OK) {
+
                 mRouteBean.setRoutes(routes);
+                mRouteBean.setTotalDistance(totalDistance);
+
                 mRouteBean.setFromFloorId(fromPlanargraph);
                 LatLng fromConlatLng = null;
                 if (fromConX != 0) {
@@ -90,6 +94,8 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                 mRouteBean.setFromFeatureCollection(from);
                 LatLng fromLatlng = CoordinateUtils.webMercator2LatLng(fromX, fromY);
                 mRouteBean.setFromLatlng(fromLatlng);
+                mRouteBean.setFromDistance(fromDistance);
+
                 mRouteBean.setToFloorId(toPlanargraph);
                 LatLng toConlatLng = null;
                 if (toConX != 0) {
@@ -99,6 +105,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                 mRouteBean.setToFeatureCollection(to);
                 LatLng toLatLng = CoordinateUtils.webMercator2LatLng(toX, toY);
                 mRouteBean.setToLatLng(toLatLng);
+                mRouteBean.setToDistance(toDistance);
 
                 notifyPlanRouteSuccess();
 
@@ -164,7 +171,8 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
     }
 
     @Override
-    public void planRoute(double fromlong, double fromlat, long fromPlanargraph, double tolong, double tolat, long toPlanargraph) {
+    public void planRoute(double fromlong, double fromlat, long fromPlanargraph, double tolong, double tolat, long
+            toPlanargraph) {
 
         Position fromPosition = CoordinateUtils.latlng2WebMercator(fromlat, fromlong);
         Position toPosition = CoordinateUtils.latlng2WebMercator(tolat, tolong);
@@ -284,7 +292,6 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
 //                        PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
 //                        PropertyFactory.lineWidth(6f)
 //                );
-
 
 
                 mLayerIds.add(layerId);

@@ -418,7 +418,8 @@ public class MapActivity extends VoiceListenActivity {
         } else if (i == R.id.set_qidian) {
             //设置起点-----
             //进入路线规划-----
-            mRouteManager.planRoute(mStartLongtitude, mStartLatitude, mStartFloorId, mEndLongtitude, mEndLatitude, mEndFloorId);
+            mRouteManager.planRoute(mStartLongtitude, mStartLatitude, mStartFloorId, mEndLongtitude, mEndLatitude,
+                    mEndFloorId);
 
         } else if (i == R.id.moni_naviga_btn) {
             changeNavigaView(NAVIGA_SHOW_06);
@@ -758,8 +759,10 @@ public class MapActivity extends VoiceListenActivity {
         mRouteManager.registerPlanRouteListener(new PlanRouteListener() {
             @Override
             public boolean onSuccess(RouteBean bean) {
-                Log.d("lybb", "路线规划成功了: ");
                 mRouteBean = bean;
+                int totalDistance = (int) mRouteBean.getTotalDistance();
+                int time = mRouteBean.getTime();
+                Log.d("lybb", "路线规划成功了:  时间 " + time + " 距离 " + totalDistance);
                 Log.e("zyy", "onSuccess: --------------" + mRouteBean.toString());
                 mRouteManager.showNaviRoute(mCurrentFloorId);
                 changeNavigaView(ROUTE_SHOW_05);
@@ -991,16 +994,6 @@ public class MapActivity extends VoiceListenActivity {
             selectstart_rr_01.setVisibility(View.GONE);
             //顶部导航提示01
             nagv_top01.setVisibility(View.GONE);
-            // 终点信息赋值
-            //底部选择终点的对应信息
-            if (mEndInfo != null) {
-                //endname
-                park_zhongdian_text01.setText(mEndInfo.getName());
-                //endadress
-                park_zhongdian_text02.setText(mEndInfo.getAddress());
-                //endfloorname
-                park_zhongdian_text03.setText(mEndInfo.getFloorName());
-            }
 
             isHaveSetEnd = false;
             removeStartMarker();
@@ -1042,15 +1035,6 @@ public class MapActivity extends VoiceListenActivity {
             //可以开启导航
             nagv_yuyin = true;
 
-            // 顶部起点、终点信息展示，因此时无起点，所以只设置终点信息
-            //顶部终点name信息
-            if (mEndInfo != null) {
-                endname_top_text.setText(mEndInfo.getName());
-                //顶部终点楼层名字endfloorname信息
-                endfloorname_top_text.setText(mEndInfo.getFloorName());
-                //顶部终点地址endaddress信息
-                endaddress_top_text.setText(mEndInfo.getAddress());
-            }
 
             //导航结束
             navi.stopSimulateNavi();
@@ -1094,24 +1078,12 @@ public class MapActivity extends VoiceListenActivity {
             //可以开启导航
             nagv_yuyin = true;
 
+
             //顶部显示
             //选择起点
             selectstart_rr_01.setVisibility(View.VISIBLE);
             //顶部导航提示01
             nagv_top01.setVisibility(View.GONE);
-
-            // 顶部起点、终点信息展示，此时有起点，设置终点信息+起点信息
-            if (mStartInfo != null) {
-                start_top_text.setText(mStartInfo.getName());
-            }
-            if (mEndInfo != null) {
-                //顶部终点name信息
-                endname_top_text.setText(mEndInfo.getName());
-                //顶部终点楼层名字endfloorname信息
-                endfloorname_top_text.setText(mEndInfo.getFloorName());
-                //顶部终点地址endaddress信息
-                endaddress_top_text.setText(mEndInfo.getAddress());
-            }
 
             isHaveSetEnd = true;
             type = 4;
@@ -1145,12 +1117,6 @@ public class MapActivity extends VoiceListenActivity {
             nagv_yuyin_image.setImageResource(R.mipmap.ic_card_yuyin_kai);
             //可以开启导航
             nagv_yuyin = true;
-
-//            //起点信息  F1
-//            dangqianweizhi_text
-//            //目的地
-//            modidi_text
-
 
             //顶部显示
             //选择起点
@@ -1279,7 +1245,7 @@ public class MapActivity extends VoiceListenActivity {
         }
     }
 
-    // 设置起点、终点信息
+    // TODO 设置起点、终点信息
     private void changeStartEndInfo(int types) {
         isJumpStartPoint = true;
         cleanPointInfo();
@@ -1324,6 +1290,8 @@ public class MapActivity extends VoiceListenActivity {
             // 顶部起点、终点信息展示，此时有起点，设置终点信息+起点信息
             if (mStartInfo != null) {
                 start_top_text.setText(mStartInfo.getName());
+                // 起点信息  F1
+                dangqianweizhi_text.setText(mStartInfo.getName());
             }
             if (mEndInfo != null) {
                 //顶部终点name信息
@@ -1332,10 +1300,29 @@ public class MapActivity extends VoiceListenActivity {
                 endfloorname_top_text.setText(mEndInfo.getFloorName());
                 //顶部终点地址endaddress信息
                 endaddress_top_text.setText(mEndInfo.getAddress());
+                //目的地
+                modidi_text.setText(mEndInfo.getName());
             }
         } else if (types == NAVIGA_SHOW_06) {
-
+            // 导航开始后起点、终点name
+            if (mEndInfo != null){
+                //目的地
+                modidi_text.setText(mEndInfo.getName());
+            }
+            if (mStartInfo != null){
+                // 起点信息  F1
+                dangqianweizhi_text.setText(mStartInfo.getName());
+            }
         } else if (types == STOPNAVIGA_SHOW_07) {
+            // 导航结束
+            if (mEndInfo != null){
+                //目的地
+                modidi_text.setText(mEndInfo.getName());
+            }
+            if (mStartInfo != null){
+                // 起点信息  F1
+                dangqianweizhi_text.setText(mStartInfo.getName());
+            }
 
         }
     }
@@ -1358,6 +1345,12 @@ public class MapActivity extends VoiceListenActivity {
         park_zhongdian_text02.setText("");
         //终点floorname
         park_zhongdian_text03.setText("");
+
+        // 导航开始后起点、终点name
+        // 起点信息  F1
+        dangqianweizhi_text.setText("");
+        //目的地
+        modidi_text.setText("");
     }
 
     //楼层的标识符
