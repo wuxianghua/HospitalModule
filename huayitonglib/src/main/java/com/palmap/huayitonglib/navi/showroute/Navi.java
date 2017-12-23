@@ -17,6 +17,7 @@ import com.mapbox.services.commons.models.Position;
 import com.palmap.huayitonglib.navi.NavigateFactory;
 import com.palmap.huayitonglib.navi.NavigateManager;
 import com.palmap.huayitonglib.navi.NavigateUpdateListener;
+import com.palmap.huayitonglib.navi.entity.ActionState;
 import com.palmap.huayitonglib.navi.entity.NaviInfo;
 import com.palmap.huayitonglib.navi.entity.NodeInfo;
 import com.palmap.huayitonglib.navi.entity.PartInfo;
@@ -105,11 +106,24 @@ public class Navi implements INavi {
                     .getTotalRemainLength());
             mCurrentNaviInfo = naviInfo;
             if (mSimulateNaviStateListener != null) {
+
                 if (mFrontPartIndex != naviInfo.getAdsorbPart().getIndex() && naviInfo.getAdsorbPart().getLength() >
                         8d) {
-                    mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip());
+//                    mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip(), "");
+
+
+
                 }
                 mFrontPartIndex = naviInfo.getAdsorbPart().getIndex();
+
+                mSimulateNaviStateListener.onActionState(naviInfo.getNextAction());
+
+                String bottomInfo = "剩余约" + ((int) naviInfo.getTotalRemainLength()) + "米";
+                mSimulateNaviStateListener.onBottomInfo(bottomInfo);
+
+                String topInfo = "前行" + ((int) naviInfo.getRemainLength()) + "m," + naviInfo.getNextAction().toString();
+                mSimulateNaviStateListener.onTopInfo(topInfo);
+
             }
         }
     };

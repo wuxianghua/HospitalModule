@@ -36,6 +36,7 @@ import com.palmap.huayitonglib.R;
 import com.palmap.huayitonglib.bean.FloorBean;
 import com.palmap.huayitonglib.db.bridge.MapPointInfoDbManager;
 import com.palmap.huayitonglib.db.entity.MapPointInfoBean;
+import com.palmap.huayitonglib.navi.entity.ActionState;
 import com.palmap.huayitonglib.navi.showroute.Navi;
 import com.palmap.huayitonglib.navi.showroute.PlanRouteListener;
 import com.palmap.huayitonglib.navi.showroute.RouteBean;
@@ -809,7 +810,7 @@ public class MapActivity extends VoiceListenActivity {
             public void onFinish() {
                 try {
                     //可以进行导航的时候进行导航
-                    if (nagv_yuyin){
+                    if (nagv_yuyin) {
                         speechManager.startSpeaking("您已到达" + mEndInfo.getName());
                     }
                 } catch (IllegalAccessException e) {
@@ -833,18 +834,37 @@ public class MapActivity extends VoiceListenActivity {
             }
 
             @Override
-            public void onInfo(String info) {
-                Log.d("lybbonInfo", "onInfo: " + info);
-                try {
-                    //可以进行导航的时候进行导航
-                    if (nagv_yuyin){
-                        speechManager.stopSpeaking();
-                        speechManager.startSpeaking(info);
-                    }
+            public void onTopInfo(String topInfo) {
+                Log.d("lybb", "onInfo: topInfo " + topInfo);
+            }
 
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+            @Override
+            public void onBottomInfo(String bottomInfo) {
+                Log.d("lybb", "onInfo: bottomInfo" + bottomInfo);
+            }
+
+//            public void onInfo(String info) {
+//                Log.d("lybbonInfo", "onInfo: " + info);
+//                try {
+//                    //可以进行导航的时候进行导航
+//                    if (nagv_yuyin) {
+//                        speechManager.stopSpeaking();
+//                        speechManager.startSpeaking(info);
+//                    }
+//
+//                } catch (IllegalAccessException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+
+            @Override
+            public void onActionState(ActionState state) {
+                Log.d("lybb", "onActionState: " + state.toString());
+            }
+
+            @Override
+            public void onSpeak(String msg) {
+                Log.d("lybb", "onSpeak: " + msg);
             }
         });
 

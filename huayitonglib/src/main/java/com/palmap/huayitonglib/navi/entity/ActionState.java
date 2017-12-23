@@ -33,7 +33,7 @@ public enum ActionState {
                 break;
             }
             case ACTION_TURN_LEFT:{
-                msg = "向左转";
+                msg = "左转";
                 break;
             }
             case ACTION_BACK_LEFT:{
@@ -45,7 +45,7 @@ public enum ActionState {
                 break;
             }
             case ACTION_TURN_RIGHT:{
-                msg = "向右转";
+                msg = "右转";
                 break;
             }
             case ACTION_BACK_RIGHT:{
