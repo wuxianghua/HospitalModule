@@ -95,12 +95,16 @@ public class Navi {
         }
     };
 
+    private int frontPartIndex = -1;
     private NavigateUpdateListener mNavigateUpdateListener = new NavigateUpdateListener() {
         @Override
         public void onNavigateUpdate(NaviInfo naviInfo) {
             Log.d(TAG, "onNavigateUpdate:  info " + naviInfo.getNaviTip() + "\t" + (int)naviInfo.getTotalRemainLength());
             if (mSimulateNaviStateListener != null) {
-                mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip());
+                if(frontPartIndex != naviInfo.getAdsorbPart().getIndex()) {
+                    mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip());
+                }
+                frontPartIndex = naviInfo.getAdsorbPart().getIndex();
             }
         }
     };
