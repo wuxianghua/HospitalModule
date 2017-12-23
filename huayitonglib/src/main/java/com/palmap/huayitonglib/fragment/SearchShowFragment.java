@@ -108,7 +108,7 @@ public class SearchShowFragment extends Fragment {
 
     private void initView() {
         layoutParams = new ViewGroup.MarginLayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(DisplayUtil.dip2px(10), 0, 0, DisplayUtil.dip2px(12));// 设置边距
         layoutParams.height = DisplayUtil.dip2px((float) 28);
 

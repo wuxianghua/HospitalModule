@@ -45,7 +45,7 @@ public class GuoMapUtils {
         // getActivity容易有空指针bug 切换指南针的图片
         mMapboxMap.getUiSettings().setCompassImage(context.getResources().getDrawable(R.mipmap.ic_map_compass));
         mMapboxMap.setMaxZoomPreference(20);
-        mMapboxMap.setMinZoomPreference(15);
+        mMapboxMap.setMinZoomPreference(16);
     }
 
     /**
@@ -190,13 +190,31 @@ public class GuoMapUtils {
                 PropertyFactory.iconOffset(new Float[]{-10.f, 0.f}),
                 PropertyFactory.iconImage(Function.property("logo", Stops.<String>identity())),
                 PropertyFactory.textPadding(8f)
-//                ,PropertyFactory.textAllowOverlap(Function.property("allowShow", new IdentityStops<String>()))
-//                ,PropertyFactory.textAllowOverlap(CameraFunction.property("allowShow",new SourceFunction<>()))
+//                ,PropertyFactory.textAllowOverlap(allowShow)
 
         );
 
         areaTextLayer.setFilter(Filter.has("display"));
         mapboxMap.addLayer(areaTextLayer);
+
+        SymbolLayer areaHighlightTextLayer = new SymbolLayer("hightLightText", sourceId);
+        areaHighlightTextLayer.setProperties(
+                PropertyFactory.textField("{allowShowName}"),
+//                PropertyFactory.textColor("#475266"),
+//                PropertyFactory.textSize(10.f),
+                PropertyFactory.textColor(Function.property(MapConfig2.NAME_TEXT_COLOR, new IdentityStops<String>())),
+                PropertyFactory.textSize(Function.property(MapConfig2.NAME_TEXT_SIZE, new IdentityStops<Float>())),
+                PropertyFactory.iconSize(.5f),
+                PropertyFactory.textAnchor(Property.TEXT_JUSTIFY_LEFT),
+                PropertyFactory.iconOffset(new Float[]{-10.f, 0.f}),
+                PropertyFactory.iconImage(Function.property("logo", Stops.<String>identity())),
+                PropertyFactory.textPadding(8f)
+               ,PropertyFactory.textAllowOverlap(true)
+
+        );
+
+//        areaHighlightTextLayer.setFilter(Filter.has("display"));
+        mapboxMap.addLayer(areaHighlightTextLayer);
     }
 
     public static void addFacilityData(Context context, MapboxMap mMapboxMap, FloorBean mFloorBean){

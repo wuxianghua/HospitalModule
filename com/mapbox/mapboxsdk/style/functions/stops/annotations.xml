@@ -1,0 +1,5 @@
+<root>
+    <item name='com.mapbox.mapboxsdk.style.functions.stops.IdentityStops'>
+        <annotation name='java.lang.Deprecated' />
+    </item>
+</root>
