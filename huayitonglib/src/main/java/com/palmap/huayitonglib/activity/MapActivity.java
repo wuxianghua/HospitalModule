@@ -40,6 +40,9 @@ import com.palmap.huayitonglib.navi.showroute.PlanRouteListener;
 import com.palmap.huayitonglib.navi.showroute.RouteBean;
 import com.palmap.huayitonglib.navi.showroute.RouteManager;
 import com.palmap.huayitonglib.navi.showroute.SimulateNaviStateListener;
+import com.palmap.huayitonglib.speech.IBaseManger;
+import com.palmap.huayitonglib.speech.ISpeechManager;
+import com.palmap.huayitonglib.speech.iflytek.IFlyTekSpeechManager;
 import com.palmap.huayitonglib.utils.Config;
 import com.palmap.huayitonglib.utils.Constant;
 import com.palmap.huayitonglib.utils.CoordinateUtil;
@@ -74,7 +77,7 @@ public class MapActivity extends VoiceListenActivity {
     Handler h = null;
     private RouteManager mRouteManager;
     private double bound;
-
+    ISpeechManager speechManager = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +87,25 @@ public class MapActivity extends VoiceListenActivity {
         self = this;
         initMapData();
         initMapView(savedInstanceState);
+        testSpeech();
+    }
+
+    private void testSpeech() {
+        speechManager = new IFlyTekSpeechManager(this, new IBaseManger.OnInitListener() {
+            @Override
+            public void onInitSuccess() {
+                try {
+                    speechManager.setSpeechSpeaker(IFlyTekSpeechManager.Speaker.SICHUAN_F.toString());
+                    speechManager.startSpeaking("涛哥牛逼");
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onInitFailure(String msg) {
+
+            }
+        });
     }
 
     ScrollView map_scrollview;
@@ -372,22 +394,19 @@ public class MapActivity extends VoiceListenActivity {
         } else if (i == R.id.cancel) {
             //点击去这里
             changeNavigaView(ENDSELEE_SHOW_02);
-
         } else if (i == R.id.selectstart_back_01) {
             if (type == 5) {
                 //点击去这里
                 changeNavigaView(STARTSELEE_SHOW_04);
-
-
             } else {
                 //点击去这里
                 changeNavigaView(ENDSELEE_SHOW_02);
             }
 
         } else if (i == R.id.set_qidian) {
-            //设置起点
-            //进入路线规划
+            //设置起点-----
 
+            //进入路线规划-----
             mRouteManager.planRoute(mStartLongtitude, mStartLatitude, mStartFloorId, mEndLongtitude, mEndLatitude, mEndFloorId);
         } else if (i == R.id.moni_naviga_btn) {
             changeNavigaView(NAVIGA_SHOW_06);
@@ -431,6 +450,8 @@ public class MapActivity extends VoiceListenActivity {
         } else if (i == R.id.stop_nagv_btn) {
             //导航结束
             navi.stopSimulateNavi();
+            mRouteManager.clearRouteRecord();
+            mRouteManager.clearRoute();
             changeNavigaView(SHOUYE_SHOW_01);
 
         }
@@ -731,8 +752,9 @@ public class MapActivity extends VoiceListenActivity {
      */
     private void setRouteManager() {
         mRouteManager = RouteManager.get();
-        mRouteManager.init(MapActivity.this, mMapboxMap, "roadNet.json", R.mipmap.ic_map_dianti,
+        mRouteManager.init(MapActivity.this, mMapboxMap, "roadNet.json", R.mipmap.ic_map_marker_zhiti,
                 MapConfig2.LAYERID_AREA_TEXT);
+        mRouteManager.setLineIcon(R.mipmap.jiantou3, 30, 30, "line");
         mRouteManager.registerPlanRouteListener(new PlanRouteListener() {
             @Override
             public boolean onSuccess(RouteBean bean) {
@@ -790,7 +812,13 @@ public class MapActivity extends VoiceListenActivity {
 
             @Override
             public void onInfo(String info) {
-                Log.d("lybb", "onInfo: " + info);
+                Log.d("lybbonInfo", "onInfo: " + info);
+                try {
+                    speechManager.stopSpeaking();
+                    speechManager.startSpeaking(info);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -905,6 +933,13 @@ public class MapActivity extends VoiceListenActivity {
             nagv_01_rr.setVisibility(View.GONE);
             //导航结束
             stop_nagv_btn.setVisibility(View.GONE);
+            //公共设施按钮
+            iconCommon_image.setVisibility(View.VISIBLE);
+            //公共设施过滤显示
+            //切换楼层
+            changefloor_text.setVisibility(View.VISIBLE);
+
+
 
             //顶部显示
             //选择起点
@@ -913,6 +948,7 @@ public class MapActivity extends VoiceListenActivity {
             nagv_top01.setVisibility(View.GONE);
             isHaveSetEnd = false;
             removeEndMarker();
+            removeStartMarker();
             mEndFloorId = 0;
             mEndLongtitude = 0;
             mEndLatitude = 0;
@@ -933,6 +969,13 @@ public class MapActivity extends VoiceListenActivity {
             nagv_01_rr.setVisibility(View.GONE);
             //导航结束
             stop_nagv_btn.setVisibility(View.GONE);
+
+            //公共设施按钮
+            iconCommon_image.setVisibility(View.VISIBLE);
+            //公共设施过滤显示
+            //切换楼层
+            changefloor_text.setVisibility(View.VISIBLE);
+
 
             //顶部显示
             //选择起点
@@ -967,14 +1010,19 @@ public class MapActivity extends VoiceListenActivity {
             park_zhongdian.setVisibility(View.GONE);
             //选择起点2（底部）
             setstar_bttom_ll01.setVisibility(View.GONE);
-            //路线规划
+            //路线规划---
             luxianguihua_rr.setVisibility(View.GONE);
             //导航中
             nagv_01_rr.setVisibility(View.GONE);
             //导航结束
             stop_nagv_btn.setVisibility(View.GONE);
-
+            //公共设施按钮
+            iconCommon_image.setVisibility(View.VISIBLE);
+            //公共设施过滤显示
+            //切换楼层
+            changefloor_text.setVisibility(View.VISIBLE);
             //顶部显示
+            iconCommon_image.setVisibility(View.VISIBLE);
             //选择起点
             selectstart_rr_01.setVisibility(View.VISIBLE);
             //顶部导航提示01
@@ -1012,6 +1060,12 @@ public class MapActivity extends VoiceListenActivity {
             nagv_01_rr.setVisibility(View.GONE);
             //导航结束
             stop_nagv_btn.setVisibility(View.GONE);
+            //公共设施按钮
+            iconCommon_image.setVisibility(View.VISIBLE);
+            //公共设施过滤显示
+            //切换楼层
+            changefloor_text.setVisibility(View.VISIBLE);
+
 
             //顶部显示
             //选择起点
@@ -1050,6 +1104,15 @@ public class MapActivity extends VoiceListenActivity {
             nagv_01_rr.setVisibility(View.GONE);
             //导航结束
             stop_nagv_btn.setVisibility(View.GONE);
+
+            //公共设施按钮
+            iconCommon_image.setVisibility(View.GONE);
+            //公共设施过滤显示
+            linearLayout.setVisibility(View.GONE);
+            //切换楼层
+            changefloor_text.setVisibility(View.GONE);
+            //切换楼层滚轮
+            loopView.setVisibility(View.GONE);
 
             //顶部显示
             //选择起点
@@ -1091,6 +1154,15 @@ public class MapActivity extends VoiceListenActivity {
             //导航结束
             stop_nagv_btn.setVisibility(View.GONE);
 
+            //公共设施按钮
+            iconCommon_image.setVisibility(View.GONE);
+            //公共设施过滤显示
+            linearLayout.setVisibility(View.GONE);
+            //切换楼层
+            changefloor_text.setVisibility(View.GONE);
+            //切换楼层滚轮
+            loopView.setVisibility(View.GONE);
+
             //顶部显示
             //选择起点
             selectstart_rr_01.setVisibility(View.GONE);
@@ -1115,6 +1187,17 @@ public class MapActivity extends VoiceListenActivity {
             //导航结束
             stop_nagv_btn.setVisibility(View.VISIBLE);
 
+
+            //公共设施按钮
+            iconCommon_image.setVisibility(View.GONE);
+            //公共设施过滤显示
+            linearLayout.setVisibility(View.GONE);
+            //切换楼层
+            changefloor_text.setVisibility(View.GONE);
+            //切换楼层滚轮
+            loopView.setVisibility(View.GONE);
+
+
             //顶部显示
             //选择起点
             selectstart_rr_01.setVisibility(View.GONE);
@@ -1124,7 +1207,6 @@ public class MapActivity extends VoiceListenActivity {
             type = 7;
             mapStatus = false;
         }
-
     }
 
     ;
@@ -1444,5 +1526,4 @@ public class MapActivity extends VoiceListenActivity {
             }
         }
     }
-
 }

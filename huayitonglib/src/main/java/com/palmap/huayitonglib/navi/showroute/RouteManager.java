@@ -1,6 +1,7 @@
 package com.palmap.huayitonglib.navi.showroute;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -36,6 +37,8 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
 
     private static RouteManager sInstance;
 
+    private Context mContext;
+
     private MapboxMap mMapboxMap;
     private MapBoxNavigateManager mNavigateManager;
 
@@ -60,6 +63,13 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
         return sInstance;
     }
 
+    public void setLineIcon(int sourceId, int width, int height, String lineName) {
+        mMapboxMap.addImage(lineName, BitmapUtils.decodeSampledBitmapFromResource(mContext.getResources(),
+                sourceId,
+                width,
+                height));
+    }
+
     //astar算法计算路线的监听器
     private INavigateManager.Listener<FeatureCollection> mListener = new INavigateManager.Listener<FeatureCollection>
             () {
@@ -68,6 +78,7 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                                        double fromY, long fromPlanargraph, FeatureCollection from, double fromConX,
                                        double fromConY, double toX, double toY, long toPlanargraph, FeatureCollection
                                                to, double toConX, double toConY) {
+
             if (state == INavigateManager.NavigateState.OK) {
                 mRouteBean.setRoutes(routes);
                 mRouteBean.setFromFloorId(fromPlanargraph);
@@ -123,9 +134,10 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
      * @param resId         连接点图标资源id
      * @param aboveId       导航线要在那个层之上
      */
+
     @Override
     public void init(Context context, MapboxMap mapboxMap, String routeDataPath, int resId, String aboveId) {
-
+        mContext = context;
         mMapboxMap = mapboxMap;
         mMapboxMap.addImage(CONNECTION_IMAGE_NAME, BitmapUtils.decodeSampledBitmapFromResource(context.getResources()
                 , resId, 100, 100));
@@ -264,6 +276,17 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
                         PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
                         PropertyFactory.lineWidth(2.5f),
                         PropertyFactory.lineColor(Color.parseColor("#ff3333")));
+
+//                startLayer.setProperties(
+//                        //PropertyFactory.lineDasharray(new Float[]{0.03f, 2f}),
+//                        //PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+//                        PropertyFactory.linePattern("line"),
+//                        PropertyFactory.lineJoin(Property.LINE_JOIN_ROUND),
+//                        PropertyFactory.lineCap(Property.LINE_CAP_ROUND),
+//                        PropertyFactory.lineWidth(6f)
+//                );
+
+
 
                 mLayerIds.add(layerId);
                 if (mMapboxMap.getLayer(aboveId) != null) {
