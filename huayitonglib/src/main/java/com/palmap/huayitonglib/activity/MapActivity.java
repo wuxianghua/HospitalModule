@@ -446,7 +446,10 @@ public class MapActivity extends VoiceListenActivity {
                 //可以语音，点金不可进行语音
                 speechManager.stopSpeaking();
                 nagv_yuyin = false;
+                //可以语音的显示
+                nagv_yuyin_image.setImageResource(R.mipmap.ic_card_yuyin_guan);
             } else {
+                nagv_yuyin_image.setImageResource(R.mipmap.ic_card_yuyin_kai);
                 nagv_yuyin = true;
             }
 
