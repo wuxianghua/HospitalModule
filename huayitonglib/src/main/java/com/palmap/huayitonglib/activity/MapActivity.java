@@ -416,6 +416,7 @@ public class MapActivity extends VoiceListenActivity {
             changeNavigaView(NAVIGA_SHOW_06);
             navi.startSimulateNavi(mRouteBean);
         } else if (i == R.id.nagv_back_01) {
+            navi.stopSimulateNavi();
             changeNavigaView(ROUTE_SHOW_05);
         } else if (i == R.id.nagv_yuyin_rr) {
             //导航中语音提示按钮开关
@@ -431,10 +432,7 @@ public class MapActivity extends VoiceListenActivity {
                 view_2D_3D.setImageResource(R.mipmap.ic_map_2d);
                 view_2D_3D.setContentDescription("2D");
             }
-
-
         } else if (i == R.id.selectstart_star_01) {
-
             if (isJumpStartPoint) {
                 searchStartPoi("");
             }
@@ -660,9 +658,9 @@ public class MapActivity extends VoiceListenActivity {
                                         mStartInfo.setAddress(adress);
                                         String floorName = getFloorName(mStartFloorId);
                                         mStartInfo.setFloorName(floorName);
-                                        Log.e("zyy", "info:-------------起点信息" + MapUtils.getCombineName(mapboxMap, point, "F1"));
+
                                         changeNavigaView(STARTSELEE_SHOW_04);
-                                        Log.e("zyy", "onMapClick:-------------起点信息" + MapUtils.getCombineName(mapboxMap, point, "F1"));
+
                                     }
                                 }
 
@@ -690,11 +688,9 @@ public class MapActivity extends VoiceListenActivity {
                                         String adress = MapUtils.getAdress(mapboxMap, point);
                                         mEndInfo.setName(name);
                                         mEndInfo.setAddress(adress);
-                                        String floorName = getFloorName(mStartFloorId);
+                                        String floorName = getFloorName(mEndFloorId);
                                         mEndInfo.setFloorName(floorName);
-                                        Log.e("zyy", "info:-------------终点信息---name：" + name + "---adress---" + adress);
                                         changeNavigaView(ENDSELEE_SHOW_02);
-                                        Log.e("zyy", "onMapClick:-------------终点信息" + MapUtils.getCombineName(mapboxMap, point, "F1"));
                                     }
                                 }
                             }
@@ -731,8 +727,8 @@ public class MapActivity extends VoiceListenActivity {
             @Override
             public boolean onSuccess(RouteBean bean) {
                 Log.d("lybb", "路线规划成功了: ");
-
                 mRouteBean = bean;
+                Log.e("zyy", "onSuccess: --------------"+ mRouteBean.toString());
                 mRouteManager.showNaviRoute(mCurrentFloorId);
                 changeNavigaView(ROUTE_SHOW_05);
                 return false;
@@ -999,6 +995,12 @@ public class MapActivity extends VoiceListenActivity {
                 endaddress_top_text.setText(mEndInfo.getAddress());
             }
 
+            //导航结束
+            navi.stopSimulateNavi();
+            mRouteManager.clearRouteRecord();
+            mRouteManager.clearRoute();
+
+
             isHaveSetEnd = true;
             removeStartMarker();
             mStartFloorId = 0;
@@ -1026,6 +1028,10 @@ public class MapActivity extends VoiceListenActivity {
             //公共设施过滤显示
             //切换楼层
             changefloor_text.setVisibility(View.VISIBLE);
+            //导航结束
+            navi.stopSimulateNavi();
+            mRouteManager.clearRouteRecord();
+            mRouteManager.clearRoute();
 
 
             //顶部显示
@@ -1393,6 +1399,7 @@ public class MapActivity extends VoiceListenActivity {
     }
 
     public String getFloorName(int floorId) {
+
         if (floorId == Config.FLOORID_B2_CH) {
             return "B2";
         }else  if (floorId == Config.FLOORID_B1_CH) {

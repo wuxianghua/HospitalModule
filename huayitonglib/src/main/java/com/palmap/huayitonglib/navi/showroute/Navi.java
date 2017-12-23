@@ -40,7 +40,7 @@ public class Navi implements INavi {
     public static final int MSG_SIMULATE_NAVI_FINISH_ONE_FLOOR = 1001;
 
     private static final int ZOOM_NAVI = 18;
-    public static final int TIMES = 600;
+    public static final int TIMES = 1000;
 
     private MapBoxImp mMapBoxImp;
     private MapboxMap mMapboxMap;
@@ -305,13 +305,11 @@ public class Navi implements INavi {
      */
     @Override
     public void stopSimulateNavi() {
-
         if (mHandler.hasMessages(MSG_SIMULATE_NAVI)) {
             if (mSimulateNaviStateListener != null) {
                 mSimulateNaviStateListener.onInterrupted();
             }
         }
-
         clearSimulateNaviInfo();
         clearLocationMark();
     }
