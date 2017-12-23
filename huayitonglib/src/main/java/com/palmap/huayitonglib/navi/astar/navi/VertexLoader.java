@@ -209,7 +209,7 @@ public class VertexLoader {
             if (connection.getFrom().getId().equals(vertex.getId())) {
                 aStarPaths.add(new AStarConnectionPath(connection,this,false));
             }else {
-                aStarPaths.add(new AStarConnectionPath(connection,this,false));
+                aStarPaths.add(new AStarConnectionPath(connection,this,true));
             }
         }
         return aStarPaths;
