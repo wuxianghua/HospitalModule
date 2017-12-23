@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ public class SearchActivity extends VoiceListenActivity {
     private static final String TAG = SearchActivity.class.getSimpleName();
 
     private EditText mSearch_Ed;
+    private ScrollView scrollView;
     private SearchShowFragment mSearchShowFragment;
     private SearchListFragment mSearchListFragment;
     private List<MapPointInfoBean> mList = new ArrayList<>();
@@ -90,6 +92,7 @@ public class SearchActivity extends VoiceListenActivity {
         mSearch_Ed = (EditText) findViewById(R.id.search_Ed);
         mSearch_Ed.addTextChangedListener(mTextWatcher);
         mSearch_Ed.setOnEditorActionListener(mOnEditorActionListener);
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
 
         mSearchShowFragment = new SearchShowFragment();
         mSearchListFragment = new SearchListFragment(searchType);
@@ -98,6 +101,8 @@ public class SearchActivity extends VoiceListenActivity {
         } else {
             setEditText(mDefaultKeyWord);
         }
+        // 刚进入页面的时候，不要弹出键盘
+        closeSoftKeyBoard(this);
     }
 
     // 点击返回
@@ -215,10 +220,17 @@ public class SearchActivity extends VoiceListenActivity {
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
         mSearch_Ed.setFocusableInTouchMode(true);
+        // 每次切换后滚动条滚到最顶部
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(ScrollView.FOCUS_UP);
+            }
+        });
     }
 
     /**
-     * 关闭键盘
+     * 关闭键盘，
      *
      * @param context
      */

@@ -341,14 +341,14 @@ public class MapInitUtils {
         double zoom = 16.5;
         //当楼层的position是3  和4 的时候叫楼层的缩放小一点，别的楼层进行都放比例增大 F0  F1
         if (floorParameter.equals("F3") || floorParameter.equals("F4")) {
-            zoom = 16;
+            zoom = 15;
         } else if (floorParameter.equals("B1") || floorParameter.equals("B2") || floorParameter.equals("F15")) {  // B1  B2  F15
-            zoom = 17;
+            zoom = 16;
         } else if (floorParameter.equals("F10") || floorParameter.equals("F11") || floorParameter.equals("F12") || floorParameter.equals("F13") ||
                 floorParameter.equals("F14")) { // F10 到 F14
-            zoom = 16.8;
+            zoom = 16;
         } else {
-            zoom = 16.5;
+            zoom = 15;
         }
         CameraPosition position = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude))
