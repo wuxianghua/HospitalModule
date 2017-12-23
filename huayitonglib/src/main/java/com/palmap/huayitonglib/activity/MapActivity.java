@@ -154,7 +154,8 @@ public class MapActivity extends VoiceListenActivity {
     TextView nagv_fangxiang_text, dangqianweizhi_text;
     LinearLayout linearLayout;
     ImageView iconCommon_image;
-    modidi_text
+    TextView modidi_text;
+
     private void initView() {
         view_2D_3D = (ImageView) findViewById(R.id.view_2D_3D);
         bilichi_Tv = (TextView) findViewById(R.id.bilichi_Tv);
@@ -238,7 +239,7 @@ public class MapActivity extends VoiceListenActivity {
         //起点信息  F1
         dangqianweizhi_text = (TextView) findViewById(R.id.dangqianweizhi_text);
         //目的地
-        modidi_text= (TextView) findViewById(R.id.modidi_text);
+        modidi_text = (TextView) findViewById(R.id.modidi_text);
 
         //过滤公共设施
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
@@ -307,6 +308,7 @@ public class MapActivity extends VoiceListenActivity {
     boolean yinhang = true;
     boolean dianti = true;
     boolean futi = true;
+    boolean nagv_yuyin = true;
 
     //-------------------界面点击事件
     public void onClick(View view) {
@@ -440,6 +442,13 @@ public class MapActivity extends VoiceListenActivity {
             changeNavigaView(ROUTE_SHOW_05);
         } else if (i == R.id.nagv_yuyin_rr) {
             //导航中语音提示按钮开关
+            if (nagv_yuyin) {
+                //可以语音，点金不可进行语音
+                speechManager.stopSpeaking();
+                nagv_yuyin = false;
+            } else {
+                nagv_yuyin = true;
+            }
 
         } else if (i == R.id.view_2D_3D) {
             String str = (String) view_2D_3D.getContentDescription();
@@ -793,7 +802,10 @@ public class MapActivity extends VoiceListenActivity {
             @Override
             public void onFinish() {
                 try {
-                    speechManager.startSpeaking("您已到达" + mEndInfo.getName());
+                    //可以进行导航的时候进行导航
+                    if (nagv_yuyin){
+                        speechManager.startSpeaking("您已到达" + mEndInfo.getName());
+                    }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -818,8 +830,12 @@ public class MapActivity extends VoiceListenActivity {
             public void onInfo(String info) {
                 Log.d("lybbonInfo", "onInfo: " + info);
                 try {
-                    speechManager.stopSpeaking();
-                    speechManager.startSpeaking(info);
+                    //可以进行导航的时候进行导航
+                    if (nagv_yuyin){
+                        speechManager.stopSpeaking();
+                        speechManager.startSpeaking(info);
+                    }
+
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -923,6 +939,8 @@ public class MapActivity extends VoiceListenActivity {
             //公共设施过滤显示
             //切换楼层
             changefloor_text.setVisibility(View.VISIBLE);
+            //可以语音的显示
+            nagv_yuyin_image.setImageResource(R.mipmap.ic_card_yuyin_kai);
 
 
             //顶部显示
@@ -932,6 +950,8 @@ public class MapActivity extends VoiceListenActivity {
             nagv_top01.setVisibility(View.GONE);
             isHaveSetEnd = false;
             mapStatus = true;
+            //可以开启导航
+            nagv_yuyin = true;
             removeEndMarker();
             removeStartMarker();
             mEndFloorId = 0;
@@ -958,7 +978,10 @@ public class MapActivity extends VoiceListenActivity {
             //公共设施过滤显示
             //切换楼层
             changefloor_text.setVisibility(View.VISIBLE);
-
+            //可以语音的显示
+            nagv_yuyin_image.setImageResource(R.mipmap.ic_card_yuyin_kai);
+            //可以开启导航
+            nagv_yuyin = true;
 
             //顶部显示
             //选择起点
@@ -1011,6 +1034,10 @@ public class MapActivity extends VoiceListenActivity {
             selectstart_rr_01.setVisibility(View.VISIBLE);
             //顶部导航提示01
             nagv_top01.setVisibility(View.GONE);
+            //可以语音的显示
+            nagv_yuyin_image.setImageResource(R.mipmap.ic_card_yuyin_kai);
+            //可以开启导航
+            nagv_yuyin = true;
 
             // 顶部起点、终点信息展示，因此时无起点，所以只设置终点信息
             //顶部终点name信息
@@ -1059,7 +1086,10 @@ public class MapActivity extends VoiceListenActivity {
             navi.stopSimulateNavi();
             mRouteManager.clearRouteRecord();
             mRouteManager.clearRoute();
-
+            //可以语音的显示
+            nagv_yuyin_image.setImageResource(R.mipmap.ic_card_yuyin_kai);
+            //可以开启导航
+            nagv_yuyin = true;
 
             //顶部显示
             //选择起点
@@ -1107,6 +1137,11 @@ public class MapActivity extends VoiceListenActivity {
             changefloor_text.setVisibility(View.GONE);
             //切换楼层滚轮
             loopView.setVisibility(View.GONE);
+
+            //可以语音的显示
+            nagv_yuyin_image.setImageResource(R.mipmap.ic_card_yuyin_kai);
+            //可以开启导航
+            nagv_yuyin = true;
 
 //            //起点信息  F1
 //            dangqianweizhi_text
@@ -1163,6 +1198,11 @@ public class MapActivity extends VoiceListenActivity {
             //切换楼层滚轮
             loopView.setVisibility(View.GONE);
 
+            //可以语音的显示
+            nagv_yuyin_image.setImageResource(R.mipmap.ic_card_yuyin_kai);
+            //可以开启导航
+            nagv_yuyin = true;
+
             //顶部显示
             //选择起点
             selectstart_rr_01.setVisibility(View.GONE);
@@ -1186,7 +1226,8 @@ public class MapActivity extends VoiceListenActivity {
             nagv_01_rr.setVisibility(View.GONE);
             //导航结束
             stop_nagv_btn.setVisibility(View.VISIBLE);
-
+            //可以开启导航
+            nagv_yuyin = true;
 
             //公共设施按钮
             iconCommon_image.setVisibility(View.GONE);
@@ -1196,6 +1237,11 @@ public class MapActivity extends VoiceListenActivity {
             changefloor_text.setVisibility(View.GONE);
             //切换楼层滚轮
             loopView.setVisibility(View.GONE);
+
+            //可以语音的显示
+            nagv_yuyin_image.setImageResource(R.mipmap.ic_card_yuyin_kai);
+//            //不可以语音的显示
+//            nagv_yuyin_image.setImageResource(R.mipmap.ic_card_yuyin_guan);
 
 
             //顶部显示
