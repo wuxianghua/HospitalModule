@@ -15,6 +15,8 @@ public interface SimulateNaviStateListener {
 
     void onFinish();
 
+    void onInterrupted();
+
     void onError();
 
     void onInfo(String info);

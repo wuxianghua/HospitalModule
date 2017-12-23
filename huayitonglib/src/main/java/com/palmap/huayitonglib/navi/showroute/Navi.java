@@ -29,7 +29,7 @@ import java.util.List;
  * Created by yibo.liu on 2017/12/21 15:35.
  */
 
-public class Navi {
+public class Navi implements INavi {
     public static final String TAG = Navi.class.getSimpleName();
 
     public static final String SOURCEID_LOCATION = "source-id-location";
@@ -99,9 +99,10 @@ public class Navi {
     private NavigateUpdateListener mNavigateUpdateListener = new NavigateUpdateListener() {
         @Override
         public void onNavigateUpdate(NaviInfo naviInfo) {
-            Log.d(TAG, "onNavigateUpdate:  info " + naviInfo.getNaviTip() + "\t" + (int)naviInfo.getTotalRemainLength());
+            Log.d(TAG, "onNavigateUpdate:  info " + naviInfo.getNaviTip() + "\t" + (int) naviInfo
+                    .getTotalRemainLength());
             if (mSimulateNaviStateListener != null) {
-                if(frontPartIndex != naviInfo.getAdsorbPart().getIndex()) {
+                if (frontPartIndex != naviInfo.getAdsorbPart().getIndex()) {
                     mSimulateNaviStateListener.onInfo(naviInfo.getNaviTip());
                 }
                 frontPartIndex = naviInfo.getAdsorbPart().getIndex();
@@ -109,6 +110,7 @@ public class Navi {
         }
     };
 
+    @Override
     public void init(Context context, MapboxMap mapboxMap, int resId) {
         mMapBoxImp = new MapBoxImp();
         mMapBoxImp.setMapEngine(mapboxMap);
@@ -127,6 +129,7 @@ public class Navi {
      *
      * @param listener
      */
+    @Override
     public void setSimulateStateListener(SimulateNaviStateListener listener) {
         mSimulateNaviStateListener = listener;
     }
@@ -134,6 +137,7 @@ public class Navi {
     /**
      * 开始模拟导航
      */
+    @Override
     public void startSimulateNavi(RouteBean bean) {
         mRouteBean = bean;
         if (mRouteBean == null) {
@@ -206,7 +210,7 @@ public class Navi {
             } else {
                 Log.d(TAG, "repeat: 不转");
                 animateLocation(from, to);
-                mNavigateManager.updatePosition(mCurrentFloorId,nodeInfo.getX(),nodeInfo.getY(),0);
+                mNavigateManager.updatePosition(mCurrentFloorId, nodeInfo.getX(), nodeInfo.getY(), 0);
                 mIndex++;
             }
             mHandler.sendEmptyMessageDelayed(MSG_SIMULATE_NAVI, TIMES);
@@ -261,7 +265,6 @@ public class Navi {
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                Log.d(TAG, "onAnimationUpdate: ");
                 LatLng evaluatelatlng = mLatlngEvaluator.evaluate(valueAnimator.getAnimatedFraction(), startLatLng,
                         endLatLng);
                 addOrUpdateLocationMark(evaluatelatlng);
@@ -300,7 +303,15 @@ public class Navi {
     /**
      * 停止模拟导航
      */
+    @Override
     public void stopSimulateNavi() {
+
+        if (mHandler.hasMessages(MSG_SIMULATE_NAVI)) {
+            if (mSimulateNaviStateListener != null) {
+                mSimulateNaviStateListener.onInterrupted();
+            }
+        }
+
         clearSimulateNaviInfo();
         clearLocationMark();
     }
