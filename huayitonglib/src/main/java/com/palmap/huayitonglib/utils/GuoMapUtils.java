@@ -322,7 +322,7 @@ public class GuoMapUtils {
             zoom = 15;
         }
 
-        latitude += 0.002;
+        latitude += 0.0008;
         CameraPosition position = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude))
                 .zoom(zoom)

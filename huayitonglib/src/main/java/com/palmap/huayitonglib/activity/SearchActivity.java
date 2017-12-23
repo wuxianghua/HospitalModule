@@ -219,12 +219,14 @@ public class SearchActivity extends VoiceListenActivity {
         ft.replace(R.id.frameLayout, fragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
-        mSearch_Ed.setFocusableInTouchMode(true);
         // 每次切换后滚动条滚到最顶部
         scrollView.post(new Runnable() {
             @Override
             public void run() {
                 scrollView.fullScroll(ScrollView.FOCUS_UP);
+                mSearch_Ed.setFocusableInTouchMode(true);
+                mSearch_Ed.setFocusable(true);
+                mSearch_Ed.setSelection(mSearch_Ed.getText().toString().length());
             }
         });
     }
