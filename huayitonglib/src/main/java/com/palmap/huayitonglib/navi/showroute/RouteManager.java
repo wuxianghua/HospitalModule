@@ -11,12 +11,17 @@ import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.services.commons.geojson.Feature;
 import com.mapbox.services.commons.geojson.FeatureCollection;
 import com.mapbox.services.commons.geojson.Point;
 import com.mapbox.services.commons.models.Position;
+import com.palmap.huayitonglib.navi.astar.model.PoiInfo;
+import com.palmap.huayitonglib.navi.astar.model.graph.Door;
 import com.palmap.huayitonglib.navi.astar.navi.AStarPath;
 import com.palmap.huayitonglib.navi.route.INavigateManager;
 import com.palmap.huayitonglib.navi.route.MapBoxNavigateManager;
+import com.palmap.huayitonglib.utils.Utils;
+import com.vividsolutions.jts.geom.Geometry;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -176,9 +181,8 @@ public class RouteManager implements IRoute<MapboxMap, FeatureCollection> {
 
         Position fromPosition = CoordinateUtils.latlng2WebMercator(fromlat, fromlong);
         Position toPosition = CoordinateUtils.latlng2WebMercator(tolat, tolong);
-
         mNavigateManager.navigation(fromPosition.getLongitude(), fromPosition.getLatitude(), fromPlanargraph,
-                toPosition.getLongitude(), toPosition.getLatitude(), toPlanargraph);
+                null,null,toPosition.getLongitude(), toPosition.getLatitude(), toPlanargraph);
     }
 
     /**

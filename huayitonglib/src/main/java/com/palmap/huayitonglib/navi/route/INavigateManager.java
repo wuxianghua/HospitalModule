@@ -1,6 +1,8 @@
 package com.palmap.huayitonglib.navi.route;
 
+import com.mapbox.services.commons.geojson.Feature;
 import com.mapbox.services.commons.geojson.FeatureCollection;
+import com.palmap.huayitonglib.navi.astar.model.PoiInfo;
 import com.palmap.huayitonglib.navi.astar.navi.AStarPath;
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -61,7 +63,7 @@ public interface INavigateManager<Route> {
 
     void switchPlanarGraph(long id);
 
-    void navigation(double fromX, double fromY, long fromPlanargraph, double toX, double toY, long toPlanargraph);
+    void navigation(double fromX, double fromY, long fromPlanargraph, Feature from, Feature to, double toX, double toY, long toPlanargraph);
 
     void navigation(double fromX, double fromY, long fromPlanargraph, double toX, double toY, long toPlanargraph,
                     long currentPlanargraph);

@@ -38,7 +38,6 @@ public class AStarVertex implements Comparable<AStarVertex> {
 
     public List<AStarPath> getPaths() {
         loadPaths();
-        Log.e("xinhua","我执行了几次啊");
         return new ArrayList<>(paths.values());
     }
 
@@ -73,7 +72,6 @@ public class AStarVertex implements Comparable<AStarVertex> {
     private void loadPaths() {
         if (paths == null) {
             paths = new HashMap<>();
-            Log.e("xinhua","我执行了几次啊11111111");
             List<AStarPath> aStarPaths = loader.loadPaths(vertex, needCalcExtraPath);
             for (AStarPath aStarPath : aStarPaths) {
                 paths.put(aStarPath.getTo(),aStarPath);

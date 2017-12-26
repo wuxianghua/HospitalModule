@@ -5,10 +5,12 @@ import android.content.res.AssetManager;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import com.google.gson.Gson;
 import com.mapbox.services.commons.geojson.Feature;
 import com.mapbox.services.commons.geojson.FeatureCollection;
 import com.mapbox.services.commons.geojson.LineString;
 import com.mapbox.services.commons.models.Position;
+import com.palmap.huayitonglib.navi.astar.model.PoiInfo;
 import com.palmap.huayitonglib.navi.astar.model.path.TreatedRoadNet;
 import com.palmap.huayitonglib.navi.astar.navi.AStar;
 import com.palmap.huayitonglib.navi.astar.navi.AStarPath;
@@ -16,7 +18,11 @@ import com.palmap.huayitonglib.navi.astar.navi.AStarVertex;
 import com.palmap.huayitonglib.navi.astar.navi.DefaultG;
 import com.palmap.huayitonglib.navi.astar.navi.DefaultH;
 import com.palmap.huayitonglib.navi.astar.navi.VertexLoader;
+import com.palmap.huayitonglib.navi.route.bean.Door;
+import com.palmap.huayitonglib.navi.route.bean.Doors;
+import com.palmap.huayitonglib.utils.Utils;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
@@ -47,6 +53,10 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
 
     private Context context;
 
+    private Doors doors;
+
+    private Gson gson;
+
     private Listener<FeatureCollection> listener = DEFAULT_LISTENER;
 
     private static Listener<FeatureCollection> DEFAULT_LISTENER = new Listener<FeatureCollection>() {
@@ -62,6 +72,7 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
 
     public MapBoxNavigateManager(Context context, final String routeDataPath) {
         this.context = context;
+        gson = new Gson();
         handlerThread = new HandlerThread("mapBoxNavigateManager");
         handlerThread.start();
         routeHandler = new Handler(handlerThread.getLooper());
@@ -75,6 +86,11 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
                             .optJSONArray("vertexes"), pathObject.optJSONObject("paths"), pathObject.optJSONObject
                             ("connections"));
                     aStar = new AStar(new DefaultG(), new DefaultH(), new VertexLoader(treatedRoadNet));
+
+                    if (doors == null) {
+                        String doorIds = loadFromAsset(MapBoxNavigateManager.this.context, "doorIds.json");
+                        doors = gson.fromJson(doorIds, Doors.class);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -121,16 +137,21 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
     }
 
     @Override
-    public void navigation(double fromX, double fromY, long fromPlanargraph, double toX, double toY, long
+    public void navigation(double fromX, double fromY, long fromPlanargraph, Feature fromFeature, Feature toFeature, double toX, double toY, long
             toPlanargraph) {
         if (!precondition()) {
             return;
         }
+        PoiInfo from = getPoiInfo(fromFeature);
+        PoiInfo to = getPoiInfo(toFeature);
         List<AStarPath> routes = aStar.astar(
                 geometryFactory.createPoint(new Coordinate(fromX, fromY)),
                 fromPlanargraph,
+                from,
                 geometryFactory.createPoint(new Coordinate(toX, toY)),
-                toPlanargraph, 0
+                toPlanargraph,
+                to,
+                0
         );
         if (routes == null || routes.size() == 0) {
             this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, null, 0, 0, 0, fromX, fromY,
@@ -206,6 +227,29 @@ public class MapBoxNavigateManager implements INavigateManager<FeatureCollection
                     fromPlanargraph,
                     routeFeatureCollection, 0, 0, toX, toY, toPlanargraph,
                     otherRouteFeatureCollection, 0, 0);
+        }
+    }
+
+    private PoiInfo getPoiInfo(Feature feature) {
+        PoiInfo frompoiInfo = new PoiInfo();
+        if (feature != null) {
+            long id = Long.valueOf(feature.getId());
+            for (Door poi : doors.pois) {
+                if (poi.id == id) {
+                    frompoiInfo.doorIds = poi.doorIds;
+                }
+            }
+            Geometry featureShape;
+            try {
+                featureShape = Utils.getFeatureShape(feature);
+                frompoiInfo.shape = featureShape;
+                frompoiInfo.planarGraphId = feature.getNumberProperty("planar_graph").longValue();
+            } catch (com.vividsolutions.jts.io.ParseException e) {
+                e.printStackTrace();
+            }
+            return frompoiInfo;
+        } else {
+            return null;
         }
     }
 
