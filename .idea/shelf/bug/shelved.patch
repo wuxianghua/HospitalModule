@@ -1,0 +1,294 @@
+Index: huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/INavigateManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/INavigateManager.java	(revision b0711381e3285e4277e2c75a8501ee449d7f7091)
++++ huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/INavigateManager.java	(revision )
+@@ -1,6 +1,8 @@
+ package com.palmap.huayitonglib.navi.route;
+ 
++import com.mapbox.services.commons.geojson.Feature;
+ import com.mapbox.services.commons.geojson.FeatureCollection;
++import com.palmap.huayitonglib.navi.astar.model.PoiInfo;
+ import com.palmap.huayitonglib.navi.astar.navi.AStarPath;
+ import com.vividsolutions.jts.geom.Coordinate;
+ 
+@@ -61,7 +63,7 @@
+ 
+     void switchPlanarGraph(long id);
+ 
+-    void navigation(double fromX, double fromY, long fromPlanargraph, double toX, double toY, long toPlanargraph);
++    void navigation(double fromX, double fromY, long fromPlanargraph, Feature from, Feature to, double toX, double toY, long toPlanargraph);
+ 
+     void navigation(double fromX, double fromY, long fromPlanargraph, double toX, double toY, long toPlanargraph,
+                     long currentPlanargraph);
+Index: huayitonglib/src/main/java/com/palmap/huayitonglib/utils/Utils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- huayitonglib/src/main/java/com/palmap/huayitonglib/utils/Utils.java	(revision )
++++ huayitonglib/src/main/java/com/palmap/huayitonglib/utils/Utils.java	(revision )
+@@ -0,0 +1,45 @@
++package com.palmap.huayitonglib.utils;
++
++import com.mapbox.mapboxsdk.geometry.LatLng;
++import com.mapbox.services.commons.geojson.Feature;
++import com.mapbox.services.commons.geojson.Geometry;
++import com.palmap.huayitonglib.navi.astar.geojson.GeoJsonReader;
++import com.vividsolutions.jts.geom.Coordinate;
++import com.vividsolutions.jts.io.ParseException;
++
++/**
++ * Created by wtm on 2017/10/12.
++ */
++public class Utils {
++
++    private static final GeoJsonReader GEO_JSON_READER = new GeoJsonReader();
++
++    private Utils() {
++    }
++
++    /**
++     * 获取 feature 的中心点
++     * @param feature
++     * @return
++     * @throws NullPointerException feature为null
++     * @throws ParseException 解析错误
++     */
++    public static LatLng getFeatureCentroid(Feature feature) throws NullPointerException,ParseException {
++        if (feature == null) {
++            throw new NullPointerException("feature is null !!");
++        }
++        Geometry geometry = feature.getGeometry();
++        com.vividsolutions.jts.geom.Geometry result = GEO_JSON_READER.read(geometry.toJson());
++        Coordinate coordinate = result.getCentroid().getCoordinate();
++        return new LatLng(coordinate.y, coordinate.x);
++    }
++
++    public static com.vividsolutions.jts.geom.Geometry getFeatureShape(Feature feature) throws NullPointerException,ParseException {
++        if (feature == null) {
++            throw new NullPointerException("feature is null !!");
++        }
++        Geometry geometry = feature.getGeometry();
++        com.vividsolutions.jts.geom.Geometry result = GEO_JSON_READER.read(geometry.toJson());
++        return result;
++    }
++}
+\ No newline at end of file
+Index: huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/bean/Doors.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/bean/Doors.java	(revision )
++++ huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/bean/Doors.java	(revision )
+@@ -0,0 +1,11 @@
++package com.palmap.huayitonglib.navi.route.bean;
++
++import java.util.List;
++
++/**
++ * Created by Administrator on 2017/12/7/007.
++ */
++
++public class Doors {
++    public List<Door> pois;
++}
+Index: huayitonglib/src/main/java/com/palmap/huayitonglib/navi/astar/navi/AStarVertex.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- huayitonglib/src/main/java/com/palmap/huayitonglib/navi/astar/navi/AStarVertex.java	(revision b0711381e3285e4277e2c75a8501ee449d7f7091)
++++ huayitonglib/src/main/java/com/palmap/huayitonglib/navi/astar/navi/AStarVertex.java	(revision )
+@@ -38,7 +38,6 @@
+ 
+     public List<AStarPath> getPaths() {
+         loadPaths();
+-        Log.e("xinhua","我执行了几次啊");
+         return new ArrayList<>(paths.values());
+     }
+ 
+@@ -73,7 +72,6 @@
+     private void loadPaths() {
+         if (paths == null) {
+             paths = new HashMap<>();
+-            Log.e("xinhua","我执行了几次啊11111111");
+             List<AStarPath> aStarPaths = loader.loadPaths(vertex, needCalcExtraPath);
+             for (AStarPath aStarPath : aStarPaths) {
+                 paths.put(aStarPath.getTo(),aStarPath);
+Index: huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/bean/Door.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/bean/Door.java	(revision )
++++ huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/bean/Door.java	(revision )
+@@ -0,0 +1,12 @@
++package com.palmap.huayitonglib.navi.route.bean;
++
++import java.util.Set;
++
++/**
++ * Created by Administrator on 2017/12/7/007.
++ */
++
++public class Door {
++    public Set<Long> doorIds;
++    public Long id;
++}
+Index: huayitonglib/src/main/java/com/palmap/huayitonglib/navi/showroute/RouteManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- huayitonglib/src/main/java/com/palmap/huayitonglib/navi/showroute/RouteManager.java	(revision b0711381e3285e4277e2c75a8501ee449d7f7091)
++++ huayitonglib/src/main/java/com/palmap/huayitonglib/navi/showroute/RouteManager.java	(revision )
+@@ -11,12 +11,17 @@
+ import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+ import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
+ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
++import com.mapbox.services.commons.geojson.Feature;
+ import com.mapbox.services.commons.geojson.FeatureCollection;
+ import com.mapbox.services.commons.geojson.Point;
+ import com.mapbox.services.commons.models.Position;
++import com.palmap.huayitonglib.navi.astar.model.PoiInfo;
++import com.palmap.huayitonglib.navi.astar.model.graph.Door;
+ import com.palmap.huayitonglib.navi.astar.navi.AStarPath;
+ import com.palmap.huayitonglib.navi.route.INavigateManager;
+ import com.palmap.huayitonglib.navi.route.MapBoxNavigateManager;
++import com.palmap.huayitonglib.utils.Utils;
++import com.vividsolutions.jts.geom.Geometry;
+ 
+ import java.util.ArrayList;
+ import java.util.Collections;
+@@ -176,9 +181,8 @@
+ 
+         Position fromPosition = CoordinateUtils.latlng2WebMercator(fromlat, fromlong);
+         Position toPosition = CoordinateUtils.latlng2WebMercator(tolat, tolong);
+-
+         mNavigateManager.navigation(fromPosition.getLongitude(), fromPosition.getLatitude(), fromPlanargraph,
+-                toPosition.getLongitude(), toPosition.getLatitude(), toPlanargraph);
++                null,null,toPosition.getLongitude(), toPosition.getLatitude(), toPlanargraph);
+     }
+ 
+     /**
+Index: huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/MapBoxNavigateManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/MapBoxNavigateManager.java	(revision b0711381e3285e4277e2c75a8501ee449d7f7091)
++++ huayitonglib/src/main/java/com/palmap/huayitonglib/navi/route/MapBoxNavigateManager.java	(revision )
+@@ -5,10 +5,12 @@
+ import android.os.Handler;
+ import android.os.HandlerThread;
+ 
++import com.google.gson.Gson;
+ import com.mapbox.services.commons.geojson.Feature;
+ import com.mapbox.services.commons.geojson.FeatureCollection;
+ import com.mapbox.services.commons.geojson.LineString;
+ import com.mapbox.services.commons.models.Position;
++import com.palmap.huayitonglib.navi.astar.model.PoiInfo;
+ import com.palmap.huayitonglib.navi.astar.model.path.TreatedRoadNet;
+ import com.palmap.huayitonglib.navi.astar.navi.AStar;
+ import com.palmap.huayitonglib.navi.astar.navi.AStarPath;
+@@ -16,7 +18,11 @@
+ import com.palmap.huayitonglib.navi.astar.navi.DefaultG;
+ import com.palmap.huayitonglib.navi.astar.navi.DefaultH;
+ import com.palmap.huayitonglib.navi.astar.navi.VertexLoader;
++import com.palmap.huayitonglib.navi.route.bean.Door;
++import com.palmap.huayitonglib.navi.route.bean.Doors;
++import com.palmap.huayitonglib.utils.Utils;
+ import com.vividsolutions.jts.geom.Coordinate;
++import com.vividsolutions.jts.geom.Geometry;
+ import com.vividsolutions.jts.geom.GeometryFactory;
+ import com.vividsolutions.jts.geom.Point;
+ import com.vividsolutions.jts.operation.distance.DistanceOp;
+@@ -47,6 +53,10 @@
+ 
+     private Context context;
+ 
++    private Doors doors;
++
++    private Gson gson;
++
+     private Listener<FeatureCollection> listener = DEFAULT_LISTENER;
+ 
+     private static Listener<FeatureCollection> DEFAULT_LISTENER = new Listener<FeatureCollection>() {
+@@ -62,6 +72,7 @@
+ 
+     public MapBoxNavigateManager(Context context, final String routeDataPath) {
+         this.context = context;
++        gson = new Gson();
+         handlerThread = new HandlerThread("mapBoxNavigateManager");
+         handlerThread.start();
+         routeHandler = new Handler(handlerThread.getLooper());
+@@ -75,6 +86,11 @@
+                             .optJSONArray("vertexes"), pathObject.optJSONObject("paths"), pathObject.optJSONObject
+                             ("connections"));
+                     aStar = new AStar(new DefaultG(), new DefaultH(), new VertexLoader(treatedRoadNet));
++
++                    if (doors == null) {
++                        String doorIds = loadFromAsset(MapBoxNavigateManager.this.context, "doorIds.json");
++                        doors = gson.fromJson(doorIds, Doors.class);
++                    }
+                 } catch (Exception e) {
+                     e.printStackTrace();
+                 }
+@@ -121,16 +137,21 @@
+     }
+ 
+     @Override
+-    public void navigation(double fromX, double fromY, long fromPlanargraph, double toX, double toY, long
++    public void navigation(double fromX, double fromY, long fromPlanargraph, Feature fromFeature, Feature toFeature, double toX, double toY, long
+             toPlanargraph) {
+         if (!precondition()) {
+             return;
+         }
++        PoiInfo from = getPoiInfo(fromFeature);
++        PoiInfo to = getPoiInfo(toFeature);
+         List<AStarPath> routes = aStar.astar(
+                 geometryFactory.createPoint(new Coordinate(fromX, fromY)),
+                 fromPlanargraph,
++                from,
+                 geometryFactory.createPoint(new Coordinate(toX, toY)),
+-                toPlanargraph, 0
++                toPlanargraph,
++                to,
++                0
+         );
+         if (routes == null || routes.size() == 0) {
+             this.listener.onNavigateComplete(NavigateState.NAVIGATE_REQUEST_ERROR, null, 0, 0, 0, fromX, fromY,
+@@ -206,6 +227,29 @@
+                     fromPlanargraph,
+                     routeFeatureCollection, 0, 0, toX, toY, toPlanargraph,
+                     otherRouteFeatureCollection, 0, 0);
++        }
++    }
++
++    private PoiInfo getPoiInfo(Feature feature) {
++        PoiInfo frompoiInfo = new PoiInfo();
++        if (feature != null) {
++            long id = Long.valueOf(feature.getId());
++            for (Door poi : doors.pois) {
++                if (poi.id == id) {
++                    frompoiInfo.doorIds = poi.doorIds;
++                }
++            }
++            Geometry featureShape;
++            try {
++                featureShape = Utils.getFeatureShape(feature);
++                frompoiInfo.shape = featureShape;
++                frompoiInfo.planarGraphId = feature.getNumberProperty("planar_graph").longValue();
++            } catch (com.vividsolutions.jts.io.ParseException e) {
++                e.printStackTrace();
++            }
++            return frompoiInfo;
++        } else {
++            return null;
+         }
+     }
+ 
